@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
 from Data.Room import DRooms
@@ -23,6 +24,8 @@ async def create_room(
         room: str,
         max_players: int
 ):
+    if room in DRooms.rooms.keys():
+        raise HTTPException(status_code=500, detail="Комната уже существует")
     DRooms.rooms[room] = {
         "players": [],
         "count_players": max_players,
