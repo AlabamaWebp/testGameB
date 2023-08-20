@@ -2,13 +2,18 @@ import csv
 
 from fastapi.routing import APIRouter
 
-from Data.Game.DGame import GameRoom, Player
+from Data.Game.DGame import GameRoom, Player, TreasureCard
 from Data.Room import DRooms
 import csv
 
 GameRouter = APIRouter()
 
 started_games = {}
+
+
+@GameRouter.get("/lobby_status")
+def get_lobby_status(room):
+    return DRooms.rooms[room]
 
 
 @GameRouter.post("/ready")
@@ -26,17 +31,7 @@ def get_ready(player: str, room: str, ready: bool):
         if len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"]:
             return start_game(room)
 
-    return started_games
-
-
-def start_game(room):
-    started_games[room] = GameRoom()
-    for i in DRooms.rooms[room]["players"]:
-        started_games[room].players[i] = Player()
-        started_games[room].players[i].nickname = i
-    del DRooms.rooms[room]
-    return started_games[room].players
-
+    return get_lobby_status(room)
 
 @GameRouter.get("/test")
 async def test():
@@ -78,3 +73,20 @@ def reader_helper(reader):
         print(tmp_names, i)
         i = i + 1
     return temp
+
+
+def start_game(room):
+    groom = GameRoom()
+    # groom.cards =
+    for i in DRooms.rooms[room]["players"]:
+        tmp = Player()
+        tmp.nickname = i
+        # for i in range(0, 3):
+        #     card = TreasureCard()
+        #
+        #     tmp.cards.append()
+        groom.players[i] = Player()
+        groom.players[i].nickname = i
+    started_games[room] = groom
+    del DRooms.rooms[room]
+    return started_games[room]
