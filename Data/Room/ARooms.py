@@ -62,7 +62,7 @@ async def in_room(
     if DRooms.rooms[room]["count_players"] <= len(DRooms.rooms[room]["players"]):
         raise HTTPException(status_code=500, detail="Максимум игроков!")
     DRooms.rooms[room]["players"].append(nickname)
-    return DRooms.rooms[room]
+    return {"room": DRooms.rooms[room], "name": room}
 
 
 @RoomsRouter.post("/out_room")

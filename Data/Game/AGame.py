@@ -17,7 +17,7 @@ started_games: {str: GameRoom} = dict()
 def get_lobby_status(name: str):
     for room in DRooms.rooms:
         if name in DRooms.rooms[room]["players"]:
-            return {"status": "r", "room": room}
+            return {"status": "r", "room": room, "name": room}
     for game in started_games:
         if name in started_games[game].players:
             return {"status": "g", "game": game}
@@ -27,6 +27,11 @@ def get_lobby_status(name: str):
 @GameRouter.get("/game_status")
 def get_game_status(room):
     return started_games[room]
+
+
+@GameRouter.get("/ready_status")
+def get_ready_status(room):
+    return DRooms.rooms[room]
 
 
 @GameRouter.post("/ready")
