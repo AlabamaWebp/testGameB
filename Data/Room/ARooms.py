@@ -40,6 +40,8 @@ async def delete_room(
 ):
     if room in DRooms.rooms and DRooms.rooms[room]["players"] == []:
         del DRooms.rooms[room]
+    else:
+        raise HTTPException(status_code=500, detail="Комнаты не существет")
     return get_all_rooms()
 
 
@@ -48,11 +50,11 @@ async def in_room(
         room: str,
         nickname: str
 ):
-    if nickname not in DRooms.rooms[room]["players"]:
-        return "Игрок уже в комнате"
-    if DRooms.rooms[room]["count_players"] != len(DRooms.rooms[room]["players"]):
-        return "Максимум игроков!"
-    # Заменить на метание ошибок!!!!!!!!
+    for r in DRooms.rooms.keys():
+        if nickname in DRooms.rooms[r]["players"]:
+            raise HTTPException(status_code=500, detail="Игрок уже в комнате")
+    if DRooms.rooms[room]["count_players"] <= len(DRooms.rooms[room]["players"]):
+        raise HTTPException(status_code=500, detail="Максимум игроков!")
     DRooms.rooms[room]["players"].append(nickname)
     return DRooms.rooms[room]
 
