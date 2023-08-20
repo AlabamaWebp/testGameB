@@ -11,16 +11,16 @@ import csv
 GameRouter = APIRouter()
 GameRouter.prefix = "/game"
 
-started_games: {str: GameRoom}
+started_games: {str: GameRoom} = dict()
 
 
 @GameRouter.get("/lobby_status")
 def get_lobby_status(name: str):
     for room in DRooms.rooms:
-        if name in room["players"]:
+        if name in DRooms.rooms[room]["players"]:
             return {"status": "r", "room": room}
     for game in started_games:
-        if name in game.players:
+        if name in started_games[game].players:
             return {"status": "g", "game": game}
     return {"status": "n"}
 
