@@ -15,13 +15,19 @@ started_games: {str: GameRoom}
 
 
 @GameRouter.get("/lobby_status")
-def get_lobby_status(room):
-    return DRooms.rooms[room]
+def get_lobby_status(name: str):
+    for room in DRooms.rooms:
+        if name in room["players"]:
+            return {"status": "r", "room": room}
+    for game in started_games:
+        if name in game.players:
+            return {"status": "g", "game": game}
+    return {"status": "n"}
 
 
-@GameRouter.get("/lobby_status")
-def get_game_status(room):
-    return started_games[room]
+# @GameRouter.get("/lobby_status")
+# def get_game_status(room):
+#     return started_games[room]
 
 
 @GameRouter.post("/ready")
