@@ -186,6 +186,7 @@ def start_game(room):
             player.cards.append(get_card(False, groom))
         if name in woman_players:
             player.sex = False
+            woman_players.remove(name)
         else:
             player.sex = True
         groom.players.append(player)
