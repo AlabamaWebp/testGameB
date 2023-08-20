@@ -11,6 +11,15 @@ GameRouter = APIRouter()
 GameRouter.prefix = "/game"
 
 started_games: {str: GameRoom} = dict()
+woman_players = set()
+
+
+@GameRouter.get("/set_sex")
+def toggle_sex(player: str, woman: bool):
+    if woman and player not in woman_players:
+        woman_players.add(player)
+    elif not woman and player in woman_players:
+        woman_players.remove(player)
 
 
 @GameRouter.get("/lobby_status")
@@ -75,6 +84,7 @@ def queue_plus(room):
         started_games[room].queue = 0
     else:
         started_games[room].queue = started_games[room].queue + 1
+
 
 path = "Data/Cards/standart/"
 
@@ -174,6 +184,10 @@ def start_game(room):
             player.cards.append(get_card(True, groom))
         for i in range(0, 3):
             player.cards.append(get_card(False, groom))
+        if name in woman_players:
+            player.sex = False
+        else:
+            player.sex = True
         groom.players.append(player)
 
     # Начало цикла ходов

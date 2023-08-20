@@ -19,6 +19,7 @@ class Player:
     one_fight_strong: int = 0
     cards: []
     field_cards: [] = []
+    sex: bool
 
 
 class AbstractCard:
@@ -42,3 +43,12 @@ class MonsterCard(AbstractCard):
 class CourseCard(AbstractCard):
     action: str
     strongest: int
+
+
+class SendPlayer:
+    nickname: str = ""
+    lvl: int = 1
+    strongest: int = lvl
+    one_fight_strong: int = 0
+    field_cards: [] = []
+    sex: bool
