@@ -1,11 +1,15 @@
 class GameRoom:
-    players = {}
+    players = []
     count_players: int
     ready_players: int
     started: bool = False
     count_cards: int
     doors: []
     treasures: []
+    sbros_doors: [] = []
+    sbros_treasures: [] = []
+    queue: int
+    step: int = 1
 
 
 class Player:
@@ -14,7 +18,7 @@ class Player:
     strongest: int = lvl
     one_fight_strong: int = 0
     cards: []
-    field_cards: []
+    field_cards: [] = []
 
 
 class AbstractCard:

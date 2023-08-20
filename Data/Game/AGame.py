@@ -1,6 +1,7 @@
 import csv
 import random
 
+from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
 from Data.Game.DGame import GameRoom, Player, TreasureCard, MonsterCard, CourseCard
@@ -8,13 +9,19 @@ from Data.Room import DRooms
 import csv
 
 GameRouter = APIRouter()
+GameRouter.prefix = "/game"
 
-started_games = {}
+started_games: {str: GameRoom}
 
 
 @GameRouter.get("/lobby_status")
 def get_lobby_status(room):
     return DRooms.rooms[room]
+
+
+@GameRouter.get("/lobby_status")
+def get_game_status(room):
+    return started_games[room]
 
 
 @GameRouter.post("/ready")
@@ -40,6 +47,25 @@ async def test():
     return read()
 
 
+@GameRouter.post("/game_action")
+def action(
+        player: str,
+        room: str,
+        action: str,
+        ):
+    if started_games[room].players[started_games[room].queue] != player:
+        raise HTTPException(status_code=500, detail="Не ваш ход")
+    elif action == "end":
+        queue_plus(room)
+    return get_game_status(room)
+
+
+def queue_plus(room):
+    if started_games[room].queue + 1 > len(started_games[room].players):
+        started_games[room].queue = 0
+    else:
+        started_games[room].queue = started_games[room].queue + 1
+
 path = "Data/Cards/standart/"
 
 
@@ -61,7 +87,8 @@ def read():
     return temp
 
 
-def reader_helper(reader, type):
+def reader_helper(reader, card_type):
+    # card_type 0 = treasure, 1 = monsters, 2 = curses
     temp = []
     i = 0
     tmp_names = []
@@ -77,7 +104,7 @@ def reader_helper(reader, type):
             temp.append(card)
         i = i + 1
     ret = list()
-    if type == 0:
+    if card_type == 0:
         for card in temp:
             tmp = TreasureCard()
             tmp.name = card["name"]
@@ -85,7 +112,7 @@ def reader_helper(reader, type):
             tmp.template = card["template"]
             tmp.test = card["cost"]
             ret.append(tmp)
-    elif type == 1:
+    elif card_type == 1:
         for card in temp:
             tmp = MonsterCard()
             tmp.name = card["name"]
@@ -94,7 +121,7 @@ def reader_helper(reader, type):
             tmp.gold = card["gold"]
             tmp.undead = card["undead"]
             ret.append(tmp)
-    elif type == 2:
+    elif card_type == 2:
         for card in temp:
             tmp = CourseCard()
             tmp.name = card["name"]
@@ -127,16 +154,29 @@ def start_game(room):
 
     groom.treasures.append(random.shuffle(cards["treasure"]))
 
-    #
-    for i in DRooms.rooms[room]["players"]:
-        tmp = Player()
-        tmp.nickname = i
-        # for i in range(0, 3):
-        #     card = TreasureCard()
-        #
-        #     tmp.cards.append()
-        groom.players[i] = Player()
-        groom.players[i].nickname = i
+    # Раздача карт
+    groom.players = DRooms.rooms[room]["players"]
+    for name in groom.players:
+        player = Player()
+        player.nickname = name
+        player.lvl = 1
+        for i in range(0, 3):
+            player.cards.append(get_card(True, groom))
+        for i in range(0, 3):
+            player.cards.append(get_card(False, groom))
+        groom.players.append(player)
+
+    # Начало цикла ходов
+    groom.queue = random.uniform(0, len(groom.players))
+    groom.step = 1
+
     started_games[room] = groom
     del DRooms.rooms[room]
     return started_games[room]
+
+
+def get_card(treasure, groom):
+    if treasure:
+        return groom.treasures.pop()
+    else:
+        return groom.doors.pop()

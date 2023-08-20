@@ -4,6 +4,12 @@ from fastapi.routing import APIRouter
 from Data.Room import DRooms
 
 RoomsRouter = APIRouter()
+RoomsRouter.prefix = "/rooms"
+
+
+@RoomsRouter.get("/check_status")
+async def get_rooms():
+    return get_all_rooms()
 
 
 def get_all_rooms():
