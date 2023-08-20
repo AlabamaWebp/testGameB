@@ -4,7 +4,8 @@ class GameRoom:
     ready_players: int
     started: bool = False
     count_cards: int
-    cards: []
+    doors: []
+    treasures: []
 
 
 class Player:
@@ -23,7 +24,7 @@ class AbstractCard:
 class TreasureCard(AbstractCard):
     strong: int = 0
     cost: int = 0
-    placeholder: int
+    template: str
 
 
 class MonsterCard(AbstractCard):
@@ -32,3 +33,8 @@ class MonsterCard(AbstractCard):
     gold: int = 1
     undead: bool = False
     punishment: int = 1
+
+
+class CourseCard(AbstractCard):
+    action: str
+    strongest: int
