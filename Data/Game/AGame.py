@@ -49,7 +49,7 @@ def get_ready(player: str, room: str, ready: bool):
         if len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"]:
             return start_game(room)
 
-    return get_lobby_status(room)
+    return get_ready_status(room)
 
 
 @GameRouter.get("/test")
