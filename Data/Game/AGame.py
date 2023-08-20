@@ -1,4 +1,3 @@
-import csv
 import random
 
 from fastapi import HTTPException
@@ -25,9 +24,9 @@ def get_lobby_status(name: str):
     return {"status": "n"}
 
 
-# @GameRouter.get("/lobby_status")
-# def get_game_status(room):
-#     return started_games[room]
+@GameRouter.get("/game_status")
+def get_game_status(room):
+    return started_games[room]
 
 
 @GameRouter.post("/ready")
