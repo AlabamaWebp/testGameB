@@ -1,5 +1,5 @@
 class GameRoom:
-    players = list
+    players = list()
     count_players: int
     ready_players: int
     started: bool = False

@@ -184,11 +184,15 @@ def start_game(room):
     # raise HTTPException(status_code=500, detail="pizdez")
 
     # перетасовка
-    groom.doors.append(cards["monsters"])
-    groom.doors.append(cards["curses"])
+    for card in cards["monsters"]:
+        groom.doors.append(card)
+    for card in cards["curses"]:
+        groom.doors.append(card)
     random.shuffle(groom.doors)
 
     groom.treasures.append(cards["treasure"])
+    for card in cards["treasure"]:
+        groom.treasures.append(card)
     random.shuffle(groom.treasures)
     print(len(groom.treasures), len(groom.doors))
     # Раздача карт
