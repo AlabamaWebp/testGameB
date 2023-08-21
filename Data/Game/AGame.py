@@ -19,8 +19,9 @@ def get_lobby_status(name: str):
         if name in DRooms.rooms[room]["players"]:
             return {"status": "r", "room": DRooms.rooms[room], "name": room}
     for game in started_games:
-        if name in started_games[game].players:
-            return {"status": "g", "game": game}
+        for i in range(0, len(started_games[game].players)):
+            if name in started_games[game].players[i].nickname:
+                return {"status": "g", "game": game}
     return {"status": "n"}
 
 
@@ -213,6 +214,7 @@ def start_game(room):
 
     started_games[room] = groom
     del DRooms.rooms[room]
+    print(started_games[room].players)
     return started_games[room]
 
 

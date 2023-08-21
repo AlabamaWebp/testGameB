@@ -7,9 +7,9 @@ RoomsRouter = APIRouter()
 RoomsRouter.prefix = "/rooms"
 
 
-@RoomsRouter.get("/check_status")
-async def get_rooms():
-    return get_all_rooms()
+# @RoomsRouter.get("/check_status")
+# async def get_rooms():
+#     return get_all_rooms()
 
 
 def get_all_rooms():
