@@ -11,22 +11,13 @@ GameRouter = APIRouter()
 GameRouter.prefix = "/game"
 
 started_games: {str: GameRoom} = dict()
-woman_players = set()
-
-
-@GameRouter.get("/set_sex")
-def toggle_sex(player: str, woman: bool):
-    if woman and player not in woman_players:
-        woman_players.add(player)
-    elif not woman and player in woman_players:
-        woman_players.remove(player)
 
 
 @GameRouter.get("/lobby_status")
 def get_lobby_status(name: str):
     for room in DRooms.rooms:
         if name in DRooms.rooms[room]["players"]:
-            return {"status": "r", "room": room, "name": room}
+            return {"status": "r", "room": DRooms.rooms[room], "name": room}
     for game in started_games:
         if name in started_games[game].players:
             return {"status": "g", "game": game}
@@ -36,6 +27,24 @@ def get_lobby_status(name: str):
 @GameRouter.get("/game_status")
 def get_game_status(room):
     return started_games[room]
+
+
+@GameRouter.get("/set_sex")
+def set_sex(player: str,
+            room: str,
+            woman: bool):
+    # DRooms.rooms[room]["woman_players"]
+    if woman:
+        if player in DRooms.rooms[room]["woman_players"]:
+            raise HTTPException(status_code=500, detail="Вы уже женщина!")
+        else:
+            DRooms.rooms[room]["woman_players"].append(player)
+    elif not woman:
+        if player not in DRooms.rooms[room]["woman_players"]:
+            raise HTTPException(status_code=500, detail="Вы уже мужчина!")
+        else:
+            DRooms.rooms[room]["woman_players"].remove(player)
+    print(DRooms.rooms[room]["woman_players"])
 
 
 @GameRouter.get("/ready_status")
@@ -49,16 +58,22 @@ def get_ready(player: str, room: str, ready: bool):
         if len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"]:
             pass
         elif ready:
-            DRooms.rooms[room]["ready_players"].append(player)
+            if player not in DRooms.rooms[room]["ready_players"]:
+                DRooms.rooms[room]["ready_players"].append(player)
+            else:
+                raise HTTPException(status_code=500, detail="Вы уже готовы")
         else:
-            DRooms.rooms[room]["ready_players"].remove(player)
+            if player in DRooms.rooms[room]["ready_players"]:
+                DRooms.rooms[room]["ready_players"].remove(player)
+            else:
+                raise HTTPException(status_code=500, detail="Вы уже не готовы")
 
         print(len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"])
 
         if len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"]:
             return start_game(room)
 
-    return get_ready_status(room)
+    return get_lobby_status(player)
 
 
 @GameRouter.get("/test")
@@ -85,7 +100,6 @@ def queue_plus(room):
     else:
         started_games[room].queue = started_games[room].queue + 1
 
-
 path = "Data/Cards/standart/"
 
 
@@ -104,6 +118,7 @@ def read():
     with open(path + 'Curses.csv', "r", newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=";", quotechar="|")
         temp["curses"] = reader_helper(reader, 2)
+    print(temp)
     return temp
 
 
@@ -160,23 +175,25 @@ def start_game(room):
     cards = read()
 
     # Карты x2
-    for i in cards["treasure"]:
-        cards["treasure"].append(i)
-    for i in cards["monsters"]:
-        cards["monsters"].append(i)
-    for i in cards["curses"]:
-        cards["curses"].append(i)
+    for i in range(0, len(cards["treasure"])):
+        cards["treasure"].append(cards["treasure"][i])
+    for i in range(0, len(cards["monsters"])):
+        cards["monsters"].append(cards["monsters"][i])
+    for i in range(0, len(cards["curses"])):
+        cards["curses"].append(cards["curses"][i])
+    # raise HTTPException(status_code=500, detail="pizdez")
 
     # перетасовка
     groom.doors.append(cards["monsters"])
     groom.doors.append(cards["curses"])
     random.shuffle(groom.doors)
 
-    groom.treasures.append(random.shuffle(cards["treasure"]))
-
+    groom.treasures.append(cards["treasure"])
+    random.shuffle(groom.treasures)
+    print(len(groom.treasures), len(groom.doors))
     # Раздача карт
-    groom.players = DRooms.rooms[room]["players"]
-    for name in groom.players:
+    # groom.players = DRooms.rooms[room]["players"]
+    for name in DRooms.rooms[room]["players"]:
         player = Player()
         player.nickname = name
         player.lvl = 1
@@ -184,11 +201,6 @@ def start_game(room):
             player.cards.append(get_card(True, groom))
         for i in range(0, 3):
             player.cards.append(get_card(False, groom))
-        if name in woman_players:
-            player.sex = False
-            woman_players.remove(name)
-        else:
-            player.sex = True
         groom.players.append(player)
 
     # Начало цикла ходов
@@ -201,6 +213,7 @@ def start_game(room):
 
 
 def get_card(treasure, groom):
+    print(len(groom.treasures), len(groom.doors))
     if treasure:
         return groom.treasures.pop()
     else:

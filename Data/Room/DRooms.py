@@ -5,8 +5,9 @@
 rooms = {
     "first": {
         # "started": False,
-        "players": [],
+        "players": list(),
         "count_players": 2,
-        "ready_players": []
+        "ready_players": list(),
+        "woman_players": list(),
     },
 }
