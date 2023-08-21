@@ -1,3 +1,4 @@
+import csv
 import random
 
 from Data.Game.DGame import GameRoom, MonsterCard, CourseCard, TreasureCard, Player
@@ -11,6 +12,7 @@ def queue_plus(room):
         started_games[room].queue = 0
     else:
         started_games[room].queue = started_games[room].queue + 1
+
 
 path = "Data/Cards/standart/"
 
