@@ -1,10 +1,11 @@
 import csv
+import math
 import random
 
 from Data.Game.DGame import GameRoom, MonsterCard, CourseCard, TreasureCard, Player
 from Data.Room import DRooms
 
-started_games: {str: GameRoom} = dict()
+started_games: {str: GameRoom()} = dict()
 
 
 def queue_plus(room):
@@ -32,7 +33,6 @@ def read():
     with open(path + 'Curses.csv', "r", newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=";", quotechar="|")
         temp["curses"] = reader_helper(reader, 2)
-    print(temp)
     return temp
 
 
@@ -108,7 +108,6 @@ def start_game(room):
     for card in cards["treasure"]:
         groom.treasures.append(card)
     random.shuffle(groom.treasures)
-    print(len(groom.treasures), len(groom.doors))
     # Раздача карт
     # groom.players = DRooms.rooms[room]["players"]
     for name in DRooms.rooms[room]["players"]:
@@ -120,19 +119,18 @@ def start_game(room):
         for i in range(0, 3):
             player.cards.append(get_card(False, groom))
         groom.players.append(player)
+    groom.count_players = len(groom.players)
 
     # Начало цикла ходов
-    groom.queue = random.uniform(0, len(groom.players))
+    groom.queue = math.floor(random.uniform(0, len(groom.players)))
     groom.step = 1
 
     started_games[room] = groom
     del DRooms.rooms[room]
-    print(started_games[room].players)
     return started_games[room]
 
 
 def get_card(treasure, groom):
-    print(len(groom.treasures), len(groom.doors))
     if treasure:
         return groom.treasures.pop()
     else:

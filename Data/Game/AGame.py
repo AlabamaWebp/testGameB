@@ -1,4 +1,6 @@
+import json
 import random
+from inspect import getmembers
 
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
@@ -78,7 +80,7 @@ def get_ready(player: str, room: str, ready: bool):
 
 @GameRouter.get("/test")
 async def test():
-    return read()
+    return GameRoom()
 
 
 @GameRouter.post("/game_action")
@@ -93,3 +95,30 @@ def action(
         queue_plus(room)
     return get_game_status(room)
 
+
+@GameRouter.get("/game")
+def get_game(
+        room: str
+):
+    tmp = started_games[room]
+    players = list()
+    for pl in tmp.players:
+        players.append({
+            "nickname": pl.nickname,
+            "lvl": pl.lvl,
+            "strongest": pl.strongest,
+            "one_fight_strong": pl.one_fight_strong,
+            "cards": pl.cards,
+            "field_cards": pl.field_cards,
+        })
+    ret = {
+        "players": players,
+        "count_players": tmp.count_players,
+        "doors": tmp.doors,
+        "treasures": tmp.treasures,
+        "sbros_doors": tmp.sbros_doors,
+        "sbros_treasures": tmp.sbros_treasures,
+        "queue": tmp.queue,
+        "step": tmp.step,
+    }
+    return ret

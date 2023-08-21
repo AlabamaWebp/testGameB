@@ -1,14 +1,14 @@
 class GameRoom:
     players = list()
-    count_players: int
-    ready_players: int
-    started: bool = False
-    count_cards: int
+    count_players: int = 2
+    # ready_players: int
+    # started: bool = False
+    # count_cards: int
     doors: list = list()
     treasures: list = list()
     sbros_doors: list = list()
     sbros_treasures: list = list()
-    queue: int
+    queue: int = 0
     step: int = 1
 
 
