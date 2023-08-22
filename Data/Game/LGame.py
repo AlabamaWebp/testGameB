@@ -114,9 +114,9 @@ def start_game(room):
         player = Player()
         player.nickname = name
         player.lvl = 1
-        for i in range(0, 3):
+        for i in range(0, 4):
             player.cards.append(get_card(True, groom))
-        for i in range(0, 3):
+        for i in range(0, 4):
             player.cards.append(get_card(False, groom))
         groom.players.append(player)
     groom.count_players = len(groom.players)

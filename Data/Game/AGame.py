@@ -78,11 +78,6 @@ def get_ready(player: str, room: str, ready: bool):
     return get_lobby_status(player)
 
 
-@GameRouter.get("/test")
-async def test():
-    return GameRoom()
-
-
 @GameRouter.post("/game_action")
 def action(
         player: str,
@@ -122,3 +117,17 @@ def get_game(
         "step": tmp.step,
     }
     return ret
+
+
+@GameRouter.get("/test")
+async def test():
+    test_nick = "Dimka"
+    test_room = "test"
+    DRooms.rooms[test_room] = {
+        "players": [test_nick],
+        "count_players": 1,
+        "ready_players": [test_nick],
+        "woman_players": list(),
+    }
+    start_game(test_room)
+    return get_game(test_room)
