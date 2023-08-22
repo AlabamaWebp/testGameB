@@ -23,6 +23,7 @@ class Player:
 
 class AbstractCard:
     name: str = ""
+    type: str = ""
 
 
 class TreasureCard(AbstractCard):

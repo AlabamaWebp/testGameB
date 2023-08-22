@@ -2,6 +2,8 @@ import csv
 import math
 import random
 
+from fastapi import HTTPException
+
 from Data.Game.DGame import GameRoom, MonsterCard, CourseCard, TreasureCard, Player
 from Data.Room import DRooms
 
@@ -24,16 +26,28 @@ def read():
         "monsters": list(),
         "curses": list(),
     }
+    # добавить функцию ниже
     with open(path + 'Treasure.csv', "r", newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=";", quotechar="|")
         temp["treasure"] = reader_helper(reader, 0)
+        temp["treasure"] = set_type("treasure", temp)
     with open(path + 'Monsters.csv', "r", newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=";", quotechar="|")
         temp["monsters"] = reader_helper(reader, 1)
+        temp["monsters"] = set_type("monsters", temp)
     with open(path + 'Curses.csv', "r", newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=";", quotechar="|")
         temp["curses"] = reader_helper(reader, 2)
+        temp["curses"] = set_type("curses", temp)
     return temp
+
+
+def set_type(type: str, temp):
+    ret = list()
+    for t in temp[type]:
+        t.type = type
+        ret.append(t)
+    return ret
 
 
 def reader_helper(reader, card_type):
@@ -85,6 +99,9 @@ def reader_helper(reader, card_type):
 # "curses"
 
 def start_game(room):
+    if room in started_games.keys():
+        print(started_games, started_games.keys())
+        raise HTTPException(status_code=500, detail="Комната уже существует")
     groom = GameRoom()
     cards = read()
 
