@@ -106,12 +106,12 @@ def start_game(room):
     cards = read()
 
     # Карты x2
-    for i in range(0, len(cards["treasure"])):
-        cards["treasure"].append(cards["treasure"][i])
-    for i in range(0, len(cards["monsters"])):
-        cards["monsters"].append(cards["monsters"][i])
-    for i in range(0, len(cards["curses"])):
-        cards["curses"].append(cards["curses"][i])
+    # for i in range(0, len(cards["treasure"])):
+    #     cards["treasure"].append(cards["treasure"][i])
+    # for i in range(0, len(cards["monsters"])):
+    #     cards["monsters"].append(cards["monsters"][i])
+    # for i in range(0, len(cards["curses"])):
+    #     cards["curses"].append(cards["curses"][i])
     # raise HTTPException(status_code=500, detail="pizdez")
 
     # перетасовка
@@ -135,6 +135,7 @@ def start_game(room):
             player.cards.append(get_card(True, groom))
         for i in range(0, 4):
             player.cards.append(get_card(False, groom))
+        print(len(player.cards))
         groom.players.append(player)
     groom.count_players = len(groom.players)
 

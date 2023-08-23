@@ -124,9 +124,9 @@ async def test():
     test_nick = "Dimka"
     test_room = "test"
     DRooms.rooms[test_room] = {
-        "players": [test_nick],
-        "count_players": 1,
-        "ready_players": [test_nick],
+        "players": [test_nick, "nedimka"],
+        "count_players": 2,
+        "ready_players": [test_nick, "nedimka"],
         "woman_players": list(),
     }
     start_game(test_room)
