@@ -1,6 +1,5 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, WebSocket
 from fastapi.routing import APIRouter
-
 from Data.Room import DRooms
 
 RoomsRouter = APIRouter()
@@ -72,3 +71,19 @@ async def out_room(
 ):
     DRooms.rooms[room]["players"].remove(nickname)
     return get_all_rooms()
+
+
+# manager = ConnectionManager()
+#
+#
+# @RoomsRouter.websocket("/game")
+# async def websocket_endpoint(websocket: WebSocket, game_room: str):
+#     await manager.connect(websocket)
+#     try:
+#         while True:
+#             data = get_game(game_room)
+#             await manager.send_personal_message(data, websocket)
+#             await manager.broadcast(data)
+#     except WebSocketDisconnect:
+#         manager.disconnect(websocket)
+#         # await manager.broadcast(f"Client #{client_id} left the chat")

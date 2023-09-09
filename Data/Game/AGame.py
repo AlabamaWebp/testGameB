@@ -2,13 +2,15 @@ import json
 import random
 from inspect import getmembers
 
-from fastapi import HTTPException
+from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 
 from Data.Game.DGame import GameRoom, Player, TreasureCard, MonsterCard, CourseCard
 from Data.Game.LGame import started_games, start_game, read, queue_plus
 from Data.Room import DRooms
 import csv
+
+from Data.WSManager import ConnectionManager
 
 GameRouter = APIRouter()
 GameRouter.prefix = "/game"
@@ -91,7 +93,7 @@ def action(
     return get_game_status(room)
 
 
-@GameRouter.get("/game")
+# @GameRouter.get("/game")
 def get_game(
         room: str
 ):
@@ -132,3 +134,19 @@ async def test():
     }
     start_game(test_room)
     return get_game(test_room)
+
+
+manager = ConnectionManager()
+
+
+@GameRouter.websocket("/game")
+async def websocket_endpoint(websocket: WebSocket, game_room: str):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = get_game(game_room)
+            await manager.send_personal_message(data, websocket)
+            await manager.broadcast(data)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        # await manager.broadcast(f"Client #{client_id} left the chat")
