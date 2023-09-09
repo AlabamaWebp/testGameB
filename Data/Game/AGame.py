@@ -105,6 +105,7 @@ def get_game(
             "one_fight_strong": pl.one_fight_strong,
             "cards": pl.cards,
             "field_cards": pl.field_cards,
+            "sex": pl.sex
         })
     ret = {
         "players": players,

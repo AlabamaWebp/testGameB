@@ -19,6 +19,7 @@ class Player:
     one_fight_strong: int = 0
     cards: list = list()
     field_cards: list = list()
+    sex: bool = True
 
 
 class AbstractCard:

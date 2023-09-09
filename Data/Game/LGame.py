@@ -121,7 +121,7 @@ def start_game(room):
         groom.doors.append(card)
     random.shuffle(groom.doors)
 
-    groom.treasures.append(cards["treasure"])
+    # groom.treasures.append(cards["treasure"])
     for card in cards["treasure"]:
         groom.treasures.append(card)
     random.shuffle(groom.treasures)
@@ -131,11 +131,14 @@ def start_game(room):
         player = Player()
         player.nickname = name
         player.lvl = 1
+        plcards = list()
         for i in range(0, 4):
-            player.cards.append(get_card(True, groom))
+            plcards.append(get_card(True, groom))
         for i in range(0, 4):
-            player.cards.append(get_card(False, groom))
-        print(len(player.cards))
+            plcards.append(get_card(False, groom))
+        player.cards = plcards
+        if name in DRooms.rooms[room]["woman_players"]:
+            player.sex = False
         groom.players.append(player)
     groom.count_players = len(groom.players)
 
