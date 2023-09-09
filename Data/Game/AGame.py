@@ -103,9 +103,9 @@ def get_game(
             "lvl": pl.lvl,
             "strongest": pl.strongest,
             "one_fight_strong": pl.one_fight_strong,
+            "sex": pl.sex,
             "cards": pl.cards,
             "field_cards": pl.field_cards,
-            "sex": pl.sex
         })
     ret = {
         "players": players,
@@ -128,7 +128,7 @@ async def test():
         "players": [test_nick, "nedimka"],
         "count_players": 2,
         "ready_players": [test_nick, "nedimka"],
-        "woman_players": list(),
+        "woman_players": ["nedimka"],
     }
     start_game(test_room)
     return get_game(test_room)
