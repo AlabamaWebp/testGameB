@@ -73,7 +73,7 @@ def reader_helper(reader, card_type):
             tmp.name = card["name"]
             tmp.strong = card["strong"]
             tmp.template = card["template"]
-            tmp.test = card["cost"]
+            tmp.cost = card["cost"]
             ret.append(tmp)
     elif card_type == 1:
         for card in temp:
