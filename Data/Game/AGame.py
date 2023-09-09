@@ -4,6 +4,7 @@ from inspect import getmembers
 
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
+from websockets.exceptions import ConnectionClosedOK
 
 from Data.Game.DGame import GameRoom, Player, TreasureCard, MonsterCard, CourseCard
 from Data.Game.LGame import started_games, start_game, read, queue_plus
@@ -85,7 +86,7 @@ def action(
         player: str,
         room: str,
         action: str,
-        ):
+):
     if started_games[room].players[started_games[room].queue] != player:
         raise HTTPException(status_code=500, detail="Не ваш ход")
     elif action == "end":
@@ -94,8 +95,43 @@ def action(
 
 
 # @GameRouter.get("/game")
+
+
+# @GameRouter.get("/test")
+def test2():
+    test_nick = "Dimka"
+    test_room = "test"
+    DRooms.rooms[test_room] = {
+        "players": [test_nick, "nedimka"],
+        "count_players": 2,
+        "ready_players": [test_nick, "nedimka"],
+        "woman_players": ["nedimka"],
+    }
+    start_game(test_room)
+    return get_game(test_room)
+
+
+manager = ConnectionManager()
+
+
+@GameRouter.websocket("/game")
+async def websocket_endpoint(websocket: WebSocket, game_room: str):
+    await manager.connect(websocket)
+    try:
+        while True:
+            await manager.send_personal_message(json.dumps(get_game(game_room), default=lambda x: x.__dict__), websocket)
+            data = await websocket.receive_text()
+            data = json.loads(data)
+            await manager.broadcast(json.dumps(get_game(game_room), default=lambda x: x.__dict__,
+                                               ensure_ascii=True, separators=(',', ':')))
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+    except ConnectionClosedOK:
+        manager.disconnect(websocket)
+
+
 def get_game(
-        room: str
+        room: str,
 ):
     if room not in started_games.keys():
         test2()
@@ -122,42 +158,3 @@ def get_game(
         "step": tmp.step,
     }
     return ret
-
-
-# @GameRouter.get("/test")
-def test2():
-    test_nick = "Dimka"
-    test_room = "test"
-    DRooms.rooms[test_room] = {
-        "players": [test_nick, "nedimka"],
-        "count_players": 2,
-        "ready_players": [test_nick, "nedimka"],
-        "woman_players": ["nedimka"],
-    }
-    start_game(test_room)
-    return get_game(test_room)
-
-
-manager = ConnectionManager()
-
-
-@GameRouter.websocket("/game")
-async def websocket_endpoint(websocket: WebSocket, game_room: str):
-    await manager.connect(websocket)
-    print(manager.active_connections)
-    try:
-        while True:
-            data = json.dumps(get_game(game_room), indent=6, default=lambda x: x.__dict__)
-            print(data)
-            # data = get_game(game_room)
-            if data is None:
-                data = test2()
-            await manager.broadcast(data)
-            # await manager.send_personal_message(data, websocket)
-            # print(websocket.receive_json())
-            # print(data)
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-    #     manager.disconnect(websocket)
-    #     pass
-        # await manager.broadcast(f"Client #{client_id} left the chat")
