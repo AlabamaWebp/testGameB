@@ -97,6 +97,8 @@ def action(
 def get_game(
         room: str
 ):
+    if room not in started_games.keys():
+        test2()
     tmp = started_games[room]
     players = list()
     for pl in tmp.players:
@@ -122,8 +124,8 @@ def get_game(
     return ret
 
 
-@GameRouter.get("/test")
-async def test():
+# @GameRouter.get("/test")
+def test2():
     test_nick = "Dimka"
     test_room = "test"
     DRooms.rooms[test_room] = {
@@ -142,11 +144,20 @@ manager = ConnectionManager()
 @GameRouter.websocket("/game")
 async def websocket_endpoint(websocket: WebSocket, game_room: str):
     await manager.connect(websocket)
+    print(manager.active_connections)
     try:
         while True:
-            data = get_game(game_room)
-            await manager.send_personal_message(data, websocket)
+            data = json.dumps(get_game(game_room), indent=6, default=lambda x: x.__dict__)
+            print(data)
+            # data = get_game(game_room)
+            if data is None:
+                data = test2()
             await manager.broadcast(data)
+            # await manager.send_personal_message(data, websocket)
+            # print(websocket.receive_json())
+            # print(data)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+    #     manager.disconnect(websocket)
+    #     pass
         # await manager.broadcast(f"Client #{client_id} left the chat")
