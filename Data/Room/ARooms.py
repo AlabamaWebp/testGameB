@@ -27,8 +27,8 @@ def get_all_rooms():
 #     return get_all_rooms()
 
 
-@RoomsRouter.post("/create_room")
-async def create_room(
+# @RoomsRouter.post("/create_room")
+def create_room(
         room: str,
         max_players: int
 ):
@@ -42,8 +42,8 @@ async def create_room(
     return DRooms.rooms[room]
 
 
-@RoomsRouter.delete("/delete_room")
-async def delete_room(
+# @RoomsRouter.delete("/delete_room")
+def delete_room(
         room: str
 ):
     if room in DRooms.rooms and DRooms.rooms[room]["players"] == []:
@@ -53,8 +53,8 @@ async def delete_room(
     return get_all_rooms()
 
 
-@RoomsRouter.post("/in_room")
-async def in_room(
+# @RoomsRouter.post("/in_room")
+def in_room(
         room: str,
         nickname: str
 ):
@@ -67,8 +67,8 @@ async def in_room(
     return {"room": DRooms.rooms[room], "name": room}
 
 
-@RoomsRouter.post("/out_room")
-async def out_room(
+# @RoomsRouter.post("/out_room")
+def out_room(
         room: str,
         nickname: str
 ):
@@ -85,12 +85,37 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             # await print(websocket)
-            data = json.dumps(get_all_rooms())
-            await manager.send_personal_message(data, websocket)
-            data1 = await websocket.receive_text()
-            data1 = json.loads(data1)
-            print(1)
-            await manager.broadcast(data)
+            # data = json.dumps(get_all_rooms())
+            await manager.send_personal_message(json.dumps(get_all_rooms()), websocket)
+            data = await websocket.receive_json()
+            data = json.loads(data)
+            print(data)
+            data = Message(data)
+            # print(data.event)
+            if data.event == "roomIn":
+                in_room(data.data["room"], data.data["name"])
+            elif data.event == "create":
+                create_room(data.data["name"], data.data["max"])
+            elif data.event == "delete":
+                delete_room(data.data["room"])
+
+            # if data["event"] == "roomIn":
+            #     in_room(data["data"]["room"], data["data"]["name"])
+            # elif data["event"] == "create":
+            #     create_room(data["data"]["name"], data["data"]["max"])
+            # elif data["event"] == "delete":
+            #     delete_room(data["data"]["room"])
+
+            await manager.broadcast(json.dumps(get_all_rooms()))
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         # await manager.broadcast(f"Client #{client_id} left the chat")
+
+
+class Message:
+    def __init__(self, d):
+        self.event = d["event"]
+        self.data = d["data"]
+
+    event: str
+    data: any
