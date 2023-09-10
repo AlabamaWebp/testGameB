@@ -85,15 +85,15 @@ manager = ConnectionManager()
 
 
 @LobbyRouter.websocket("/lobby")
-async def websocket_endpoint_lobby(websocket: WebSocket):
+async def websocket_endpoint_lobby(websocket: WebSocket, name: str):
     await manager.connect(websocket)
     try:
         while True:
-            await manager.send_personal_message(json.dumps(get_all_rooms()), websocket)
+            await manager.send_personal_message(json.dumps(get_lobby_status(name)), websocket)
             data = await websocket.receive_json()
             data = json.loads(data)
             data = SocketMessage(data)
 
-            await manager.broadcast(json.dumps(get_all_rooms()))
+            await manager.broadcast(json.dumps(get_lobby_status(name)))
     except WebSocketDisconnect:
         manager.disconnect(websocket)
