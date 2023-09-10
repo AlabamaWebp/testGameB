@@ -17,17 +17,17 @@ GameRouter = APIRouter()
 GameRouter.prefix = "/game"
 
 
-@GameRouter.post("/game_action")
-def action(
-        player: str,
-        room: str,
-        action: str,
-):
-    if started_games[room].players[started_games[room].queue] != player:
-        raise HTTPException(status_code=500, detail="Не ваш ход")
-    elif action == "end":
-        queue_plus(room)
-    return get_game_status(room)
+# @GameRouter.post("/game_action")
+# def action(
+#         player: str,
+#         room: str,
+#         action: str,
+# ):
+#     if started_games[room].players[started_games[room].queue] != player:
+#         raise HTTPException(status_code=500, detail="Не ваш ход")
+#     elif action == "end":
+#         queue_plus(room)
+#     return get_game_status(room)
 
 
 def get_game_status(room):

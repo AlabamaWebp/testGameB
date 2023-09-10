@@ -56,6 +56,11 @@ def in_room(
     return {"room": DRooms.rooms[room], "name": room}
 
 
+# @RoomsRouter.get("/lol")
+# async def lol():
+#     await websocket_endpoint(True)
+
+
 manager = ConnectionManager()
 
 
@@ -64,8 +69,6 @@ async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
-            # await print(websocket)
-            # data = json.dumps(get_all_rooms())
             await manager.send_personal_message(json.dumps(get_all_rooms()), websocket)
             data = await websocket.receive_json()
             data = json.loads(data)
@@ -89,3 +92,35 @@ class Message:
         self.data = d["data"]
     event: str
     data: any
+
+
+
+
+ # PRIMER
+
+# async def websocket_endpoint(websocket: WebSocket or bool):
+#     if type(websocket) is not bool:
+#         await manager.connect(websocket)
+#     try:
+#         while True:
+#             # await print(websocket)
+#             # data = json.dumps(get_all_rooms())
+#             if type(websocket) is not bool:
+#                 await manager.send_personal_message(json.dumps(get_all_rooms()), websocket)
+#                 data = await websocket.receive_json()
+#                 data = json.loads(data)
+#                 data = Message(data)
+#                 if data.event == "roomIn":
+#                     in_room(data.data["room"], data.data["name"])
+#                     await manager.send_personal_message(data.data["room"], websocket)
+#                 elif data.event == "create":
+#                     create_room(data.data["name"], data.data["max"])
+#                 elif data.event == "delete":
+#                     delete_room(data.data["room"])
+#                 await manager.broadcast(json.dumps(get_all_rooms()))
+#             else:
+#                 create_room("lol", 2)
+#                 in_room("lol", "lol")
+#                 await manager.broadcast(json.dumps(get_all_rooms()))
+#     except WebSocketDisconnect:
+#         manager.disconnect(websocket)

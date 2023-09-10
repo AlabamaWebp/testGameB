@@ -2,6 +2,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
 from Data.Game.AGame import GameRouter
+from Data.Lobby.ALobby import LobbyRouter
 from Data.Room.ARooms import RoomsRouter
 from Docs.Doc import sub_app
 
@@ -18,6 +19,7 @@ app.add_middleware(
 
 app.include_router(RoomsRouter, tags=['rooms'])
 app.include_router(GameRouter, tags=['game'])
+app.include_router(LobbyRouter, tags=['lobby'])
 # app.include_router(ProductsRouter, tags=['products'])
 # app.include_router(UserRouter, tags=['users'])
 # app.include_router(OrdersRouter, tags=['orders'])
