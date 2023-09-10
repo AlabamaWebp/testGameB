@@ -1,6 +1,8 @@
 import json
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
+
+from Data.Data import SocketMessage
 from Data.Room import DRooms
 from Data.WSManager import ConnectionManager
 
@@ -8,15 +10,15 @@ RoomsRouter = APIRouter()
 RoomsRouter.prefix = "/rooms"
 
 
-# @RoomsRouter.get("/check_status")
-# async def get_rooms():
-#     return get_all_rooms()
-
-
 def get_all_rooms():
+    # tmp = []
+    # for key in DRooms.players_in_rooms.keys():
+    #     tmp.append(key)
+    # return tmp
     return DRooms.rooms
 
 
+@RoomsRouter.post("/create_room")
 def create_room(
         room: str,
         max_players: int
@@ -28,9 +30,11 @@ def create_room(
         "count_players": max_players,
         "ready_players": []
     }
+    await websocket_endpoint()
     return DRooms.rooms[room]
 
 
+@RoomsRouter.delete("/delete_room")
 def delete_room(
         room: str
 ):
@@ -38,15 +42,14 @@ def delete_room(
         del DRooms.rooms[room]
     else:
         raise HTTPException(status_code=500, detail="Комнаты не существет")
-    return get_all_rooms()
+    await websocket_endpoint()
 
 
+@RoomsRouter.post("/in_room")
 def in_room(
         room: str,
         nickname: str
 ):
-    if room not in DRooms.rooms:
-        raise HTTPException(status_code=500, detail="Такой комнаты не сущестувет")
     for r in DRooms.rooms.keys():
         if nickname in DRooms.rooms[r]["players"]:
             raise HTTPException(status_code=500, detail="Игрок уже в комнате")
@@ -56,42 +59,31 @@ def in_room(
     return {"room": DRooms.rooms[room], "name": room}
 
 
-# @RoomsRouter.get("/lol")
-# async def lol():
-#     await websocket_endpoint(True)
+@RoomsRouter.get("/lol")
+async def lol():
+    await websocket_endpoint()
 
 
 manager = ConnectionManager()
 
 
 @RoomsRouter.websocket("/rooms")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket or bool = False):
+    if not websocket:
+        create_room("lol", 2)
+        in_room("lol", "lol")
+        await manager.broadcast(json.dumps(get_all_rooms()))
+        return
     await manager.connect(websocket)
     try:
         while True:
             await manager.send_personal_message(json.dumps(get_all_rooms()), websocket)
-            data = await websocket.receive_json()
-            data = json.loads(data)
-            data = Message(data)
-            if data.event == "roomIn":
-                in_room(data.data["room"], data.data["name"])
-                await manager.send_personal_message(data.data["room"], websocket)
-            elif data.event == "create":
-                create_room(data.data["name"], data.data["max"])
-            elif data.event == "delete":
-                delete_room(data.data["room"])
+            await websocket.receive_json()
 
             await manager.broadcast(json.dumps(get_all_rooms()))
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 
-
-class Message:
-    def __init__(self, d):
-        self.event = d["event"]
-        self.data = d["data"]
-    event: str
-    data: any
 
 
 

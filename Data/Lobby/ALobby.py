@@ -1,9 +1,13 @@
+import json
+
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 
+from Data.Data import SocketMessage
 from Data.Game.LGame import start_game, started_games
 from Data.Room import DRooms
 from Data.Room.ARooms import get_all_rooms
+from Data.WSManager import ConnectionManager
 
 LobbyRouter = APIRouter()
 LobbyRouter.prefix = "/lobby"
@@ -62,7 +66,7 @@ def set_sex(player: str,
             raise HTTPException(status_code=500, detail="Вы уже мужчина!")
         else:
             DRooms.rooms[room]["woman_players"].remove(player)
-    print(DRooms.rooms[room]["woman_players"])
+    # print(DRooms.rooms[room]["woman_players"])
 
 
 @LobbyRouter.get("/lobby_status")
@@ -75,3 +79,21 @@ def get_lobby_status(name: str):
             if name in started_games[game].players[i].nickname:
                 return {"status": "g", "game": game}
     return {"status": "n"}
+
+
+manager = ConnectionManager()
+
+
+@LobbyRouter.websocket("/lobby")
+async def websocket_endpoint_lobby(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            await manager.send_personal_message(json.dumps(get_all_rooms()), websocket)
+            data = await websocket.receive_json()
+            data = json.loads(data)
+            data = SocketMessage(data)
+
+            await manager.broadcast(json.dumps(get_all_rooms()))
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)

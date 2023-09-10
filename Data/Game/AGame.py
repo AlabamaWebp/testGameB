@@ -57,7 +57,7 @@ manager = ConnectionManager()
 
 
 @GameRouter.websocket("/game")
-async def websocket_endpoint(websocket: WebSocket, game_room: str):
+async def websocket_endpoint_game(websocket: WebSocket, game_room: str):
     await manager.connect(websocket)
     try:
         while True:
