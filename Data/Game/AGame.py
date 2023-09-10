@@ -94,18 +94,20 @@ def action(
     return get_game_status(room)
 
 
-# @GameRouter.get("/game")
-
-
-# @GameRouter.get("/test")
 def test2():
     test_nick = "Dimka"
     test_room = "test"
+    # DRooms.rooms[test_room] = {
+    #     "players": [test_nick, "nedimka"],
+    #     "count_players": 2,
+    #     "ready_players": [test_nick, "nedimka"],
+    #     "woman_players": ["nedimka"],
+    # }
     DRooms.rooms[test_room] = {
-        "players": [test_nick, "nedimka"],
+        "players": [test_nick],
         "count_players": 2,
-        "ready_players": [test_nick, "nedimka"],
-        "woman_players": ["nedimka"],
+        "ready_players": [test_nick],
+        "woman_players": [test_nick],
     }
     start_game(test_room)
     return get_game(test_room)
