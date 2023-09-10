@@ -30,6 +30,17 @@ GameRouter.prefix = "/game"
 #     return get_game_status(room)
 
 
+@GameRouter.get("/check")
+def action(
+        name: str,
+):
+    for game in started_games:
+        for player in started_games[game].players:
+            if name in player.nickname:
+                return game
+    return False
+
+
 def get_game_status(room):
     return started_games[room]
 
@@ -75,8 +86,8 @@ async def websocket_endpoint_game(websocket: WebSocket, game_room: str):
 def get_game(
         room: str,
 ):
-    if room not in started_games.keys():
-        test2()
+    # if room not in started_games.keys():
+    #     test2()
     tmp = started_games[room]
     players = list()
     for pl in tmp.players:

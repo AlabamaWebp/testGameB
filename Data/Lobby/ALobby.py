@@ -28,7 +28,7 @@ def get_ready_status(room):
 
 
 @LobbyRouter.post("/ready")
-def get_ready(player: str, room: str, ready: bool):
+async def get_ready(player: str, room: str, ready: bool):
     if player in DRooms.rooms[room]["players"]:
         if len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"]:
             pass
@@ -46,13 +46,15 @@ def get_ready(player: str, room: str, ready: bool):
         print(len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"])
 
         if len(DRooms.rooms[room]["ready_players"]) == DRooms.rooms[room]["count_players"]:
-            return start_game(room)
-
+            start_game(room)
+            await websocket_endpoint_lobby(None, player)
+            return "Ok"
+    await websocket_endpoint_lobby(None, player)
     return get_lobby_status(player)
 
 
 @LobbyRouter.get("/set_sex")
-def set_sex(player: str,
+async def set_sex(player: str,
             room: str,
             woman: bool):
     # DRooms.rooms[room]["woman_players"]
@@ -66,17 +68,25 @@ def set_sex(player: str,
             raise HTTPException(status_code=500, detail="Вы уже мужчина!")
         else:
             DRooms.rooms[room]["woman_players"].remove(player)
+    await websocket_endpoint_lobby(None, player)
     # print(DRooms.rooms[room]["woman_players"])
 
 
 @LobbyRouter.get("/lobby_status")
-def get_lobby_status(name: str):
+async def get_lobby_status(name: str):
+    data = status_helper(name)
+    print(data)
+    await websocket_endpoint_lobby(None, name)
+    return data
+
+
+def status_helper(player: str):
     for room in DRooms.rooms:
-        if name in DRooms.rooms[room]["players"]:
+        if player in DRooms.rooms[room]["players"]:
             return {"status": "r", "room": DRooms.rooms[room], "name": room}
     for game in started_games:
         for i in range(0, len(started_games[game].players)):
-            if name in started_games[game].players[i].nickname:
+            if player in started_games[game].players[i].nickname:
                 return {"status": "g", "game": game}
     return {"status": "n"}
 
@@ -85,15 +95,18 @@ manager = ConnectionManager()
 
 
 @LobbyRouter.websocket("/lobby")
-async def websocket_endpoint_lobby(websocket: WebSocket, name: str):
+async def websocket_endpoint_lobby(websocket: WebSocket or None, name: str):
+    if websocket is None:
+        await manager.broadcast(json.dumps(status_helper(name)))
+        return
     await manager.connect(websocket)
     try:
         while True:
-            await manager.send_personal_message(json.dumps(get_lobby_status(name)), websocket)
+            await manager.send_personal_message(json.dumps(status_helper(name)), websocket)
             data = await websocket.receive_json()
             data = json.loads(data)
             data = SocketMessage(data)
 
-            await manager.broadcast(json.dumps(get_lobby_status(name)))
+            await manager.broadcast(json.dumps(status_helper(name)))
     except WebSocketDisconnect:
         manager.disconnect(websocket)

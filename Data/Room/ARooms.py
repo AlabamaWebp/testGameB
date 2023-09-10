@@ -26,9 +26,10 @@ async def create_room(
     if room in DRooms.rooms.keys():
         raise HTTPException(status_code=500, detail="Комната уже существует")
     DRooms.rooms[room] = {
-        "players": [],
+        "players": list(),
         "count_players": max_players,
-        "ready_players": []
+        "ready_players": list(),
+        "woman_players": list()
     }
     await websocket_endpoint(False)
     return DRooms.rooms[room]
