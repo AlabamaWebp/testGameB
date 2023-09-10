@@ -1,3 +1,5 @@
+import json
+
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 from Data.Room import DRooms
@@ -78,14 +80,16 @@ manager = ConnectionManager()
 
 
 @RoomsRouter.websocket("/rooms")
-async def websocket_endpoint(websocket: WebSocket, data):
+async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
             # await print(websocket)
-            await websocket.receive()
-            data = get_all_rooms()
+            data = json.dumps(get_all_rooms())
             await manager.send_personal_message(data, websocket)
+            data1 = await websocket.receive_text()
+            data1 = json.loads(data1)
+            print(1)
             await manager.broadcast(data)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
