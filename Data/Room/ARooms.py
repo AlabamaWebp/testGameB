@@ -19,7 +19,7 @@ def get_all_rooms():
 
 
 @RoomsRouter.post("/create_room")
-def create_room(
+async def create_room(
         room: str,
         max_players: int
 ):
@@ -30,19 +30,19 @@ def create_room(
         "count_players": max_players,
         "ready_players": []
     }
-    await websocket_endpoint()
+    await websocket_endpoint(False)
     return DRooms.rooms[room]
 
 
 @RoomsRouter.delete("/delete_room")
-def delete_room(
+async def delete_room(
         room: str
 ):
     if room in DRooms.rooms and DRooms.rooms[room]["players"] == []:
         del DRooms.rooms[room]
     else:
         raise HTTPException(status_code=500, detail="Комнаты не существет")
-    await websocket_endpoint()
+    await websocket_endpoint(False)
 
 
 @RoomsRouter.post("/in_room")
@@ -61,6 +61,8 @@ def in_room(
 
 @RoomsRouter.get("/lol")
 async def lol():
+    await create_room("lol", 2)
+    in_room("lol", "lol")
     await websocket_endpoint()
 
 
@@ -68,10 +70,8 @@ manager = ConnectionManager()
 
 
 @RoomsRouter.websocket("/rooms")
-async def websocket_endpoint(websocket: WebSocket or bool = False):
-    if not websocket:
-        create_room("lol", 2)
-        in_room("lol", "lol")
+async def websocket_endpoint(websocket: WebSocket or bool):
+    if type(websocket) is bool:
         await manager.broadcast(json.dumps(get_all_rooms()))
         return
     await manager.connect(websocket)
