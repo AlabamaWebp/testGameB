@@ -1,5 +1,4 @@
 import json
-
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 from Data.Room import DRooms
@@ -15,19 +14,9 @@ RoomsRouter.prefix = "/rooms"
 
 
 def get_all_rooms():
-    # tmp = []
-    # for key in DRooms.players_in_rooms.keys():
-    #     tmp.append(key)
-    # return tmp
     return DRooms.rooms
 
 
-# @RoomsRouter.get("/rooms")
-# async def get_rooms():
-#     return get_all_rooms()
-
-
-# @RoomsRouter.post("/create_room")
 def create_room(
         room: str,
         max_players: int
@@ -42,7 +31,6 @@ def create_room(
     return DRooms.rooms[room]
 
 
-# @RoomsRouter.delete("/delete_room")
 def delete_room(
         room: str
 ):
@@ -53,7 +41,6 @@ def delete_room(
     return get_all_rooms()
 
 
-# @RoomsRouter.post("/in_room")
 def in_room(
         room: str,
         nickname: str
@@ -67,15 +54,6 @@ def in_room(
         raise HTTPException(status_code=500, detail="Максимум игроков!")
     DRooms.rooms[room]["players"].append(nickname)
     return {"room": DRooms.rooms[room], "name": room}
-
-
-@RoomsRouter.post("/out_room")
-def out_room(
-        room: str,
-        nickname: str
-):
-    DRooms.rooms[room]["players"].remove(nickname)
-    return get_all_rooms()
 
 
 manager = ConnectionManager()
