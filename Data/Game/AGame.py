@@ -86,7 +86,8 @@ async def websocket_endpoint_game(websocket: WebSocket, game_room: str):
 def get_game(
         room: str,
 ):
-    # if room not in started_games.keys():
+    if room not in started_games.keys():
+        return "home"
     #     test2()
     tmp = started_games[room]
     players = list()
