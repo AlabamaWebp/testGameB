@@ -156,3 +156,11 @@ def get_card(treasure, groom):
         return groom.treasures.pop()
     else:
         return groom.doors.pop()
+
+
+def plus_log(
+        log: list,
+        message: str,
+):
+    # message = str(len(log)) + ". " + message
+    log.append(str(len(log)) + ". " + message)

@@ -7,6 +7,7 @@ class GameRoom:
     sbros_treasures: list = list()
     queue: int = 0
     step: int = 1
+    log: list = list()
     # ready_players: int
     # started: bool = False
     # count_cards: int

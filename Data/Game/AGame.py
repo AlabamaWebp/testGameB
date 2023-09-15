@@ -38,7 +38,7 @@ def action(
         for player in started_games[game].players:
             if name in player.nickname:
                 return game
-    return False
+    return "test"
 
 
 def get_game_status(room):
@@ -56,7 +56,7 @@ def test2():
     # }
     DRooms.rooms[test_room] = {
         "players": [test_nick],
-        "count_players": 2,
+        "count_players": 1,
         "ready_players": [test_nick],
         "woman_players": [test_nick],
     }
@@ -72,7 +72,8 @@ async def websocket_endpoint_game(websocket: WebSocket, game_room: str):
     await manager.connect(websocket)
     try:
         while True:
-            await manager.send_personal_message(json.dumps(get_game(game_room), default=lambda x: x.__dict__), websocket)
+            await manager.send_personal_message(json.dumps(get_game(game_room), default=lambda x: x.__dict__),
+                                                websocket)
             data = await websocket.receive_text()
             data = json.loads(data)
             await manager.broadcast(json.dumps(get_game(game_room), default=lambda x: x.__dict__,
@@ -87,8 +88,9 @@ def get_game(
         room: str,
 ):
     if room not in started_games.keys():
-        return "home"
-    #     test2()
+        # return "home"
+        test2()
+        return
     tmp = started_games[room]
     players = list()
     for pl in tmp.players:
@@ -110,5 +112,6 @@ def get_game(
         "sbros_treasures": tmp.sbros_treasures,
         "queue": tmp.queue,
         "step": tmp.step,
+        "log": tmp.log
     }
     return ret
