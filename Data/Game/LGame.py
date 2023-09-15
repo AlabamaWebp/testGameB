@@ -146,6 +146,9 @@ def start_game(room):
     groom.queue = math.floor(random.uniform(0, len(groom.players)))
     groom.step = 1
 
+    # log
+    groom.log.append("0. Игра началась!")
+
     started_games[room] = groom
     del DRooms.rooms[room]
     return started_games[room]
@@ -163,4 +166,4 @@ def plus_log(
         message: str,
 ):
     # message = str(len(log)) + ". " + message
-    log.append(str(len(log)) + ". " + message)
+    log.insert(0, (str(len(log)) + ". " + message))
