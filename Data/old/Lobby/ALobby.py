@@ -3,11 +3,11 @@ import json
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 
-from Data.Data import SocketMessage
+from Api.Data import SocketMessage
 from Data.Game.LGame import start_game, started_games
-from Data.Room import DRooms
+from Data.old.Room import DRooms
 from Data.Room.ARooms import get_all_rooms
-from Data.WSManager import ConnectionManager
+from Api.WSManager import ConnectionManager
 
 LobbyRouter = APIRouter()
 LobbyRouter.prefix = "/lobby"

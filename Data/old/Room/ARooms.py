@@ -2,9 +2,8 @@ import json
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 
-from Data.Data import SocketMessage
-from Data.Room import DRooms
-from Data.WSManager import ConnectionManager
+from Data.old.Room import DRooms
+from Api.WSManager import ConnectionManager
 
 RoomsRouter = APIRouter()
 RoomsRouter.prefix = "/rooms"

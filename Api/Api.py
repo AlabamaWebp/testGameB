@@ -1,9 +1,10 @@
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
+import json
 
-from Data.Game.AGame import GameRouter
-from Data.Lobby.ALobby import LobbyRouter
-from Data.Room.ARooms import RoomsRouter
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from starlette.websockets import WebSocket
+from Api.WSManager import ConnectionManager
+
 from Docs.Doc import sub_app
 
 app = FastAPI(docs_url=None, redoc_url=None, title="Web ACS", openapi_url="/api/openapi.json")
@@ -17,11 +18,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(RoomsRouter, tags=['rooms'])
-app.include_router(GameRouter, tags=['game'])
-app.include_router(LobbyRouter, tags=['lobby'])
-# app.include_router(ProductsRouter, tags=['products'])
-# app.include_router(UserRouter, tags=['users'])
-# app.include_router(OrdersRouter, tags=['orders'])
+manager = ConnectionManager()
+
+
+@app.websocket("/all")
+async def websocket_endpoint_lobby(websocket: WebSocket or None, name: str):
+    await manager.connect(websocket)
+    try:
+        while True:
+            await manager.send_personal_message('', websocket)
+
+            await manager.broadcast(json.dumps(''))
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
+# @app.websocket("/ws/{client_id}")
+# async def websocket_endpoint(websocket: WebSocket, client_id: int):
+#     await manager.connect(websocket)
+#     try:
+#         while True:
+#             data = await websocket.receive_text()
+#             await manager.send_personal_message(f"You wrote: {data}", websocket)
+#             await manager.broadcast(f"Client #{client_id} says: {data}")
+#     except WebSocketDisconnect:
+#         manager.disconnect(websocket)
+#         await manager.broadcast(f"Client #{client_id} left the chat")
+
 
 app.mount("/api/docs", sub_app)

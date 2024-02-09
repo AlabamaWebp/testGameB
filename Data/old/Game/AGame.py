@@ -1,17 +1,13 @@
 import json
-import random
-from inspect import getmembers
 
-from fastapi import HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.routing import APIRouter
 from websockets.exceptions import ConnectionClosedOK
 
-from Data.Game.DGame import GameRoom, Player, TreasureCard, MonsterCard, CourseCard
-from Data.Game.LGame import started_games, start_game, read, queue_plus
-from Data.Room import DRooms
-import csv
+from Data.Game.LGame import started_games, start_game
+from Data.old.Room import DRooms
 
-from Data.WSManager import ConnectionManager
+from Api.WSManager import ConnectionManager
 
 GameRouter = APIRouter()
 GameRouter.prefix = "/game"
@@ -88,7 +84,7 @@ def get_game(
         room: str,
 ):
     if room not in started_games.keys():
-        # return "home"
+        # return "Home"
         test2()
         return
     tmp = started_games[room]

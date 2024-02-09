@@ -5,7 +5,7 @@ import random
 from fastapi import HTTPException
 
 from Data.Game.DGame import GameRoom, MonsterCard, CourseCard, TreasureCard, Player
-from Data.Room import DRooms
+from Data.old.Room import DRooms
 
 started_games: {str: GameRoom()} = dict()
 
