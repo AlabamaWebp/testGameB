@@ -12,14 +12,23 @@ export class Lobby {
     players: PlayerLobby[]
     maxPlayers: number
 
-    getLobby(socket: Socket) {
+    getRooms(socket: Socket) { // для home
         return {
             name: this.name,
             creator: socket == this.creator ? true : false,
-            players: this.players,
+            players: this.players.map((el) => {el.name}),
             maxPlayers: this.maxPlayers
         }
     }
+}
+
+export class PlayerGlobal {
+    constructor(socket: Socket, name: string = "") {
+        this.socket = socket
+        this.name = name
+    }
+    socket: Socket;
+    name: string;
 }
 
 class PlayerLobby {
@@ -30,3 +39,6 @@ class PlayerLobby {
     sex: "Мужчина" | "Женщина" = "Мужчина"
     ready: boolean = false
 }
+
+export let lobbys: Map <string, Lobby> = new Map();
+export let connectedClients: Map<string, PlayerGlobal> = new Map();
