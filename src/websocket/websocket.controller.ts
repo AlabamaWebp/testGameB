@@ -13,6 +13,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private home: HomeService) { }
 
+// refreshRooms 
   handleConnection(client: Socket) {
     connectedClients.set(client.id, { socket: client, name: "" });
     homeClients.push(client.id)
@@ -35,7 +36,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   refreshHomeFromAll() {
     homeClients.forEach(el => {
-      this.sendHomeClients(this.home.getLobbys(connectedClients.get(el).socket, connectedClients.get(el).name), "refreshRooms") 
+      try{this.sendMessageToClient(el, this.home.getLobbys(connectedClients.get(el).socket, el), "refreshRooms")}
+      catch {console.log(connectedClients.get(el));}
     })
   }
   sendHomeClients(message: any, head: string = "message") {

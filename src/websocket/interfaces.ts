@@ -7,10 +7,10 @@ export class Lobby {
         this.maxPlayers = max;
         this.creator = [creator, nickname];
     }
-    name: string
-    creator: [Socket, string]
+    private name: string
+    private creator: [Socket, string]
     players: PlayerLobby[]
-    maxPlayers: number
+    private maxPlayers: number
 
     getRooms(socket: Socket, nickname: string) { // для home
         return {
