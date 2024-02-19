@@ -5,21 +5,20 @@ import { Socket } from 'socket.io';
 export class HomeService {
     private lobbys = lobbys;
     constructor() {
-        this.lobbys.set("test", new Lobby("test", 1, undefined))
     }
-    getLobbys(socket: Socket) {
+    getLobbys(socket: Socket, nickname: string) {
         let tmp: any[] = [];
         this.lobbys.forEach((value: Lobby) => {
-            tmp.push(value.getRooms(socket));
+            tmp.push(value.getRooms(socket, nickname));
         })
         return tmp;
     } // По идее готовый вывод лобби
-    createLobby(name: string, max: number, socket: Socket) {
+    createLobby(name: string, max: number, socket: Socket, nickname: string) {
         if (this.lobbys.get(name)) {
             // throw "Уже есть такая комната";
             return "Уже есть такая комната";
         }
-        this.lobbys.set(name, new Lobby(name, max, socket));
+        this.lobbys.set(name, new Lobby(name, max, socket, nickname));
         return true;
     } // Создание лобби
     deleteLobby(name: string) {
