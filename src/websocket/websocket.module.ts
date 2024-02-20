@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MyGateway } from './websocket.controller';
-import { HomeService } from './home.service';
 import { DataService } from './data/data.service';
+import { LobbyService } from './lobby/lobby.service';
 
 
 @Module({
-  providers: [MyGateway, HomeService, DataService],
+  providers: [MyGateway, DataService, LobbyService],
 })
 export class WebsocketModule {}

@@ -9,16 +9,34 @@ export class Lobby {
     }
     private name: string
     private creator: [Socket, string]
-    players: PlayerLobby[]
+    private players: PlayerLobby[]
     private maxPlayers: number
 
-    getRooms(socket: Socket, nickname: string) { // для home
+    getRoom(socket: Socket, nickname: string) { // для home
         return {
             name: this.name,
             creator: socket == this.creator[0] || nickname == this.creator[1] ? true : false,
-            players: this.players.map((el) => {el.player.name}),
-            maxPlayers: this.maxPlayers
+            players: this.players.map((el) => { el.player.name }),
+            maxPlayers: this.maxPlayers,
+            canIn: this.canIn()
         }
+    }
+    getPlayersLenght() {
+        return {
+            count: this.players.length,
+            max: this.maxPlayers
+        };
+    }
+    canIn() {
+        return this.players.length < this.maxPlayers;
+    }
+    in(player: PlayerGlobal) {
+        if (this.canIn() && player) {
+            this.players.push(new PlayerLobby(player))
+            player.position = "lobby"
+            return true
+        }
+        else return "Комната переполнена"
     }
 }
 
@@ -34,7 +52,7 @@ export class PlayerGlobal {
 }
 
 class PlayerLobby {
-    constructor(player: PlayerGlobal, ) {
+    constructor(player: PlayerGlobal,) {
         this.player = player;
     }
     player: PlayerGlobal

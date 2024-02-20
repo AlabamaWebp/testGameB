@@ -1,7 +1,7 @@
 import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { HomeService } from './home.service';
 import { DataService } from './data/data.service';
+import { LobbyService } from './lobby/lobby.service';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -11,7 +11,7 @@ import { DataService } from './data/data.service';
 export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
-  constructor(private home: HomeService, private data: DataService) { }
+  constructor(private data: DataService, private lobbys: LobbyService) { }
 
   // refreshRooms 
   handleConnection(client: Socket) {
@@ -33,19 +33,20 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   } // Вообще всем
 
   refreshHomeFromAll() {
-    this.data.homeClients.forEach(el => {
+    this.data.getHomeClients().forEach(el => {
       try {
-        this.sendMessageToClient(el,
-          this.home.getLobbys(this.data.getClientById(el).socket,
-            this.data.getClientById(el).name),
+        const id = el.socket.id;
+        this.sendMessageToClient(id,
+          this.lobbys.getLobbys(this.data.getClientById(id).socket,
+            this.data.getClientById(id).name),
           "refreshRooms")
       }
       catch { throw "Ошибка в refreshHomeFromAll " + el; }
     })
   } /// Обновить всем лобби
   sendHomeClients(message: any, head: string = "message") {
-    this.data.homeClients.forEach(el => {
-      this.sendMessageToClient(el, message, head)
+    this.data.getHomeClients().forEach((el) => {
+      this.sendMessageToClient(el.socket.id, message, head)
     })
   } // только тем что ещё не в комнате или игре 
 
@@ -54,7 +55,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   getLobby(
     @ConnectedSocket() client: Socket,
   ) {
-    return this.home.getLobbys(client, this.data.getClientById(client.id).name);
+    return this.lobbys.getLobbys(client, this.data.getClientById(client.id).name);
   } // Получить все лобби
 
   @SubscribeMessage('setName')
@@ -70,7 +71,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: createRoom,
     @ConnectedSocket() client: Socket,
   ) {
-    const tmp = this.home.createLobby(data.name, data.max, client, this.data.getClientById(client.id).name);
+    const tmp = this.lobbys.createLobby(data.name, data.max, client, this.data.getClientById(client.id).name);
     return typeof tmp !== "string" ?
       this.refreshHomeFromAll()
       : tmp;
@@ -81,7 +82,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() room: string,
     // @ConnectedSocket() client: Socket,
   ) {
-    const tmp = this.home.deleteLobby(room);
+    const tmp = this.lobbys.deleteLobby(room);
     return typeof tmp !== "string" ?
       this.refreshHomeFromAll()
       : tmp;
@@ -91,9 +92,10 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('roomIn')
   roomIn(
     @MessageBody() data: string,
-    @ConnectedSocket() client1: Socket,
+    @ConnectedSocket() client: Socket,
   ) {
     // connectedClients.get(client1.id).name = data;
+    this.lobbys.roomIn(client, data)
     return true;
   }
 
