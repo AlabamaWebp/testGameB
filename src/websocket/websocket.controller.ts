@@ -87,10 +87,10 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     // connectedClients.get(client1.id).name = data;
-    const tmp = this.lobbys.roomIn(client, roomName)
-    if (tmp === true) {
-      this.lobbys.refreshOneLobby(roomName);
-      this.refreshHomeFromAll();
+    const tmp = this.lobbys.roomIn(client, roomName) // Добавляем игрока в комнату, получаем тру или стр ошибки
+    if (tmp === true) { // если успешно 
+      this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что появился игрок
+      this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
     }
     return tmp;
   }
