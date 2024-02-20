@@ -1,7 +1,7 @@
 import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { HomeService } from './home.service';
-import { connectedClients, deleteFromMass, homeClients } from "./interfaces"
+import { DataService } from './data/data.service';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -11,20 +11,18 @@ import { connectedClients, deleteFromMass, homeClients } from "./interfaces"
 export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
-  constructor(private home: HomeService) { }
+  constructor(private home: HomeService, private data: DataService) { }
 
-// refreshRooms 
+  // refreshRooms 
   handleConnection(client: Socket) {
-    connectedClients.set(client.id, { socket: client, name: "" });
-    homeClients.push(client.id)
+    this.data.connectClient(client);
   }
   handleDisconnect(client: Socket) {
-    connectedClients.delete(client.id);
-    deleteFromMass(homeClients, client.id)
+    this.data.disconnectClient(client)
   }
 
   sendMessageToClient(clientId: string, message: any, head: string = "message") {
-    const client = connectedClients.get(clientId).socket;
+    const client = this.data.getClientById(clientId).socket;
     if (client) {
       client.emit(head, message);
     }
@@ -35,36 +33,36 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   } // Вообще всем
 
   refreshHomeFromAll() {
-    homeClients.forEach(el => {
-      try{this.sendMessageToClient(el, this.home.getLobbys(connectedClients.get(el).socket, el), "refreshRooms")}
-      catch {console.log(connectedClients.get(el));}
+    this.data.homeClients.forEach(el => {
+      try {
+        this.sendMessageToClient(el,
+          this.home.getLobbys(this.data.getClientById(el).socket,
+            this.data.getClientById(el).name),
+          "refreshRooms")
+      }
+      catch { throw "Ошибка в refreshHomeFromAll " + el; }
     })
-  }
+  } /// Обновить всем лобби
   sendHomeClients(message: any, head: string = "message") {
-    homeClients.forEach(el => {
+    this.data.homeClients.forEach(el => {
       this.sendMessageToClient(el, message, head)
     })
-  } // только тем что ещё не в комнате или игре
-
-  getNameByClient(client: Socket) {
-    return connectedClients.get(client.id).name
-  }
+  } // только тем что ещё не в комнате или игре 
 
   ///////////////// home
   @SubscribeMessage('getLobby')
   getLobby(
     @ConnectedSocket() client: Socket,
   ) {
-    return this.home.getLobbys(client, this.getNameByClient(client));
+    return this.home.getLobbys(client, this.data.getClientById(client.id).name);
   } // Получить все лобби
 
   @SubscribeMessage('setName')
   setName(
-    @MessageBody() data: string,
-    @ConnectedSocket() client1: Socket,
+    @MessageBody() name: string,
+    @ConnectedSocket() client: Socket,
   ) {
-    connectedClients.get(client1.id).name = data;
-    return true;
+    return this.data.setClientName(client.id, name);
   } // хз не тестил .. никнейм поставить
 
   @SubscribeMessage('createLobby')
@@ -72,10 +70,10 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: createRoom,
     @ConnectedSocket() client: Socket,
   ) {
-    const tmp = this.home.createLobby(data.name, data.max, client, this.getNameByClient(client));
-    return typeof tmp !== "string" ? 
-    this.refreshHomeFromAll()
-    : tmp;
+    const tmp = this.home.createLobby(data.name, data.max, client, this.data.getClientById(client.id).name);
+    return typeof tmp !== "string" ?
+      this.refreshHomeFromAll()
+      : tmp;
   } // РАБОТАЕТ
 
   @SubscribeMessage('deleteLobby')
@@ -84,9 +82,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // @ConnectedSocket() client: Socket,
   ) {
     const tmp = this.home.deleteLobby(room);
-    return typeof tmp !== "string" ? 
-    this.refreshHomeFromAll()
-    : tmp;
+    return typeof tmp !== "string" ?
+      this.refreshHomeFromAll()
+      : tmp;
   } // РАБОТАЕТ
 
   //////////// room

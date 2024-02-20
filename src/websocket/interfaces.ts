@@ -15,8 +15,8 @@ export class Lobby {
     getRooms(socket: Socket, nickname: string) { // для home
         return {
             name: this.name,
-            creator: socket == this.creator[0] && nickname == this.creator[1] ? true : false,
-            players: this.players.map((el) => {el.name}),
+            creator: socket == this.creator[0] || nickname == this.creator[1] ? true : false,
+            players: this.players.map((el) => {el.player.name}),
             maxPlayers: this.maxPlayers
         }
     }
@@ -26,24 +26,18 @@ export class PlayerGlobal {
     constructor(socket: Socket, name: string = "") {
         this.socket = socket
         this.name = name
+        this.position = "home"
     }
     socket: Socket;
     name: string;
+    position: "home" | "game" | "lobby"
 }
 
 class PlayerLobby {
-    constructor(name: string, ) {
-        this.name = name;
+    constructor(player: PlayerGlobal, ) {
+        this.player = player;
     }
-    name: string
+    player: PlayerGlobal
     sex: "Мужчина" | "Женщина" = "Мужчина"
     ready: boolean = false
-}
-
-export let lobbys: Map <string, Lobby> = new Map();
-export let connectedClients: Map<string, PlayerGlobal> = new Map();
-export let homeClients: string[] = [];
-
-export function deleteFromMass(mass: string[], ...els: string[]) {
-    mass = mass.filter((el) => !els.includes(el))
 }
