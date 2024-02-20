@@ -2,6 +2,7 @@ import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDiscon
 import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
+import { PlayerGlobal } from './interfaces';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -21,24 +22,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.data.disconnectClient(client)
   }
 
-  sendMessageToClient(clientId: string, message: any, head: string = "message") {
-    const client = this.data.getClientById(clientId).socket;
-    if (client) {
-      client.emit(head, message);
-    }
-  } // кому кому только одному
-
-  broadcastMessage(message: any, head: string = "message") {
-    this.server.emit(head, message);
-  } // Вообще всем
+  // broadcastMessage(message: any, head: string = "message") {
+  //   this.server.emit(head, message);
+  // } // Вообще всем
 
   refreshHomeFromAll() {
     this.data.getHomeClients().forEach(el => {
       try {
-        const id = el.socket.id;
-        this.sendMessageToClient(id,
-          this.lobbys.getLobbys(this.data.getClientById(id).socket,
-            this.data.getClientById(id).name),
+        this.data.sendMessageToClient(el.socket,
+          this.lobbys.getLobbys(el),
           "refreshRooms")
       }
       catch { throw "Ошибка в refreshHomeFromAll " + el; }
@@ -46,16 +38,16 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   } /// Обновить всем лобби
   sendHomeClients(message: any, head: string = "message") {
     this.data.getHomeClients().forEach((el) => {
-      this.sendMessageToClient(el.socket.id, message, head)
+      this.data.sendMessageToClient(el.socket, message, head)
     })
   } // только тем что ещё не в комнате или игре 
 
   ///////////////// home
-  @SubscribeMessage('getLobby')
+  @SubscribeMessage('getLobbys')
   getLobby(
     @ConnectedSocket() client: Socket,
   ) {
-    return this.lobbys.getLobbys(client, this.data.getClientById(client.id).name);
+    return this.lobbys.getLobbys(this.data.getClientById(client.id));
   } // Получить все лобби
 
   @SubscribeMessage('setName')
@@ -91,12 +83,16 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //////////// room
   @SubscribeMessage('roomIn')
   roomIn(
-    @MessageBody() data: string,
+    @MessageBody() roomName: string,
     @ConnectedSocket() client: Socket,
   ) {
     // connectedClients.get(client1.id).name = data;
-    this.lobbys.roomIn(client, data)
-    return true;
+    const tmp = this.lobbys.roomIn(client, roomName)
+    if (tmp === true) {
+      this.lobbys.refreshOneLobby(roomName);
+      this.refreshHomeFromAll();
+    }
+    return tmp;
   }
 
 }

@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Lobby } from '../interfaces';
+import { Lobby, PlayerGlobal } from '../interfaces';
 import { Socket } from "socket.io"
 import { DataService } from '../data/data.service';
 @Injectable()
 export class LobbyService {
+    // events: refreshLobby,  МОИ ИВЕНТЫ
     constructor(private data: DataService,) {}
-    lobbys: Map<string, Lobby> = new Map();
-    getLobbys(socket: Socket, nickname: string) {
+    private lobbys: Map<string, Lobby> = new Map();
+    getLobbys(player: PlayerGlobal) {
         let tmp: any[] = [];
         this.lobbys.forEach((value: Lobby) => {
-            tmp.push(value.getRoom(socket, nickname));
+            tmp.push(value.homeGetRoom(player));
         })
         return tmp;
     } // По идее готовый вывод лобби
@@ -39,6 +40,13 @@ export class LobbyService {
         else return "Нет такой комнаты"
     } // Удаление лобби
 
+    refreshOneLobby(roomName: string) {
+        const lobby = this.getOneLobby(roomName);
+        lobby.getLobbySocket().forEach(el => {
+            this.data.sendMessageToClient(el, lobby.lobbyGetRoom(), "refreshLobby")
+        })
+    }
+
     roomIn(socket: Socket, roomName: string) { // Войти в лобби
         const client = this.data.getClientById(socket.id);
         const lobby = this.getOneLobby(roomName);
@@ -48,4 +56,5 @@ export class LobbyService {
             return "Ошибка позиции"
         return lobby.in(client);
     }
+
 }

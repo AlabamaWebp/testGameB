@@ -34,4 +34,9 @@ export class DataService {
     getHomeClients() {
         return this.connectedClients.filter(el => el.position == "home");
     }
+    sendMessageToClient(client: Socket, message: any, head: string = "message") {
+        if (client) {
+            client.emit(head, message);
+        }
+    } // кому кому только одному
 }
