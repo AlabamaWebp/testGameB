@@ -64,18 +64,23 @@ export class PlayerGlobal {
     constructor(socket: Socket, name: string = "") {
         this.socket = socket
         this.name = name
-        this.position = "home"
+        this.position = "nickname"
     }
     socket: Socket;
     name: string;
-    position: "home" | "game" | "lobby"
+    position: "nickname" | "home" | "game" | "lobby"
+    setName(newNick: string) {
+        this.name = newNick;
+    }
 }
 
 class PlayerLobby {
     constructor(player: PlayerGlobal,) {
         this.player = player;
+        this.sex = "Мужчина"
+        this.ready = false
     }
     player: PlayerGlobal
-    sex: "Мужчина" | "Женщина" = "Мужчина"
-    ready: boolean = false
+    sex: "Мужчина" | "Женщина"
+    ready: boolean
 }
