@@ -70,7 +70,11 @@ export class PlayerGlobal {
     name: string;
     position: "nickname" | "home" | "game" | "lobby"
     setName(newNick: string) {
+        if (this.position != "nickname" && this.position != "home") {
+            return "Сейчас невозможно сменить ник"
+        }
         this.name = newNick;
+        return true;
     }
 }
 

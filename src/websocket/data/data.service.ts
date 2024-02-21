@@ -25,13 +25,12 @@ export class DataService {
     }
     setClientName(id: string, newName: string) {
         const client = this.getClientById(id);
-        if (client && (client.position == "home" || client.position == "nickname")) {
+        if (client) {
             if (this.connectedClients.find(el => el.name == newName)) {
                 return "Игрок с таким ником уже есть"
             }
             else {
-                client.setName(newName);
-                return true
+                return client.setName(newName);
             }
         }
         return "Ошибка сервера"
