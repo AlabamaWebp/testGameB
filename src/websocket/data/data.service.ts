@@ -3,30 +3,37 @@ import { Lobby, PlayerGlobal } from '../interfaces';
 import { Socket } from 'socket.io';
 @Injectable()
 export class DataService {
-    connectedClients: PlayerGlobal[] = [];
-    // homeClients: string[] = [];
+    clients: PlayerGlobal[] = [];
+    
+    getPl() {
+        return this.clients.map(el => {
+            return {
+                name: el.name,
+                position: el.position,
+                id: el.socket.id
+            }
+        })
+    }
 
     deleteFromMass(mass: string[], ...els: string[]) {
         mass = mass.filter((el) => !els.includes(el))
     }
     connectClient(client: Socket) {
-        this.connectedClients.push(new PlayerGlobal(client, ""));
-        // this.homeClients.push(client.id);
+        this.clients.push(new PlayerGlobal(client, ""));
     }
     disconnectClient(client: Socket) {
-        this.connectedClients = this.connectedClients.filter(el => el.socket != client);
-        // this.deleteFromMass(this.homeClients, client.id)
+        this.clients = this.clients.filter(el => el.socket != client);
     }
     getClientById(id: string): PlayerGlobal | undefined {
-        return this.connectedClients.find(el => el.socket.id == id);
+        return this.clients.find(el => el.socket.id == id);
     }
     getClientByName(client: Socket): PlayerGlobal | undefined {
-        return this.connectedClients.find(el => el.socket == client)
+        return this.clients.find(el => el.socket == client)
     }
     setClientName(id: string, newName: string) {
         const client = this.getClientById(id);
         if (client) {
-            if (this.connectedClients.find(el => el.name == newName)) {
+            if (this.clients.filter(el => el != client).find(el => el.name == newName)) {
                 return "Игрок с таким ником уже есть"
             }
             else {
@@ -36,7 +43,7 @@ export class DataService {
         return "Ошибка сервера"
     }
     getHomeClients() {
-        return this.connectedClients.filter(el => el.position == "home");
+        return this.clients.filter(el => el.position == "home");
     }
     sendMessageToClient(client: Socket, message: any, head: string = "message") {
         if (client) {

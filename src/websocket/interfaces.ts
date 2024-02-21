@@ -73,6 +73,8 @@ export class PlayerGlobal {
         if (this.position != "nickname" && this.position != "home") {
             return "Сейчас невозможно сменить ник"
         }
+        if (typeof newNick !== "string")
+            return "Ошибка сервера"
         this.name = newNick;
         return true;
     }

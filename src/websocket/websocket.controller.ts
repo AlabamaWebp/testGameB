@@ -42,12 +42,21 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     })
   } // только тем что ещё не в комнате или игре 
 
+  // socket.handshake.headers
+  @SubscribeMessage('getAllPlayers')
+  getPlTest(
+    @ConnectedSocket() client: Socket,
+  ) {
+    return this.data.getPl()
+  } // Получить всех подключенных
+
   ///////////////// home
   @SubscribeMessage('getLobbys')
   getLobby(
     @ConnectedSocket() client: Socket,
   ) {
-    return this.lobbys.getLobbys(this.data.getClientById(client.id));
+    client.emit("refreshRooms", this.lobbys.getLobbys(this.data.getClientById(client.id)));
+    return true;
   } // Получить все лобби
 
   @SubscribeMessage('setName')
@@ -55,7 +64,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() name: string,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.data.setClientName(client.id, name);
+    this.data.sendMessageToClient(client, this.data.setClientName(client.id, name), "statusName")
   } // хз не тестил .. никнейм поставить
 
   @SubscribeMessage('createLobby')
