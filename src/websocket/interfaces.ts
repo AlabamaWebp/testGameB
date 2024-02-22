@@ -7,7 +7,7 @@ export class Lobby {
         this.maxPlayers = max;
         this.creator = [creator, nickname];
     }
-    private name: string
+    readonly name: string
     readonly creator: [Socket, string]
     private players: PlayerLobby[]
     private maxPlayers: number
@@ -50,17 +50,22 @@ export class Lobby {
                 return "Вы уже в лобби"
             }
             this.players.push(new PlayerLobby(player))
-            player.position = "lobby"
+            player.position = this
             return true
         }
         else return "Комната переполнена"
+    }
+    out(player: PlayerGlobal) {
+        const index = this.players.findIndex(el => el.player == player)
+        if (index != -1) {
+            this.players.splice(index, 1);
+        }
     }
     getLobbySocket() {
         return this.players.map(el => el.player.socket)
     }
 }
-
-export class PlayerGlobal {
+export class PlayerGlobal { 
     constructor(socket: Socket, name: string = "") {
         this.socket = socket
         this.name = name
@@ -68,7 +73,7 @@ export class PlayerGlobal {
     }
     socket: Socket;
     name: string;
-    position: "nickname" | "home" | "game" | "lobby"
+    position: "nickname" | "home" | "game" | Lobby
     setName(newNick: string) {
         if (this.position != "nickname" && this.position != "home") {
             return "Сейчас невозможно сменить ник"
@@ -79,6 +84,14 @@ export class PlayerGlobal {
         this.position = "home"
         return "home";
     }
+    outLobby() {
+        if (typeof this.position != "string") {
+            this.position.out(this);
+            this.position = "home";
+            return true;
+        }
+    }
+    
 }
 
 class PlayerLobby {

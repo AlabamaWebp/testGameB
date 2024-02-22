@@ -108,6 +108,23 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return tmp;
   }
 
+  @SubscribeMessage('roomOut')
+  roomOut(
+    // @MessageBody() roomName: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    //@ts-ignore
+    const roomName = this.data.getClientById(client.id).position.name;
+    console.log(roomName);
+    
+    const tmp = this.data.getClientById(client.id).outLobby();
+    if (tmp === true) { // если успешно 
+      this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что появился игрок
+      this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
+    }
+    return tmp;
+  }
+
 }
 
 interface createRoom {
