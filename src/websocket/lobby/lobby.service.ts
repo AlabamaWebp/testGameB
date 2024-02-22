@@ -22,7 +22,8 @@ export class LobbyService {
     createLobby(name: string, max: number, socket: Socket, nickname: string) {
         if (this.lobbys.get(name)) {
             // throw "Уже есть такая комната";
-            return "Уже есть такая комната";
+            // return "Уже есть такая комната";
+            return "Комната созданная вами уже есть";
         }
         this.lobbys.set(name, new Lobby(name, max, socket, nickname));
         return true;

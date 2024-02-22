@@ -73,9 +73,13 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const tmp = this.lobbys.createLobby(data.name, data.max, client, this.data.getClientById(client.id).name);
-    return typeof tmp !== "string" ?
+
+    if (typeof tmp == "string") {
+      client.emit("statusCreate", tmp)
+    }
+    else {
       this.refreshHomeFromAll()
-      : tmp;
+    }
   } // РАБОТАЕТ
 
   @SubscribeMessage('deleteLobby')

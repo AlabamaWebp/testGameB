@@ -76,7 +76,8 @@ export class PlayerGlobal {
         if (typeof newNick !== "string")
             return "Ошибка сервера"
         this.name = newNick;
-        return true;
+        this.position = "home"
+        return "home";
     }
 }
 

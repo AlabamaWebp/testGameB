@@ -33,7 +33,7 @@ export class DataService {
     setClientName(id: string, newName: string) {
         const client = this.getClientById(id);
         if (client) {
-            if (this.clients.filter(el => el != client).find(el => el.name == newName)) {
+            if (this.clients.filter(el => el != client).find(el => el.name == newName)) { // .filter(el => el != client) test
                 return "Игрок с таким ником уже есть"
             }
             else {
