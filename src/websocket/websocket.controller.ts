@@ -85,12 +85,12 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('deleteLobby')
   deleteLobby(
     @MessageBody() room: string,
-    // @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: Socket,
   ) {
-    const tmp = this.lobbys.deleteLobby(room);
+    const tmp = this.lobbys.deleteLobby(room, client);
     return typeof tmp !== "string" ?
       this.refreshHomeFromAll()
-      : tmp;
+      : client.emit("statusDelete", tmp);
   } // РАБОТАЕТ
 
   //////////// room

@@ -29,11 +29,14 @@ export class LobbyService {
         return true;
     } // Создание лобби
 
-    deleteLobby(name: string) {
+    deleteLobby(name: string, client: Socket) {
         const tmp = this.getOneLobby(name);
         if (tmp) {
             if (tmp.getPlayersLenght().count) {
                 return "В комнате есть игроки"
+            }
+            if (client !== tmp.creator[0]) {
+                return "Вы не создатель комнаты"
             }
             this.lobbys.delete(name);
             return true;

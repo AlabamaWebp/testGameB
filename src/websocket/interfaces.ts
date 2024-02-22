@@ -8,7 +8,7 @@ export class Lobby {
         this.creator = [creator, nickname];
     }
     private name: string
-    private creator: [Socket, string]
+    readonly creator: [Socket, string]
     private players: PlayerLobby[]
     private maxPlayers: number
 
