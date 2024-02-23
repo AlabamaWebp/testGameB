@@ -31,11 +31,12 @@ export class LobbyService {
 
     deleteLobby(name: string, client: Socket) {
         const tmp = this.getOneLobby(name);
+        const player = this.data.getClientById(client.id)
         if (tmp) {
             if (tmp.getPlayersLenght().count) {
                 return "В комнате есть игроки"
             }
-            if (client !== tmp.creator[0]) {
+            if (player.name !== tmp.creator.name) {
                 return "Вы не создатель комнаты"
             }
             this.lobbys.delete(name);

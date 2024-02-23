@@ -5,17 +5,20 @@ export class Lobby {
         this.name = name;
         this.players = [];
         this.maxPlayers = max;
-        this.creator = [creator, nickname];
+        this.creator = {
+            name: nickname,
+            socket: creator
+        };
     }
     readonly name: string
-    readonly creator: [Socket, string]
+    readonly creator: {name : string, socket: Socket}
     private players: PlayerLobby[]
     private maxPlayers: number
 
     homeGetRoom(player: PlayerGlobal) { // для home
         return {
             name: this.name,
-            creator: player.socket == this.creator[0] || player.name == this.creator[1] ? true : false,
+            creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
             players: this.players.map((el) => el.player.name),
             maxPlayers: this.maxPlayers,
             canIn: this.canIn()
