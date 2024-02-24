@@ -2,7 +2,7 @@ import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDiscon
 import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
-import { PlayerGlobal } from './interfaces';
+import { Lobby, PlayerGlobal } from './interfaces';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -124,6 +124,17 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что появился игрок
       this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
     }
+    return tmp;
+  }
+
+  @SubscribeMessage('statusLobby')
+  statusLobby(
+    // @MessageBody() roomName: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    //@ts-ignore
+    const tmp = this.data.getClientById(client.id).position.lobbyGetRoom();
+    client.emit("statusLobby", tmp)
     return tmp;
   }
 

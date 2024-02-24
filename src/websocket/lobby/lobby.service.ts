@@ -48,7 +48,7 @@ export class LobbyService {
     refreshOneLobby(roomName: string) {
         const lobby = this.getOneLobby(roomName);
         lobby.getLobbySocket().forEach(el => {
-            this.data.sendMessageToClient(el, lobby.lobbyGetRoom(), "refreshLobby")
+            this.data.sendMessageToClient(el, lobby.lobbyGetRoom(this.data.getClientById(el.id)), "statusLobby")
         })
     }
 

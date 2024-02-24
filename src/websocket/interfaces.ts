@@ -24,10 +24,10 @@ export class Lobby {
             canIn: this.canIn()
         }
     }
-    lobbyGetRoom() {
+    lobbyGetRoom(player: PlayerGlobal) {
         return {
             name: this.name,
-            creator: this.creator[1],
+            creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
             players: this.players.map((el) => {
                 return {
                     nickname: el.player.name,
@@ -94,7 +94,6 @@ export class PlayerGlobal {
             return true;
         }
     }
-    
 }
 
 class PlayerLobby {
