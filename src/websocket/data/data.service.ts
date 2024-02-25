@@ -19,15 +19,24 @@ export class DataService {
         mass = mass.filter((el) => !els.includes(el))
     }
     connectClient(client: Socket) {
-        // console.log(client.handshake.headers.name);
-        this.clients.push(new PlayerGlobal(client, client.handshake.headers.name as string));
+        const name: string = client.handshake.headers.name as string;
+        const tmp = this.clients.find(el => el.name == name)
+        if (tmp) {
+            tmp.socket = client;
+        }
+        else {
+            this.clients.push(new PlayerGlobal(client, name));
+        }
     }
     disconnectClient(client: Socket) {
         const player = this.getClientById(client.id);
         if (player.getPositionStr() == "lobby") {
-            player.outLobby();
+            // player.outLobby();
+            player.socket = null
         }
-        this.clients = this.clients.filter(el => el.socket != client);
+        else {
+            this.clients = this.clients.filter(el => el.socket != client);
+        }
     }
     getClientById(id: string): PlayerGlobal | undefined {
         return this.clients.find(el => el.socket.id == id);

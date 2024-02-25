@@ -12,7 +12,7 @@ export class Lobby {
     }
     readonly lobby = true;
     readonly name: string
-    readonly creator: {name : string, socket: Socket}
+    readonly creator: {name : string, socket: Socket | undefined}
     private players: PlayerLobby[]
     private maxPlayers: number
 
@@ -26,6 +26,8 @@ export class Lobby {
         }
     }
     lobbyGetRoom(player: PlayerGlobal) {
+        console.log("lobbyGetRoom  ", player);
+        
         return {
             name: this.name,
             creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
@@ -76,7 +78,7 @@ export class PlayerGlobal {
         this.name = name
         this.position = "home"
     }
-    readonly socket: Socket | null;
+    socket: Socket | null;
     readonly name: string;
     position: "home" | "game" | Lobby //  "nickname" |
     // setName(newNick: string) {
@@ -96,7 +98,7 @@ export class PlayerGlobal {
             return true;
         }
     }
-    getPositionStr(): "nickname" | "home" | "game" | "lobby" {
+    getPositionStr(): "home" | "game" | "lobby" {
         if (typeof this.position == "string") {
             return this.position
         }

@@ -60,14 +60,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return true;
   } // Получить все лобби
 
-  // @SubscribeMessage('setName')
-  // setName(
-  //   @MessageBody() name: string,
-  //   @ConnectedSocket() client: Socket,
-  // ) {
-  //   this.data.sendMessageToClient(client, this.data.setClientName(client.id, name), "statusName")
-  // } // хз не тестил .. никнейм поставить
-
   @SubscribeMessage('createLobby')
   createLobby(
     @MessageBody() data: createRoom,
@@ -117,15 +109,17 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     //@ts-ignore
-    const roomName = this.data.getClientById(client.id).position.name;
+    const roomName = this.data.getClientById(client.id).getPositionStr();
     console.log(roomName);
-    
-    const tmp = this.data.getClientById(client.id).outLobby();
-    if (tmp === true) { // если успешно 
-      this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что появился игрок
-      this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
+    if (roomName == "lobby"){
+
+      const tmp = this.data.getClientById(client.id).outLobby();
+      if (tmp === true) { // если успешно 
+        this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что удалился игрок
+        this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
+      }
     }
-    return tmp;
+    return ;
   }
 
   @SubscribeMessage('statusLobby')
@@ -133,8 +127,11 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // @MessageBody() roomName: string,
     @ConnectedSocket() client: Socket,
   ) {
+    const pl = this.data.getClientById(client.id);
     //@ts-ignore
-    const tmp = this.data.getClientById(client.id).position.lobbyGetRoom();
+    const tmp = pl.position.lobbyGetRoom(pl);
+    console.log(123);
+    
     client.emit("statusLobby", tmp)
     return tmp;
   }
@@ -144,7 +141,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // @MessageBody() roomName: string,
     @ConnectedSocket() client: Socket,
   ) {
-    // return this.data.getClientById(client.id).getPositionStr();
+    client.emit("statusPlayer", this.data.getClientById(client.id).getPositionStr())
+    return true;
   }
 
 }
