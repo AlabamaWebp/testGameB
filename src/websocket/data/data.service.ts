@@ -19,7 +19,8 @@ export class DataService {
         mass = mass.filter((el) => !els.includes(el))
     }
     connectClient(client: Socket) {
-        this.clients.push(new PlayerGlobal(client, ""));
+        // console.log(client.handshake.headers.name);
+        this.clients.push(new PlayerGlobal(client, client.handshake.headers.name as string));
     }
     disconnectClient(client: Socket) {
         const player = this.getClientById(client.id);
@@ -34,18 +35,18 @@ export class DataService {
     getClientByName(client: Socket): PlayerGlobal | undefined {
         return this.clients.find(el => el.socket == client)
     }
-    setClientName(id: string, newName: string) {
-        const client = this.getClientById(id);
-        if (client) {
-            if (this.clients.filter(el => el != client).find(el => el.name == newName)) { // .filter(el => el != client) test
-                return "Игрок с таким ником уже есть"
-            }
-            else {
-                return client.setName(newName);
-            }
-        }
-        return "Ошибка сервера"
-    }
+    // setClientName(id: string, newName: string) {
+    //     const client = this.getClientById(id);
+    //     if (client) {
+    //         if (this.clients.filter(el => el != client).find(el => el.name == newName)) { // .filter(el => el != client) test
+    //             return "Игрок с таким ником уже есть"
+    //         }
+    //         else {
+    //             return client.setName(newName);
+    //         }
+    //     }
+    //     return "Ошибка сервера"
+    // }
     getHomeClients() {
         return this.clients.filter(el => el.position == "home");
     }

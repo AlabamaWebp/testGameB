@@ -17,6 +17,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // refreshRooms 
   handleConnection(client: Socket) {
     this.data.connectClient(client);
+    
   }
   handleDisconnect(client: Socket) {
     this.data.disconnectClient(client)
@@ -59,13 +60,13 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return true;
   } // Получить все лобби
 
-  @SubscribeMessage('setName')
-  setName(
-    @MessageBody() name: string,
-    @ConnectedSocket() client: Socket,
-  ) {
-    this.data.sendMessageToClient(client, this.data.setClientName(client.id, name), "statusName")
-  } // хз не тестил .. никнейм поставить
+  // @SubscribeMessage('setName')
+  // setName(
+  //   @MessageBody() name: string,
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   this.data.sendMessageToClient(client, this.data.setClientName(client.id, name), "statusName")
+  // } // хз не тестил .. никнейм поставить
 
   @SubscribeMessage('createLobby')
   createLobby(

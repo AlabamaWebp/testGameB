@@ -74,21 +74,21 @@ export class PlayerGlobal {
     constructor(socket: Socket, name: string = "") {
         this.socket = socket
         this.name = name
-        this.position = "nickname"
+        this.position = "home"
     }
     readonly socket: Socket | null;
-    name: string;
-    position: "nickname" | "home" | "game" | Lobby
-    setName(newNick: string) {
-        if (this.position != "nickname" && this.position != "home") {
-            return "Сейчас невозможно сменить ник"
-        }
-        if (typeof newNick !== "string")
-            return "Ошибка сервера"
-        this.name = newNick;
-        this.position = "home"
-        return "home";
-    }
+    readonly name: string;
+    position: "home" | "game" | Lobby //  "nickname" |
+    // setName(newNick: string) {
+    //     if (this.position != "nickname" && this.position != "home") {
+    //         return "Сейчас невозможно сменить ник"
+    //     }
+    //     if (typeof newNick !== "string")
+    //         return "Ошибка сервера"
+    //     this.name = newNick;
+    //     this.position = "home"
+    //     return "home";
+    // }
     outLobby() {
         if (typeof this.position != "string") {
             this.position.out(this);
