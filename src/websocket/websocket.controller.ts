@@ -109,12 +109,14 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     //@ts-ignore
-    const roomName = this.data.getClientById(client.id).getPositionStr();
-    if (roomName == "lobby") {
+    const position = this.data.getClientById(client.id).getPositionStr();
+    if (position == "lobby") {
+      //@ts-ignore
+      const name = this.data.getClientById(client.id).position.name;
       const tmp = this.data.getClientById(client.id).outLobby();
       if (tmp === true) { // если успешно 
         // client.emit("statusPlayer", this.data.getClientById(client.id)?.getPositionStr())
-        this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что удалился игрок
+        this.lobbys.refreshOneLobby(name); // обновляем для всех в команте что удалился игрок
         this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
       }
     }
