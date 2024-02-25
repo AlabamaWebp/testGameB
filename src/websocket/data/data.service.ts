@@ -22,6 +22,10 @@ export class DataService {
         this.clients.push(new PlayerGlobal(client, ""));
     }
     disconnectClient(client: Socket) {
+        const player = this.getClientById(client.id);
+        if (player.getPositionStr() == "lobby") {
+            player.outLobby();
+        }
         this.clients = this.clients.filter(el => el.socket != client);
     }
     getClientById(id: string): PlayerGlobal | undefined {

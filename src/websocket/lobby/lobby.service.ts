@@ -45,10 +45,10 @@ export class LobbyService {
         else return "Нет такой комнаты"
     } // Удаление лобби
 
-    refreshOneLobby(roomName: string) {
+    refreshOneLobby(roomName: string,) {
         const lobby = this.getOneLobby(roomName);
         lobby.getLobbySocket().forEach(el => {
-            this.data.sendMessageToClient(el, lobby.lobbyGetRoom(this.data.getClientById(el.id)), "statusLobby")
+            el.emit("statusLobby", lobby.lobbyGetRoom(this.data.getClientById(el.id)))
         })
     }
 

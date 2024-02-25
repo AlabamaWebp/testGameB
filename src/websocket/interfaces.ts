@@ -10,6 +10,7 @@ export class Lobby {
             socket: creator
         };
     }
+    readonly lobby = true;
     readonly name: string
     readonly creator: {name : string, socket: Socket}
     private players: PlayerLobby[]
@@ -32,7 +33,8 @@ export class Lobby {
                 return {
                     nickname: el.player.name,
                     sex: el.sex,
-                    ready: el.ready
+                    ready: el.ready,
+                    you: el.player.name == player.name
                 }
             }),
             maxPlayers: this.maxPlayers,
@@ -74,7 +76,7 @@ export class PlayerGlobal {
         this.name = name
         this.position = "nickname"
     }
-    socket: Socket;
+    readonly socket: Socket | null;
     name: string;
     position: "nickname" | "home" | "game" | Lobby
     setName(newNick: string) {
@@ -92,6 +94,17 @@ export class PlayerGlobal {
             this.position.out(this);
             this.position = "home";
             return true;
+        }
+    }
+    getPositionStr(): "nickname" | "home" | "game" | "lobby" {
+        if (typeof this.position == "string") {
+            return this.position
+        }
+        else if (this.position.lobby) {
+            return "lobby"
+        }
+        else {
+            return "game"
         }
     }
 }

@@ -138,6 +138,14 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return tmp;
   }
 
+  @SubscribeMessage('statusPlayer')
+  statusPlayer(
+    // @MessageBody() roomName: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    // return this.data.getClientById(client.id).getPositionStr();
+  }
+
 }
 
 interface createRoom {
