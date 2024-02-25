@@ -17,7 +17,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // refreshRooms 
   handleConnection(client: Socket) {
     this.data.connectClient(client);
-    
+
   }
   handleDisconnect(client: Socket) {
     this.data.disconnectClient(client)
@@ -110,14 +110,14 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     //@ts-ignore
     const roomName = this.data.getClientById(client.id).getPositionStr();
-    if (roomName == "lobby"){
+    if (roomName == "lobby") {
       const tmp = this.data.getClientById(client.id).outLobby();
       if (tmp === true) { // если успешно 
         this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что удалился игрок
         this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
       }
     }
-    return ;
+    return;
   }
 
   @SubscribeMessage('statusLobby')
@@ -130,6 +130,37 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const tmp = pl.position.lobbyGetRoom(pl);
     client.emit("statusLobby", tmp)
     return tmp;
+  }
+
+  @SubscribeMessage('setReady')
+  setReady(
+    @MessageBody() d: boolean,
+    @ConnectedSocket() client: Socket,
+  ) {
+    if (typeof d != 'boolean') {
+      return false
+    }
+    const player = this.data.getClientById(client.id);
+    if (player.getPositionStr() == "lobby") {
+      const tmp = player.position as Lobby;
+      tmp.setReady(client, d);
+      tmp.lobbyGetRoom(player);
+    }
+  }
+  @SubscribeMessage('setSex')
+  setSex(
+    @MessageBody() d: "Мужчина" | "Женщина",
+    @ConnectedSocket() client: Socket,
+  ) {
+    if (typeof d != 'string') {
+      return false
+    }
+    const player = this.data.getClientById(client.id);
+    if (player.getPositionStr() == "lobby") {
+      const tmp = player.position as Lobby;
+      tmp.setSex(client, d);
+      tmp.lobbyGetRoom(player);
+    }
   }
 
   @SubscribeMessage('statusPlayer')

@@ -26,7 +26,7 @@ export class Lobby {
             canIn: this.canIn()
         }
     }
-    lobbyGetRoom(player: PlayerGlobal) {
+    lobbyGetRoom(player: PlayerGlobal) { // для lobby
         return {
             name: this.name,
             creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
@@ -67,8 +67,14 @@ export class Lobby {
             this.players.splice(index, 1);
         }
     }
-    getLobbySocket() {
+    getLobbySocket() { // список сокетов игроков
         return this.players.map(el => el.player.socket)
+    }
+    setReady(player: Socket,d: boolean) {
+        this.players.find(el => el.player.socket.id == player.id).ready = d;
+    }
+    setSex(player: Socket, d: "Мужчина" | "Женщина") {
+        this.players.find(el => el.player.socket.id == player.id).sex = d;
     }
 }
 export class PlayerGlobal { 
