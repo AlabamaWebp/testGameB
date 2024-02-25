@@ -39,11 +39,13 @@ export class DataService {
         }
     }
     getClientById(id: string): PlayerGlobal | undefined {
-        return this.clients.find(el => el.socket.id == id);
+        const tmp = this.clients.find(el => el.socket?.id == id);
+        console.log(tmp);
+        return tmp;
     }
-    getClientByName(client: Socket): PlayerGlobal | undefined {
-        return this.clients.find(el => el.socket == client)
-    }
+    // getClientByName(client: Socket): PlayerGlobal | undefined {
+    //     return this.clients.find(el => el.socket == client)
+    // }
     // setClientName(id: string, newName: string) {
     //     const client = this.getClientById(id);
     //     if (client) {

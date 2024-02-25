@@ -137,7 +137,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // @MessageBody() roomName: string,
     @ConnectedSocket() client: Socket,
   ) {
-    client.emit("statusPlayer", this.data.getClientById(client.id).getPositionStr())
+    client.emit("statusPlayer", this.data.getClientById(client.id)?.getPositionStr())
     return true;
   }
 

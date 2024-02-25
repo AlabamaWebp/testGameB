@@ -17,6 +17,7 @@ export class Lobby {
     private maxPlayers: number
 
     homeGetRoom(player: PlayerGlobal) { // для home
+        console.log(player);
         return {
             name: this.name,
             creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
@@ -52,11 +53,11 @@ export class Lobby {
     in(player: PlayerGlobal) {
         if (this.canIn() && player) {
             if (this.players.find(el => el.player.name == player.name)) {
-                return "Вы уже в лобби"
+                return "Вы уже в лобби";
             }
             this.players.push(new PlayerLobby(player))
-            player.position = this
-            return true
+            player.position = this;
+            return true;
         }
         else return "Комната переполнена"
     }
