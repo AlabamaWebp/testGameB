@@ -40,7 +40,6 @@ export class DataService {
     }
     getClientById(id: string): PlayerGlobal | undefined {
         const tmp = this.clients.find(el => el.socket?.id == id);
-        console.log(tmp);
         return tmp;
     }
     // getClientByName(client: Socket): PlayerGlobal | undefined {

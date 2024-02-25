@@ -17,7 +17,6 @@ export class Lobby {
     private maxPlayers: number
 
     homeGetRoom(player: PlayerGlobal) { // для home
-        console.log(player);
         return {
             name: this.name,
             creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,

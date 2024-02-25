@@ -113,6 +113,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (roomName == "lobby") {
       const tmp = this.data.getClientById(client.id).outLobby();
       if (tmp === true) { // если успешно 
+        // client.emit("statusPlayer", this.data.getClientById(client.id)?.getPositionStr())
         this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что удалился игрок
         this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
       }
@@ -144,7 +145,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (player.getPositionStr() == "lobby") {
       const tmp = player.position as Lobby;
       tmp.setReady(client, d);
-      tmp.lobbyGetRoom(player);
+      this.lobbys.refreshOneLobby(tmp.name);
     }
   }
   @SubscribeMessage('setSex')
@@ -159,7 +160,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (player.getPositionStr() == "lobby") {
       const tmp = player.position as Lobby;
       tmp.setSex(client, d);
-      tmp.lobbyGetRoom(player);
+      this.lobbys.refreshOneLobby(tmp.name);
     }
   }
 
