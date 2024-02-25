@@ -110,9 +110,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     //@ts-ignore
     const roomName = this.data.getClientById(client.id).getPositionStr();
-    console.log(roomName);
     if (roomName == "lobby"){
-
       const tmp = this.data.getClientById(client.id).outLobby();
       if (tmp === true) { // если успешно 
         this.lobbys.refreshOneLobby(roomName); // обновляем для всех в команте что удалился игрок
@@ -130,8 +128,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const pl = this.data.getClientById(client.id);
     //@ts-ignore
     const tmp = pl.position.lobbyGetRoom(pl);
-    console.log(123);
-    
     client.emit("statusLobby", tmp)
     return tmp;
   }

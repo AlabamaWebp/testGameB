@@ -9,7 +9,6 @@ export class NicknameController {
         @Body() nickname: any
     ): Boolean {
         nickname = nickname.nickname
-        console.log(nickname, this.data.clients);
         if (typeof nickname == "string") {
             return !this.data.clients.some(el => el.name == nickname && el.socket != null);
         }

@@ -26,8 +26,6 @@ export class Lobby {
         }
     }
     lobbyGetRoom(player: PlayerGlobal) {
-        console.log("lobbyGetRoom  ", player);
-        
         return {
             name: this.name,
             creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
