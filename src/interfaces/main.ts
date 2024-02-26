@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io';
+import { Game } from './mucnhkin';
 
 export class Lobby {
     constructor(name: string, max: number, creator: Socket | undefined, nickname: string) {
@@ -10,7 +11,6 @@ export class Lobby {
             socket: creator
         };
     }
-    readonly lobby = true;
     readonly name: string
     readonly creator: {name : string, socket: Socket | undefined}
     private players: PlayerLobby[]
@@ -75,7 +75,11 @@ export class Lobby {
     setSex(player: Socket, d: "Мужчина" | "Женщина") {
         this.players.find(el => el.player.socket.id == player.id).sex = d;
     }
+    createGame() {
+        
+    }
 }
+
 export class PlayerGlobal { 
     constructor(socket: Socket, name: string = "") {
         this.socket = socket
@@ -84,7 +88,7 @@ export class PlayerGlobal {
     }
     socket: Socket | null;
     readonly name: string;
-    position: "home" | "game" | Lobby //  "nickname" |
+    position: "home" | Game | Lobby //  "nickname" |
     // setName(newNick: string) {
     //     if (this.position != "nickname" && this.position != "home") {
     //         return "Сейчас невозможно сменить ник"
@@ -96,17 +100,17 @@ export class PlayerGlobal {
     //     return "home";
     // }
     outLobby() {
-        if (typeof this.position != "string") {
+        if (this.position instanceof Lobby) {
             this.position.out(this);
             this.position = "home";
             return true;
         }
     }
     getPositionStr(): "home" | "game" | "lobby" {
-        if (typeof this.position == "string") {
-            return this.position
+        if (this.position == "home") {
+            return "home"
         }
-        else if (this.position.lobby) {
+        else if (this.position instanceof Lobby) {
             return "lobby"
         }
         else {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Lobby, PlayerGlobal } from '../interfaces';
+import { Lobby, PlayerGlobal } from '../../interfaces/main';
 import { Socket } from "socket.io"
 import { DataService } from '../data/data.service';
 @Injectable()
