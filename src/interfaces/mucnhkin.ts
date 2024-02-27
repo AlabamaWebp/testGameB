@@ -1,5 +1,10 @@
 import { PlayerGlobal } from "./main";
 
+export interface defsData {
+    player?: PlayerGame
+    game?: Game
+}
+
 export class Game {
     constructor(name: string, players: PlayerGame[]) {
         this.name = name;
@@ -29,15 +34,13 @@ export class Game {
 export class PlayerGame {
     constructor(player: PlayerGlobal, sex: "Мужчина" | "Женщина") {
         this.lvl = 1;
-        this.boost = 0;
         this.player = player;
         this.sex = sex;
-        this.field_cards = [];
         this.alive = true;
     }
     private lvl: number;
-    private boost: number;
-    private field_cards: any;
+    // private boost: number;
+    field_cards: fieldCards;
     private alive: boolean;
 
     readonly player: PlayerGlobal;
@@ -49,8 +52,16 @@ export class PlayerGame {
         if (this.lvl > 10) {
             // победа
         }
-
     }
+}
+interface fieldCards {
+    helmet?: TreasureCard
+    body?: TreasureCard
+    legs?: TreasureCard
+    arm?: TreasureCard[]
+    other?: TreasureCard[]
+    rasses?: RassCard[]
+    classes?: ClassCard[]
 }
 class AbstractCard {
     constructor(
@@ -71,7 +82,7 @@ export class TreasureCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
-        data: TreasureData,
+        data: TreasureData = undefined,
         strongest: number | undefined = undefined,
         img: string = ""
     ) {
@@ -84,14 +95,16 @@ export class TreasureCard extends AbstractCard {
 }
 
 export interface TreasureData {
-    template: "Шлем" | "Тело" | "Ноги" | "Рука" 
+    template?: "Шлем" | "Броник" | "Ноги" | "Рука" 
     | "2 Руки" | "3 Руки" | "Рядом" | undefined
 
-    cost: number | undefined
-    defs: TreasureDefs | undefined
+    cost?: number | undefined
+    defs?: TreasureDefs | undefined
+    big?: boolean | undefined
 }
 export interface TreasureDefs {
-    condition: () => boolean
+    condition?: (defs: defsData) => boolean
+    action?: (defs: defsData) => void
 }
 
 export class MonsterCard extends AbstractCard {
@@ -118,10 +131,10 @@ export class MonsterCard extends AbstractCard {
     defs: MonsterDefs;
 }
 export interface MonsterDefs {
-    punishment?: () => void | undefined,
-    startActions?: () => void | undefined,
-    winActions?: () => void | undefined,
-    beforeSmivka?: () => void | undefined,
+    punishment?: (defs: defsData) => void | undefined,
+    startActions?: (defs: defsData) => void | undefined,
+    winActions?: (defs: defsData) => void | undefined,
+    beforeSmivka?: (defs: defsData) => void | undefined,
     // https://metanit.com/web/javascript/4.8.php .call() для функции
 }
 
@@ -129,14 +142,14 @@ export class CourseCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
-        action: (player: PlayerGame) => void,
+        action: (defs: defsData) => void,
 
         img: string = ""
     ) {
         super({name, description, type: "Проклятие", img});
         this.action = action;
     }
-    action: (player: PlayerGame) => void;
+    action: (defs: defsData) => void;
 }
 
 export class ClassCard extends AbstractCard {
