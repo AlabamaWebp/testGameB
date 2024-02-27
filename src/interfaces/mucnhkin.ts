@@ -54,25 +54,44 @@ export class PlayerGame {
 }
 class AbstractCard {
     constructor(
-        name: string,
-        description: string,
-        type: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище",
-        img: string | undefined = undefined,
+        data: AbstractData
     ) {
-        this.name = name;
-        this.description = description;
-        this.type = type;
-        this.img = img;
+        this.abstractData = data
     }
+    abstractData: AbstractData
+}
+export interface AbstractData {
     name: string;
     description: string;
-    img: string;
     type: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
+    img: string;
 }
+// Bonus Ability Fight
 export class TreasureCard extends AbstractCard {
-    strong: number = 0
-    cost: number = 0
-    template: string
+    constructor(
+        name: string,
+        description: string,
+        data: TreasureData,
+        strongest: number | undefined = undefined,
+        img: string = ""
+    ) {
+        super({name, description, type: "Сокровище", img});
+        this.data = data;
+        this.strong = strongest;
+    }
+    strong: number | undefined;
+    data: TreasureData;
+}
+
+export interface TreasureData {
+    template: "Шлем" | "Тело" | "Ноги" | "Рука" 
+    | "2 Руки" | "3 Руки" | "Рядом" | undefined
+
+    cost: number | undefined
+    defs: TreasureDefs | undefined
+}
+export interface TreasureDefs {
+    condition: () => boolean
 }
 
 export class MonsterCard extends AbstractCard {
@@ -82,30 +101,28 @@ export class MonsterCard extends AbstractCard {
         lvl: number,
         gold: number,
         undead: boolean,
-        punishment: (player: PlayerGame) => void = undefined,
-        startActions: (player: PlayerGame) => void = undefined,
-        winActions: (player: PlayerGame) => void = undefined,
-        beforeSmivka: (player: PlayerGame) => void = undefined,
+        defs: MonsterDefs,
         img: string = ""
     ) {
-        super(name, description, "Монстр", img);
+        super({name, description, type: "Монстр", img});
         this.lvl = lvl;
         this.strongest = lvl;
         this.gold = gold;
         this.undead = undead;
-        this.punishment = punishment;
-        this.startActions = startActions;
-        this.winActions = winActions;
-        this.beforeSmivka = beforeSmivka;
+        this.defs = defs;
     }
     lvl: number;
     strongest: number;
     gold: number;
     undead: boolean;
-    punishment: (player: PlayerGame) => void | undefined;
-    startActions: (player: PlayerGame) => void | undefined;
-    winActions: (player: PlayerGame) => void | undefined;
-    beforeSmivka: (player: PlayerGame) => void | undefined;
+    defs: MonsterDefs;
+}
+export interface MonsterDefs {
+    punishment?: () => void | undefined,
+    startActions?: () => void | undefined,
+    winActions?: () => void | undefined,
+    beforeSmivka?: () => void | undefined,
+    // https://metanit.com/web/javascript/4.8.php .call() для функции
 }
 
 export class CourseCard extends AbstractCard {
@@ -116,7 +133,7 @@ export class CourseCard extends AbstractCard {
 
         img: string = ""
     ) {
-        super(name, description, "Класс", img);
+        super({name, description, type: "Проклятие", img});
         this.action = action;
     }
     action: (player: PlayerGame) => void;
@@ -129,7 +146,7 @@ export class ClassCard extends AbstractCard {
 
         img: string = ""
     ) {
-        super(name, description, "Класс", img);
+        super({name, description, type: "Класс", img});
     }
 }
 export class RassCard extends AbstractCard {
@@ -139,6 +156,6 @@ export class RassCard extends AbstractCard {
 
         img: string = ""
     ) {
-        super(name, description, "Раса", img);
+        super({name, description, type: "Раса", img});
     }
 }

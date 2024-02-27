@@ -7,10 +7,7 @@ export const MONSTERS: MonsterCard[] = [
         1,
         1,
         false,
-        undefined,
-        undefined, // Если эльф + сокровище
-        undefined,
-        undefined,
+        {}, // Если эльф + сокровище
         ""
     ),
     new MonsterCard(
@@ -19,11 +16,7 @@ export const MONSTERS: MonsterCard[] = [
         10,  // lvl
         3,  // gold
         false, // undead
-        undefined, // punishment 
-        // кубик, 2 и меньше смерть иначе потеря уровней сколько выпало
-        undefined, // startActions
-        undefined, // winActions
-        undefined, // beforeSmivka
+        {}, // кубик, 2 и меньше смерть иначе потеря уровней сколько выпало
         "", // img
     ),
     new MonsterCard(
@@ -32,11 +25,7 @@ export const MONSTERS: MonsterCard[] = [
         2,  // lvl
         1,  // gold
         true, // undead
-        undefined, // punishment 
-        // -2 lvl
-        undefined, // startActions
-        undefined, // winActions
-        undefined, // beforeSmivka
+        {}, // -2 lvl
         "", // img
     ),
 ]
