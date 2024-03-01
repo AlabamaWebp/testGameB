@@ -33,17 +33,45 @@ export class Game {
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] };
-    private step: 0 | 1 | 2 = 0; // перед боем | бой | после боя
+    private step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
     private queue: number = 0;
     private is_fight: boolean;
     private log: string[];
     private number_log: number = 2;
 
-    PlayerGetDoor(player: Socket) {
-        
+    private getDoor() {
+        return this.cards.doors.pop();
+    }
+    private getPlBySocket(player: Socket) {
+        return this.players.find(el => el.player.socket = player)
+    }
+    playerGetClosedDoor(player: Socket) {
+        const pl = this.getPlBySocket(player);
+        if (this.step == 2
+            && pl == this.players[this.queue]
+        ) {
+            const card = this.getDoor()
+            pl.cards.push(card);
+            this.logging(pl.player.name + " берёт дверь в закрытую");
+            this.onePlayerRefresh(pl);
+        }
+    }
+    playerGetOpenDoor(player: Socket) {
+        const pl = this.getPlBySocket(player);
+        if (this.step == 0
+            && pl == this.players[this.queue]
+        ) {
+            const card = this.getDoor();
+            pl.cards.push(card);
+            this.logging(pl.player.name + " берёт дверь в открытую");
+            this.onePlayerRefresh(pl);
+        }
     }
 
-    private getDataForPlayer(player: PlayerGlobal) {
+
+
+
+    private getMainForPlayer(player: PlayerGlobal) {
         const plg = this.players.find(el => el.player == player)
         const pls = this.players
             .filter(el => el.player != player)
@@ -72,12 +100,34 @@ export class Game {
     }
     private logging(l: string) {
         l = l.toString();
-        this.log.push(this.number_log + ". " + l);
+        l = this.number_log + ". " + l;
+        this.log.push(l);
+        this.plusLog(l);
+    }
+
+
+    private broadcast(e: string, d: any) {
+        this.players.forEach((el: PlayerGame) => {
+            el.player.socket.emit(e, d)
+        })
     }
     private playersGameRefresh() {
         this.players.forEach((el: PlayerGame) => {
-            el.player.socket.emit("refreshGame", this.getDataForPlayer(el.player))
+            this.broadcast("refreshGame", this.getMainForPlayer(el.player))
         })
+    }
+    private onePlayerRefresh(player: PlayerGame) {
+        player.player.socket.emit("refreshGame", this.getMainForPlayer(player.player));
+    }
+
+
+    private plusLog(d: string) {
+        this.players.forEach((el: PlayerGame) => {
+            this.broadcast("plusLog", d)
+        })
+    }
+    getAllLog(player: Socket) {
+        player.emit("allLog", this.log);
     }
 }
 export class PlayerGame {
