@@ -12,11 +12,13 @@ export class Game {
         this.players = players;
         this.countPlayers = players.length;
         this.queue = players[0];
-        this.cards = [];
-        this.sbros = [];
+        // this.sbros = [];
         this.step = 0;
-        this.log = [];
+        this.log = ["1. Игра началась!"];
         this.is_fight = false;
+        
+        // this.cards = [];
+
     }
     readonly name: string;
     // readonly game: "Munchkin"
@@ -24,12 +26,28 @@ export class Game {
     readonly countPlayers: number;
     private queue: PlayerGame;
 
-    private cards: { doors: any, treasures: any }[];
-    private sbros: { doors: any, treasures: any }[];
+    private cards: { doors: any[], treasures: any[] };
+    private sbros: { doors: any[], treasures: any[] };
     private step: 0 | 1 | 2; // перед боем, бой, после боя
     private is_fight: boolean;
-    private log: string[]
-
+    private log: string[];
+    private number_log: number = 2;
+    getDataForPlayer() {
+        return {
+            q: this.queue,
+            s: this.step,
+            isf: this.is_fight
+        }
+    }
+    logging(l: string) {
+        l = l.toString();
+        this.log.push(this.number_log + ". " + l);
+    }
+    playersGameRefresh() {
+        this.players.forEach((el: PlayerGame) => {
+            el.player.socket.emit()
+        })
+    }
 }
 export class PlayerGame {
     constructor(player: PlayerGlobal, sex: "Мужчина" | "Женщина") {
@@ -39,7 +57,6 @@ export class PlayerGame {
         this.alive = true;
     }
     private lvl: number;
-    // private boost: number;
     field_cards: fieldCards;
     private alive: boolean;
 
