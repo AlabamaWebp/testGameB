@@ -74,7 +74,7 @@ class AbstractCard {
 export interface AbstractData {
     name: string;
     description: string;
-    type: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
+    cardType: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
     img: string;
 }
 // Bonus Ability Fight
@@ -86,7 +86,7 @@ export class TreasureCard extends AbstractCard {
         strongest: number | undefined = undefined,
         img: string = ""
     ) {
-        super({name, description, type: "Сокровище", img});
+        super({name, description, cardType: "Сокровище", img});
         this.data = data;
         this.strong = strongest;
     }
@@ -95,6 +95,8 @@ export class TreasureCard extends AbstractCard {
 }
 
 export interface TreasureData {
+    treasureType: "Надеваемая" | "Используемая" | "Боевая"
+
     template?: "Шлем" | "Броник" | "Ноги" | "Рука" 
     | "2 Руки" | "3 Руки" | "Рядом" | undefined
 
@@ -117,7 +119,7 @@ export class MonsterCard extends AbstractCard {
         defs: MonsterDefs,
         img: string = ""
     ) {
-        super({name, description, type: "Монстр", img});
+        super({name, description, cardType: "Монстр", img});
         this.lvl = lvl;
         this.strongest = lvl;
         this.gold = gold;
@@ -146,7 +148,7 @@ export class CourseCard extends AbstractCard {
 
         img: string = ""
     ) {
-        super({name, description, type: "Проклятие", img});
+        super({name, description, cardType: "Проклятие", img});
         this.action = action;
     }
     action: (defs: defsData) => void;
@@ -159,7 +161,7 @@ export class ClassCard extends AbstractCard {
 
         img: string = ""
     ) {
-        super({name, description, type: "Класс", img});
+        super({name, description, cardType: "Класс", img});
     }
 }
 export class RassCard extends AbstractCard {
@@ -169,6 +171,6 @@ export class RassCard extends AbstractCard {
 
         img: string = ""
     ) {
-        super({name, description, type: "Раса", img});
+        super({name, description, cardType: "Раса", img});
     }
 }

@@ -5,6 +5,7 @@ export const TREASURES: TreasureCard[] = [
         "Шипастые коленки",
         "",
         {
+            treasureType: "Надеваемая",
             template: "Рядом",
             cost: 200,
         },
@@ -14,6 +15,7 @@ export const TREASURES: TreasureCard[] = [
         "Слизистая оболочка",
         "",
         {
+            treasureType: "Надеваемая",
             template: "Броник",
             cost: 200,
         },
@@ -23,6 +25,7 @@ export const TREASURES: TreasureCard[] = [
         "Башмаки могучего пенделя",
         "",
         {
+            treasureType: "Надеваемая",
             template: "Броник",
             cost: 400,
         },
@@ -32,6 +35,7 @@ export const TREASURES: TreasureCard[] = [
         "Огромный камень",
         "",
         {
+            treasureType: "Надеваемая",
             template: "2 Руки",
             big: true
         },
@@ -41,6 +45,7 @@ export const TREASURES: TreasureCard[] = [
         "Закорми мастера",
         "",
         {
+            treasureType: "Используемая",
             defs: {
                 action: (defs) => { defs.player.changeLvl(1) }
             }
@@ -50,6 +55,7 @@ export const TREASURES: TreasureCard[] = [
         "Примени непонятные правила",
         "",
         {
+            treasureType: "Используемая",
             defs: {
                 action: (defs) => { defs.player.changeLvl(1) }
             }
@@ -59,6 +65,7 @@ export const TREASURES: TreasureCard[] = [
         "Коротышные латы",
         "Только для дварфов",
         {
+            treasureType: "Надеваемая",
             defs: {
                 condition: (defs) => {
                     return defs.player.field_cards.rasses.some(el => el.abstractData.name == "Дварф")
