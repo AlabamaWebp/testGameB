@@ -99,8 +99,8 @@ export class TreasureCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
-        data: TreasureData = undefined,
-        strongest: number | undefined = undefined,
+        data?: TreasureData,
+        strongest?: number,
         img: string = ""
     ) {
         super({name, description, cardType: "Сокровище", img});

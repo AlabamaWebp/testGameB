@@ -73,4 +73,13 @@ export const TREASURES: TreasureCard[] = [
             }
         },
     ),
+    new TreasureCard(
+        "Лучок с ленточками",
+        "",
+        {
+            treasureType: "Надеваемая",
+            template: "2 Руки"
+        },
+        4
+    ),
 ]
