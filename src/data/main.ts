@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { Game } from './mucnhkin';
+import { Game, PlayerGame } from './mucnhkin';
 
 export class Lobby {
     constructor(name: string, max: number, creator: Socket | undefined, nickname: string) {
@@ -71,12 +71,16 @@ export class Lobby {
     }
     setReady(player: Socket,d: boolean) {
         this.players.find(el => el.player.socket.id == player.id).ready = d;
+        this.players.every(el => el.ready) ? this.createGame() : 0;
     }
     setSex(player: Socket, d: "Мужчина" | "Женщина") {
         this.players.find(el => el.player.socket.id == player.id).sex = d;
     }
     createGame() {
-        
+        const pls = this.players.map(el => {
+            return new PlayerGame(el.player, el.sex);
+        })
+        return true;
     }
 }
 

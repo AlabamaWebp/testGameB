@@ -24,6 +24,7 @@ export function p_getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
         .flat()
         .map(el => el.getData());
 }
+
 /// game
 export function fillId() {
     let id = 0;

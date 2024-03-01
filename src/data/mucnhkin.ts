@@ -8,6 +8,7 @@ import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
 import { fillId, p_getFieldCards, playersGetCard, shuffle } from "./munchkin/functions";
 import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards } from "./munchkin/interfaces";
+import { Socket } from "socket.io";
 
 export class Game {
     constructor(name: string, players: PlayerGame[]) {
@@ -23,7 +24,7 @@ export class Game {
         }
         fillId.call(this);
         playersGetCard.call(this);
-        
+
     }
 
     readonly plcount: number;
@@ -38,8 +39,8 @@ export class Game {
     private log: string[];
     private number_log: number = 2;
 
-    PlayerGetCard() {
-
+    PlayerGetDoor(player: Socket) {
+        
     }
 
     private getDataForPlayer(player: PlayerGlobal) {
