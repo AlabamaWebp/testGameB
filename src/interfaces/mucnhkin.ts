@@ -11,9 +11,6 @@ export class Game {
         // this.game = "Munchkin"
         this.players = players;
         this.countPlayers = players.length;
-        this.queue = players[0];
-        // this.sbros = [];
-        this.step = 0;
         this.log = ["1. Игра началась!"];
         this.is_fight = false;
 
@@ -24,19 +21,38 @@ export class Game {
     // readonly game: "Munchkin"
     private players: PlayerGame[];
     readonly countPlayers: number;
-    private queue: PlayerGame;
 
-    private cards: { doors: any[], treasures: any[] };
-    private sbros: { doors: any[], treasures: any[] };
-    private step: 0 | 1 | 2; // перед боем, бой, после боя
+    private cards: { doors: TreasureCard[], treasures: DoorsCard[] };
+    private sbros: { doors: TreasureCard[], treasures: DoorsCard[] };
+    private step: 0 | 1 | 2 = 0; // перед боем, бой, после боя
+    private queue: number = 0;
     private is_fight: boolean;
     private log: string[];
     private number_log: number = 2;
-    getDataForPlayer() {
+    getDataForPlayer(player: PlayerGlobal) {
+        const plg = this.players.find(el => el.player == player)
+        const pls = this.players
+            .filter(el => el.player != player)
+            .map((el: PlayerGame) => {
+                return {
+                    name: el.player.name,
+                    lvl: el.lvl,
+                    sex: el.sex,
+                    field_cards: el.field_cards
+                }
+            })
         return {
             queue: this.queue,
             step: this.step,
             is_fight: this.is_fight,
+            sbros:
+            {
+                doors: this.sbros.doors[this.sbros.doors.length],
+                treasures: this.sbros.treasures[this.sbros.treasures.length]
+            },
+            log: this.log,
+            players: pls,
+            you: plg
 
         }
     }
@@ -57,7 +73,7 @@ export class PlayerGame {
         this.sex = sex;
         this.alive = true;
     }
-    private lvl: number;
+    lvl: number;
     field_cards: fieldCards;
     private alive: boolean;
 
@@ -110,6 +126,21 @@ export class TreasureCard extends AbstractCard {
     }
     strong: number | undefined;
     data: TreasureData;
+    getData() {
+        return {
+            name: this.abstractData.name,
+            desciption: this.abstractData.description,
+            cardType: this.abstractData.cardType,
+            strongest: this.strong,
+            treasureType: ,
+
+            template?: ,
+        
+            cost?: ,
+            big?: ,
+            img: this.abstractData.img
+        }
+    }
 }
 
 export interface TreasureData {
@@ -142,8 +173,8 @@ export class DoorsCard extends AbstractCard {
     ) {
         super({ name, description, cardType: type, img });
         monster ? this.monsterData = {
-            lvl: monster.lvl, 
-            strongest: monster.lvl, 
+            lvl: monster.lvl,
+            strongest: monster.lvl,
             gold: monster.gold,
             undead: monster.undead ? true : false
         } : 0;
