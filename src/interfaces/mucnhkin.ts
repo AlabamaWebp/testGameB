@@ -55,9 +55,9 @@ export class PlayerGame {
     }
 }
 interface fieldCards {
-    helmet?: TreasureCard
-    body?: TreasureCard
-    legs?: TreasureCard
+    helmet?: TreasureCard[]
+    body?: TreasureCard[]
+    legs?: TreasureCard[]
     arm?: TreasureCard[]
     other?: TreasureCard[]
     rasses?: RassCard[]
