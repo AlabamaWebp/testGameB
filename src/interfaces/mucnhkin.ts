@@ -17,22 +17,18 @@ export interface defsData {
 // }
 const shuffle = (array) => {
     let m = array.length, t, i;
-
     // Пока есть элементы для перемешивания
     while (m) {
-
         // Взять оставшийся элемент
         i = Math.floor(Math.random() * m--);
-
         // И поменять его местами с текущим элементом
         t = array[m];
         array[m] = array[i];
         array[i] = t;
     }
-
     return array;
 }
-function getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
+function p_getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
     const fields = Object.keys(cards);
     return fields
         .map(e => cards[e])
@@ -45,18 +41,25 @@ export class Game {
         this.name = name;
         // this.game = "Munchkin"
         this.players = players;
-        this.countPlayers = players.length;
+        this.plcount = players.length;
         this.log = ["1. Игра началась!"];
         this.is_fight = false;
         this.cards = {
             doors: shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES)),
             treasures: shuffle(EQUIPMENT.concat(USED).concat(COMBAT))
         }
+        this.players.forEach(el => {
+            for (let i = 0; i < 4; i++) {
+                el.cards.push(this.cards.treasures.pop());
+                el.cards.push(this.cards.doors.pop());
+            }
+        })
     }
+    
+    readonly plcount: number;
     readonly name: string;
     // readonly game: "Munchkin"
     private players: PlayerGame[];
-    readonly countPlayers: number;
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] };
@@ -75,12 +78,12 @@ export class Game {
                     name: el.player.name,
                     lvl: el.lvl,
                     sex: el.sex,
-                    t_field: getFieldCards(el.t_field_cards),
-                    d_field: getFieldCards(el.d_field_cards)
+                    t_field: p_getFieldCards(el.t_field_cards),
+                    d_field: p_getFieldCards(el.d_field_cards)
                 }
             })
         return {
-            queue: this.queue,
+            queue: this.players[this.queue],
             step: this.step,
             is_fight: this.is_fight,
             sbros:
@@ -114,7 +117,9 @@ export class PlayerGame {
     t_field_cards: fieldTreasureCards;
     d_field_cards: fieldDoorCards;
 
-    private alive: boolean;
+    cards: (TreasureCard | DoorsCard)[];
+
+    alive: boolean;
 
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
