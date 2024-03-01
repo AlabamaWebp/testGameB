@@ -16,7 +16,7 @@ export class Game {
         this.step = 0;
         this.log = ["1. Игра началась!"];
         this.is_fight = false;
-        
+
         // this.cards = [];
 
     }
@@ -34,9 +34,10 @@ export class Game {
     private number_log: number = 2;
     getDataForPlayer() {
         return {
-            q: this.queue,
-            s: this.step,
-            isf: this.is_fight
+            queue: this.queue,
+            step: this.step,
+            is_fight: this.is_fight,
+
         }
     }
     logging(l: string) {
@@ -77,8 +78,8 @@ interface fieldCards {
     legs?: TreasureCard[]
     arm?: TreasureCard[]
     other?: TreasureCard[]
-    rasses?: RassCard[]
-    classes?: ClassCard[]
+    rasses?: DoorsCard[]
+    classes?: DoorsCard[]
 }
 class AbstractCard {
     constructor(
@@ -92,7 +93,7 @@ export interface AbstractData {
     name: string;
     description: string;
     cardType: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
-    img: string;
+    img?: string;
 }
 // Bonus Ability Fight
 export class TreasureCard extends AbstractCard {
@@ -103,7 +104,7 @@ export class TreasureCard extends AbstractCard {
         strongest?: number,
         img: string = ""
     ) {
-        super({name, description, cardType: "Сокровище", img});
+        super({ name, description, cardType: "Сокровище", img });
         this.data = data;
         this.strong = strongest;
     }
@@ -114,7 +115,7 @@ export class TreasureCard extends AbstractCard {
 export interface TreasureData {
     treasureType: "Надеваемая" | "Используемая" | "Боевая"
 
-    template?: "Шлем" | "Броник" | "Ноги" | "Рука" 
+    template?: "Шлем" | "Броник" | "Ноги" | "Рука"
     | "2 Руки" | "3 Руки" | "Рядом" | undefined
 
     cost?: number | undefined
@@ -126,68 +127,42 @@ export interface TreasureDefs {
     action?: (defs: defsData) => void
 }
 
-export class MonsterCard extends AbstractCard {
+export class DoorsCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
-        lvl: number,
-        gold: number,
-        undead: boolean,
-        defs: MonsterDefs,
-        img: string = ""
+        type: "Класс" | "Раса" | "Проклятие" | "Монстр",
+        monster?: {
+            lvl: number,
+            gold: number,
+            undead?: boolean,
+        },
+        defs?: DoorsDefs,
+        img?: string
     ) {
-        super({name, description, cardType: "Монстр", img});
-        this.lvl = lvl;
-        this.strongest = lvl;
-        this.gold = gold;
-        this.undead = undead;
+        super({ name, description, cardType: type, img });
+        monster ? this.monsterData = {
+            lvl: monster.lvl, 
+            strongest: monster.lvl, 
+            gold: monster.gold,
+            undead: monster.undead ? true : false
+        } : 0;
         this.defs = defs;
     }
+    monsterData?: MonsterData;
+    defs: DoorsDefs;
+}
+export interface DoorsDefs {
+    punishment?: (defs: defsData) => void,
+    startActions?: (defs: defsData) => void,
+    winActions?: (defs: defsData) => void,
+    beforeSmivka?: (defs: defsData) => void,
+    action?: (defs: defsData) => void,
+    // https://metanit.com/web/javascript/4.8.php .call() для функции
+}
+export interface MonsterData {
     lvl: number;
     strongest: number;
     gold: number;
     undead: boolean;
-    defs: MonsterDefs;
-}
-export interface MonsterDefs {
-    punishment?: (defs: defsData) => void | undefined,
-    startActions?: (defs: defsData) => void | undefined,
-    winActions?: (defs: defsData) => void | undefined,
-    beforeSmivka?: (defs: defsData) => void | undefined,
-    // https://metanit.com/web/javascript/4.8.php .call() для функции
-}
-
-export class CourseCard extends AbstractCard {
-    constructor(
-        name: string,
-        description: string,
-        action: (defs: defsData) => void,
-
-        img: string = ""
-    ) {
-        super({name, description, cardType: "Проклятие", img});
-        this.action = action;
-    }
-    action: (defs: defsData) => void;
-}
-
-export class ClassCard extends AbstractCard {
-    constructor(
-        name: string,
-        description: string,
-
-        img: string = ""
-    ) {
-        super({name, description, cardType: "Класс", img});
-    }
-}
-export class RassCard extends AbstractCard {
-    constructor(
-        name: string,
-        description: string,
-
-        img: string = ""
-    ) {
-        super({name, description, cardType: "Раса", img});
-    }
 }

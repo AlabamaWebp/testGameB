@@ -1,20 +1,25 @@
-import { RassCard } from "src/interfaces/mucnhkin";
+import { DoorsCard } from "src/interfaces/mucnhkin";
 
-export const RASES: RassCard[] = [
-    new RassCard(
+const type = "Раса"
+export const RASES: DoorsCard[] = [
+    new DoorsCard(
         "Эльф",
-        "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра"
+        "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра",
+        type
     ),
-    new RassCard(
+    new DoorsCard(
         "Эльф",
-        "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра"
+        "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра",
+        type
     ),
-    new RassCard(
+    new DoorsCard(
         "Дварф",
-        "Может нести 6 карт и сколько угодно больших вещей"
-    ), new RassCard(
+        "Может нести 6 карт и сколько угодно больших вещей",
+        type
+    ), new DoorsCard(
         "Дварф",
-        "Может нести 6 карт и сколько угодно больших вещей"
+        "Может нести 6 карт и сколько угодно больших вещей",
+        type
     ),
 
 ]
