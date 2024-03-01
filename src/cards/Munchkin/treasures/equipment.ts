@@ -1,4 +1,4 @@
-import { TreasureCard, TreasureData, TreasureDefs } from "src/interfaces/mucnhkin";
+import { TreasureCard, TreasureData, TreasureDefs } from "src/data/mucnhkin";
 
 const type = "Надеваемая"
 export const EQUIPMENT: TreasureCard[] = [

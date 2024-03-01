@@ -2,7 +2,7 @@ import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDiscon
 import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
-import { Lobby, PlayerGlobal } from '../interfaces/main';
+import { Lobby, PlayerGlobal } from '../data/main';
 
 @WebSocketGateway(3001, {
   cors: {

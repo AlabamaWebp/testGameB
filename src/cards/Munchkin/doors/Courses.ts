@@ -1,4 +1,4 @@
-import { DoorsCard, defsData } from "src/interfaces/mucnhkin";
+import { DoorsCard, defsData } from "src/data/mucnhkin";
 const type = "Раса"
 export const COURSES: DoorsCard[] = [
     new DoorsCard(

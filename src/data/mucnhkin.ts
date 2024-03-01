@@ -6,35 +6,8 @@ import { RASES } from "src/cards/Munchkin/doors/Rases";
 import { EQUIPMENT } from "src/cards/Munchkin/treasures/equipment";
 import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
-
-export interface defsData {
-    player?: PlayerGame
-    game?: Game
-}
-
-// function shuffle(array: any) {
-//     return array.sort(() => Math.random() - 0.5);
-// }
-const shuffle = (array) => {
-    let m = array.length, t, i;
-    // Пока есть элементы для перемешивания
-    while (m) {
-        // Взять оставшийся элемент
-        i = Math.floor(Math.random() * m--);
-        // И поменять его местами с текущим элементом
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-    }
-    return array;
-}
-function p_getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
-    const fields = Object.keys(cards);
-    return fields
-        .map(e => cards[e])
-        .flat()
-        .map(el => el.getData());
-}
+import { fillId, p_getFieldCards, shuffle } from "./munchkin/functions";
+import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards } from "./munchkin/interfaces";
 
 export class Game {
     constructor(name: string, players: PlayerGame[]) {
@@ -48,6 +21,7 @@ export class Game {
             doors: shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES)),
             treasures: shuffle(EQUIPMENT.concat(USED).concat(COMBAT))
         }
+        fillId.call(this);
         this.players.forEach(el => {
             for (let i = 0; i < 4; i++) {
                 el.cards.push(this.cards.treasures.pop());
@@ -55,10 +29,9 @@ export class Game {
             }
         })
     }
-    
+
     readonly plcount: number;
     readonly name: string;
-    // readonly game: "Munchkin"
     private players: PlayerGame[];
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
@@ -69,7 +42,11 @@ export class Game {
     private log: string[];
     private number_log: number = 2;
 
-    getDataForPlayer(player: PlayerGlobal) {
+    PlayerGetCard() {
+
+    }
+
+    private getDataForPlayer(player: PlayerGlobal) {
         const plg = this.players.find(el => el.player == player)
         const pls = this.players
             .filter(el => el.player != player)
@@ -96,11 +73,11 @@ export class Game {
             you: plg
         }
     }
-    logging(l: string) {
+    private logging(l: string) {
         l = l.toString();
         this.log.push(this.number_log + ". " + l);
     }
-    playersGameRefresh() {
+    private playersGameRefresh() {
         this.players.forEach((el: PlayerGame) => {
             el.player.socket.emit("refreshGame", this.getDataForPlayer(el.player))
         })
@@ -132,31 +109,17 @@ export class PlayerGame {
         }
     }
 }
-interface fieldTreasureCards {
-    helmet?: TreasureCard[]
-    body?: TreasureCard[]
-    legs?: TreasureCard[]
-    arm?: TreasureCard[]
-    other?: TreasureCard[]
-}
-interface fieldDoorCards {
-    rasses?: DoorsCard[]
-    classes?: DoorsCard[]
-}
+
 class AbstractCard {
     constructor(
         data: AbstractData
     ) {
         this.abstractData = data
     }
-    abstractData: AbstractData
+    abstractData: AbstractData;
+    id: number;
 }
-export interface AbstractData {
-    name: string;
-    description: string;
-    cardType: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
-    img?: string;
-}
+
 // Bonus Ability Fight
 export class TreasureCard extends AbstractCard {
     constructor(
@@ -190,21 +153,6 @@ export class TreasureCard extends AbstractCard {
     }
 }
 
-export interface TreasureData {
-    treasureType: "Надеваемая" | "Используемая" | "Боевая"
-
-    template?: "Шлем" | "Броник" | "Ноги" | "Рука"
-    | "2 Руки" | "3 Руки" | "Рядом" | undefined
-
-    cost?: number | undefined
-    defs?: TreasureDefs | undefined
-    big?: boolean | undefined
-}
-export interface TreasureDefs {
-    condition?: (defs: defsData) => boolean
-    action?: (defs: defsData) => void
-}
-
 export class DoorsCard extends AbstractCard {
     constructor(
         name: string,
@@ -229,18 +177,4 @@ export class DoorsCard extends AbstractCard {
     }
     monsterData?: MonsterData;
     defs: DoorsDefs;
-}
-export interface DoorsDefs {
-    punishment?: (defs: defsData) => void,
-    startActions?: (defs: defsData) => void,
-    winActions?: (defs: defsData) => void,
-    beforeSmivka?: (defs: defsData) => void,
-    action?: (defs: defsData) => void,
-    // https://metanit.com/web/javascript/4.8.php .call() для функции
-}
-export interface MonsterData {
-    lvl: number;
-    strongest: number;
-    gold: number;
-    undead: boolean;
 }
