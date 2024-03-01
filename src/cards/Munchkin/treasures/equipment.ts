@@ -1,11 +1,12 @@
 import { TreasureCard, TreasureData, TreasureDefs } from "src/interfaces/mucnhkin";
 
-export const TREASURES: TreasureCard[] = [
+const type = "Надеваемая"
+export const EQUIPMENT: TreasureCard[] = [
     new TreasureCard(
         "Шипастые коленки",
         "",
         {
-            treasureType: "Надеваемая",
+            treasureType: type,
             template: "Рядом",
             cost: 200,
         },
@@ -15,7 +16,7 @@ export const TREASURES: TreasureCard[] = [
         "Слизистая оболочка",
         "",
         {
-            treasureType: "Надеваемая",
+            treasureType: type,
             template: "Броник",
             cost: 200,
         },
@@ -25,7 +26,7 @@ export const TREASURES: TreasureCard[] = [
         "Башмаки могучего пенделя",
         "",
         {
-            treasureType: "Надеваемая",
+            treasureType: type,
             template: "Броник",
             cost: 400,
         },
@@ -35,40 +36,20 @@ export const TREASURES: TreasureCard[] = [
         "Огромный камень",
         "",
         {
-            treasureType: "Надеваемая",
+            treasureType: type,
             template: "2 Руки",
             big: true
         },
         3
     ),
     new TreasureCard(
-        "Закорми мастера",
-        "",
-        {
-            treasureType: "Используемая",
-            defs: {
-                action: (defs) => { defs.player.changeLvl(1) }
-            }
-        },
-    ),
-    new TreasureCard(
-        "Примени непонятные правила",
-        "",
-        {
-            treasureType: "Используемая",
-            defs: {
-                action: (defs) => { defs.player.changeLvl(1) }
-            }
-        },
-    ),
-    new TreasureCard(
         "Коротышные латы",
         "Только для дварфов",
         {
-            treasureType: "Надеваемая",
+            treasureType: type,
             defs: {
                 condition: (defs) => {
-                    return defs.player.field_cards.rasses.some(el => el.abstractData.name == "Дварф")
+                    return defs.player.d_field_cards.rasses.some(el => el.abstractData.name == "Дварф")
                 }
             }
         },
@@ -77,7 +58,7 @@ export const TREASURES: TreasureCard[] = [
         "Лучок с ленточками",
         "",
         {
-            treasureType: "Надеваемая",
+            treasureType: type,
             template: "2 Руки"
         },
         4

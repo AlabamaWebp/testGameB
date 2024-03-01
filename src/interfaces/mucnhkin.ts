@@ -1,8 +1,43 @@
+import { CLASSES } from "src/cards/Munchkin/doors/Classes";
 import { PlayerGlobal } from "./main";
+import { COURSES } from "src/cards/Munchkin/doors/Courses";
+import { MONSTERS } from "src/cards/Munchkin/doors/Monsters";
+import { RASES } from "src/cards/Munchkin/doors/Rases";
+import { EQUIPMENT } from "src/cards/Munchkin/treasures/equipment";
+import { USED } from "src/cards/Munchkin/treasures/used";
+import { COMBAT } from "src/cards/Munchkin/treasures/combat";
 
 export interface defsData {
     player?: PlayerGame
     game?: Game
+}
+
+// function shuffle(array: any) {
+//     return array.sort(() => Math.random() - 0.5);
+// }
+const shuffle = (array) => {
+    let m = array.length, t, i;
+
+    // Пока есть элементы для перемешивания
+    while (m) {
+
+        // Взять оставшийся элемент
+        i = Math.floor(Math.random() * m--);
+
+        // И поменять его местами с текущим элементом
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+    }
+
+    return array;
+}
+function getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
+    const fields = Object.keys(cards);
+    return fields
+        .map(e => cards[e])
+        .flat()
+        .map(el => el.getData());
 }
 
 export class Game {
@@ -13,22 +48,24 @@ export class Game {
         this.countPlayers = players.length;
         this.log = ["1. Игра началась!"];
         this.is_fight = false;
-
-        // this.cards = [];
-
+        this.cards = {
+            doors: shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES)),
+            treasures: shuffle(EQUIPMENT.concat(USED).concat(COMBAT))
+        }
     }
     readonly name: string;
     // readonly game: "Munchkin"
     private players: PlayerGame[];
     readonly countPlayers: number;
 
-    private cards: { doors: TreasureCard[], treasures: DoorsCard[] };
-    private sbros: { doors: TreasureCard[], treasures: DoorsCard[] };
-    private step: 0 | 1 | 2 = 0; // перед боем, бой, после боя
+    private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
+    private sbros: { doors: DoorsCard[], treasures: TreasureCard[] };
+    private step: 0 | 1 | 2 = 0; // перед боем | бой | после боя
     private queue: number = 0;
     private is_fight: boolean;
     private log: string[];
     private number_log: number = 2;
+
     getDataForPlayer(player: PlayerGlobal) {
         const plg = this.players.find(el => el.player == player)
         const pls = this.players
@@ -38,7 +75,8 @@ export class Game {
                     name: el.player.name,
                     lvl: el.lvl,
                     sex: el.sex,
-                    field_cards: el.field_cards
+                    t_field: getFieldCards(el.t_field_cards),
+                    d_field: getFieldCards(el.d_field_cards)
                 }
             })
         return {
@@ -53,7 +91,6 @@ export class Game {
             log: this.log,
             players: pls,
             you: plg
-
         }
     }
     logging(l: string) {
@@ -62,7 +99,7 @@ export class Game {
     }
     playersGameRefresh() {
         this.players.forEach((el: PlayerGame) => {
-            el.player.socket.emit()
+            el.player.socket.emit("refreshGame", this.getDataForPlayer(el.player))
         })
     }
 }
@@ -74,7 +111,9 @@ export class PlayerGame {
         this.alive = true;
     }
     lvl: number;
-    field_cards: fieldCards;
+    t_field_cards: fieldTreasureCards;
+    d_field_cards: fieldDoorCards;
+
     private alive: boolean;
 
     readonly player: PlayerGlobal;
@@ -88,12 +127,14 @@ export class PlayerGame {
         }
     }
 }
-interface fieldCards {
+interface fieldTreasureCards {
     helmet?: TreasureCard[]
     body?: TreasureCard[]
     legs?: TreasureCard[]
     arm?: TreasureCard[]
     other?: TreasureCard[]
+}
+interface fieldDoorCards {
     rasses?: DoorsCard[]
     classes?: DoorsCard[]
 }
@@ -128,17 +169,18 @@ export class TreasureCard extends AbstractCard {
     data: TreasureData;
     getData() {
         return {
-            name: this.abstractData.name,
-            desciption: this.abstractData.description,
-            cardType: this.abstractData.cardType,
+            abstractData: this.abstractData,
             strongest: this.strong,
-            treasureType: ,
-
-            template?: ,
-        
-            cost?: ,
-            big?: ,
-            img: this.abstractData.img
+            data: this.data,
+            // name: this.abstractData.name,
+            // desciption: this.abstractData.description,
+            // cardType: this.abstractData.cardType,
+            // strongest: this.strong,
+            // treasureType: this.data.treasureType,
+            // template: this.data.template,
+            // cost: this.data.cost,
+            // big: this.data.big,
+            // img: this.abstractData.img
         }
     }
 }
