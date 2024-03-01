@@ -3,6 +3,8 @@ import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
 import { Lobby, PlayerGlobal } from '../data/main';
+import { Game } from 'src/data/mucnhkin';
+import { MunchkinService } from './munchkin/munchkin.service';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -12,7 +14,7 @@ import { Lobby, PlayerGlobal } from '../data/main';
 export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
-  constructor(private data: DataService, private lobbys: LobbyService) { }
+  constructor(private data: DataService, private lobbys: LobbyService, private games: MunchkinService) { }
 
   // refreshRooms 
   handleConnection(client: Socket) {
@@ -135,21 +137,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return tmp;
   }
 
-  @SubscribeMessage('setReady')
-  setReady(
-    @MessageBody() d: boolean,
-    @ConnectedSocket() client: Socket,
-  ) {
-    if (typeof d != 'boolean') {
-      return false
-    }
-    const player = this.data.getClientById(client.id);
-    if (player.getPositionStr() == "lobby") {
-      const tmp = player.position as Lobby;
-      tmp.setReady(client, d);
-      this.lobbys.refreshOneLobby(tmp.name);
-    }
-  }
   @SubscribeMessage('setSex')
   setSex(
     @MessageBody() d: "Мужчина" | "Женщина",
@@ -175,6 +162,26 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return true;
   }
 
+  @SubscribeMessage('setReady')
+  setReady(
+    @MessageBody() d: boolean,
+    @ConnectedSocket() client: Socket,
+  ) {
+    if (typeof d != 'boolean') {
+      return false
+    }
+    const player = this.data.getClientById(client.id);
+    if (player.getPositionStr() == "lobby") {
+      const tmp = player.position as Lobby;
+      const game = tmp.setReady(client, d);
+      if (game) {
+        this.games.createGame(game);
+      }
+      else {
+        this.lobbys.refreshOneLobby(tmp.name);
+      }
+    }
+  }
 }
 
 interface createRoom {

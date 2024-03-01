@@ -71,7 +71,10 @@ export class Lobby {
     }
     setReady(player: Socket,d: boolean) {
         this.players.find(el => el.player.socket.id == player.id).ready = d;
-        this.players.every(el => el.ready) ? this.createGame() : 0;
+        if (this.players.every(el => el.ready)) {
+            return this.createGame()
+        } 
+        else return;
     }
     setSex(player: Socket, d: "Мужчина" | "Женщина") {
         this.players.find(el => el.player.socket.id == player.id).sex = d;
@@ -80,7 +83,7 @@ export class Lobby {
         const pls = this.players.map(el => {
             return new PlayerGame(el.player, el.sex);
         })
-        return true;
+        return new Game(this.name, pls);
     }
 }
 
