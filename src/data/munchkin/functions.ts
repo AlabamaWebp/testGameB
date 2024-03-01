@@ -24,6 +24,7 @@ export function p_getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
         .flat()
         .map(el => el.getData());
 }
+/// game
 export function fillId() {
     let id = 0;
     this.cards.doors.forEach(el => {
@@ -35,3 +36,12 @@ export function fillId() {
         id++;
     })
 }
+export function playersGetCard() {
+    this.players.forEach(el => {
+        for (let i = 0; i < 4; i++) {
+            el.cards.push(this.cards.treasures.pop());
+            el.cards.push(this.cards.doors.pop());
+        }
+    })
+}
+/// game

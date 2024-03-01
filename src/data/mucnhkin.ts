@@ -6,7 +6,7 @@ import { RASES } from "src/cards/Munchkin/doors/Rases";
 import { EQUIPMENT } from "src/cards/Munchkin/treasures/equipment";
 import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
-import { fillId, p_getFieldCards, shuffle } from "./munchkin/functions";
+import { fillId, p_getFieldCards, playersGetCard, shuffle } from "./munchkin/functions";
 import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards } from "./munchkin/interfaces";
 
 export class Game {
@@ -22,12 +22,8 @@ export class Game {
             treasures: shuffle(EQUIPMENT.concat(USED).concat(COMBAT))
         }
         fillId.call(this);
-        this.players.forEach(el => {
-            for (let i = 0; i < 4; i++) {
-                el.cards.push(this.cards.treasures.pop());
-                el.cards.push(this.cards.doors.pop());
-            }
-        })
+        playersGetCard.call(this);
+        
     }
 
     readonly plcount: number;
