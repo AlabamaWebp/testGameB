@@ -1,5 +1,6 @@
 import { DoorsCard } from "src/data/mucnhkin"
 
+
 function createClass(
     name: string,
     desc: string,
