@@ -139,7 +139,7 @@ export class Game {
         const plg = this.players.find(el => el.player == player)
         const pls = this.players
             .filter(el => el.player != player)
-            .map((el: PlayerGame) => el.pldata)
+            .map((el: PlayerGame) => el.data)
         return {
             queue: this.players[this.queue],
             step: this.step,
@@ -204,7 +204,7 @@ export class PlayerGame {
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
 
-    get pldata() {
+    get data() {
         return {
             name: this.player.name,
             lvl: this.lvl,

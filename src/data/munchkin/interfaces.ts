@@ -73,8 +73,8 @@ export class GameField {
             is_fight: this.fight ? true : false,
             fight: {
                 players: {
-                    main: this.fight.players?.main?.pldata,
-                    secondary: this.fight.players?.secondary?.pldata
+                    main: this.fight.players?.main?.data,
+                    secondary: this.fight.players?.secondary?.data
                 },
                 cards: {
                     players: this.fight.cards?.players?.map(el => el.getData()),
