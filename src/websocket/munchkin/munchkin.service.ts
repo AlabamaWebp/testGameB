@@ -14,7 +14,7 @@ export class MunchkinService {
             })
         }
         else {
-            return "Ошибка"
+            throw "Ошибка создания комнаты"
         }
     }
 }

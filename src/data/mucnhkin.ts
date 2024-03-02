@@ -17,14 +17,13 @@ export class Game {
         this.players = players;
         this.plcount = players.length;
         this.log = ["1. Игра началась!"];
-        this.is_fight = false;
+        // this.is_fight = false;
         this.cards = {
             doors: shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES)),
             treasures: shuffle(EQUIPMENT.concat(USED).concat(COMBAT))
         }
         fillId.call(this);
         playersGetCard.call(this);
-
     }
 
     readonly plcount: number;
@@ -35,17 +34,69 @@ export class Game {
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] };
     private step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
     private queue: number = 0;
-    private is_fight: boolean;
+    // private is_fight: boolean;
     private log: string[];
     private number_log: number = 2;
 
-    private getDoor() {
+    field: {
+        fight?: {
+            players: {
+                main: PlayerGame,
+                secondary?: PlayerGame
+            }
+            cards?: {
+                players?: (TreasureCard | DoorsCard)[],
+                monsters?: (TreasureCard | DoorsCard)[]
+            }
+            monsters: DoorsCard[]
+            monstersProto: DoorsCard[]
+            treasures: number
+        }
+        openCards?: (TreasureCard | DoorsCard)[]
+    } = {};
+
+    newFightOpenDoor(monster: DoorsCard) {
+        this.field.openCards = undefined;
+        this.field.fight = {
+            players: {main: this.players[this.queue]},
+            monsters: [structuredClone(monster)],
+            monstersProto: [monster],
+            treasures: monster.monsterData?.gold
+        }
+    }
+    newFightSamIgrok(monster_id: number) {
+        this.field.openCards = undefined;
+        const monster = this.cardPlayerById(monster_id) as DoorsCard;
+        this.field.fight = {
+            players: {main: this.players[this.queue]},
+            monsters: [structuredClone(monster)],
+            monstersProto: [monster],
+            treasures: monster.monsterData?.gold
+        }
+    }
+
+    ///////// cards
+
+    popPlayerCard(pl: PlayerGame, card: DoorsCard | TreasureCard) : DoorsCard | TreasureCard {
+        pl.cards = pl.cards.filter(el => el != card);
+        return card
+    }
+
+    cardPlayerById(id: number) : DoorsCard | TreasureCard {
+        const pl = this.players[this.queue];
+        return this.popPlayerCard(pl, pl.cards.find(el => el.id == id))
+    }
+
+    getDoor() {
         return this.cards.doors.pop();
+    }
+    getTreasure() {
+        return this.cards.treasures.pop();
     }
     private getPlBySocket(player: Socket) {
         return this.players.find(el => el.player.socket = player)
     }
-    playerGetClosedDoor(player: Socket) {
+    private playerGetClosedDoor(player: Socket) {
         const pl = this.getPlBySocket(player);
         if (this.step == 2
             && pl == this.players[this.queue]
@@ -56,7 +107,20 @@ export class Game {
             this.onePlayerRefresh(pl);
         }
     }
-    playerGetOpenDoor(player: Socket) {
+    private playerGetClosedTreasure(player: Socket, colvo: number) {
+        const pl = this.getPlBySocket(player);
+        if (this.step == 3
+            && pl == this.players[this.queue]
+        ) {
+            for (let i = 0; i < colvo; i++) {
+                const card = this.getDoor()
+                pl.cards.push(card);
+            }
+            this.logging(pl.player.name + " берёт в закрытую сокровищ в количестве " + colvo + "шт");
+            this.onePlayerRefresh(pl);
+        }
+    }
+    private playerGetOpenDoor(player: Socket) {
         const pl = this.getPlBySocket(player);
         if (this.step == 0
             && pl == this.players[this.queue]
@@ -67,7 +131,6 @@ export class Game {
             this.onePlayerRefresh(pl);
         }
     }
-
 
 
 
@@ -87,7 +150,7 @@ export class Game {
         return {
             queue: this.players[this.queue],
             step: this.step,
-            is_fight: this.is_fight,
+            // is_fight: this.is_fight,
             sbros:
             {
                 doors: this.sbros.doors[this.sbros.doors.length],
