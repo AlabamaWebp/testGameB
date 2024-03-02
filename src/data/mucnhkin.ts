@@ -14,7 +14,7 @@ export class Game {
     constructor(name: string, players: PlayerGame[]) {
         this.name = name;
         // this.game = "Munchkin"
-        this.players = players;
+        this.players = shuffle(players);
         this.plcount = players.length;
         this.log = ["1. Игра началась!"];
         // this.is_fight = false;
