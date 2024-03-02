@@ -77,10 +77,10 @@ export class Game {
         return this.popPlayerCard(pl, pl.cards.find(el => el.id == id))
     }
 
-    getDoor() {
+    get getDoor() {
         return this.cards.doors.pop();
     }
-    getTreasure() {
+    get getTreasure() {
         return this.cards.treasures.pop();
     }
     private getPlBySocket(player: Socket) {
@@ -92,7 +92,7 @@ export class Game {
         if (this.step == 2
             && pl == this.players[this.queue]
         ) {
-            const card = this.getDoor()
+            const card = this.getDoor
             pl.cards.push(card);
             this.logging(pl.player.name + " берёт дверь в закрытую");
             this.onePlayerRefresh(pl);
@@ -103,7 +103,7 @@ export class Game {
         if (pl == this.players[this.queue]
         ) {
             for (let i = 0; i < colvo; i++) {
-                const card = this.getDoor()
+                const card = this.getDoor
                 pl.cards.push(card);
             }
             this.logging(pl.player.name + " берёт в закрытую сокровищ в количестве " + colvo + "шт");
@@ -115,7 +115,7 @@ export class Game {
         if (this.step == 0
             && pl == this.players[this.queue]
         ) {
-            const card = this.getDoor();
+            const card = this.getDoor;
             pl.cards.push(card);
             this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name +  " в открытую");
             this.onePlayerRefresh(pl);
@@ -124,7 +124,7 @@ export class Game {
     }
     private playerGetOpenTreasure(player: Socket) {
         const pl = this.getPlBySocket(player);
-        const card = this.getDoor();
+        const card = this.getTreasure;
         pl.cards.push(card);
         this.logging(pl.player.name + " берёт сокровище: " + card.abstractData.name + " в открытую");
         this.onePlayerRefresh(pl);
