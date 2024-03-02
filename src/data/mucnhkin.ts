@@ -28,7 +28,7 @@ export class Game {
 
     readonly plcount: number;
     readonly name: string;
-    players: PlayerGame[];
+    readonly players: PlayerGame[];
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] };
