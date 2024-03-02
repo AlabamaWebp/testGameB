@@ -17,7 +17,6 @@ export class Game {
         this.name = name;
         // this.game = "Munchkin"
         this.players = shuffle(players);
-        this.players.forEach((el, i) => el.queue = ++i);
         this.plcount = players.length;
         this.log = [];
         this.logging("Игра началась!");
@@ -41,6 +40,7 @@ export class Game {
     // private is_fight: boolean;
     private log: string[];
     private number_log: number = 1;
+    /////////
 
     field: GameField = new GameField();
 
@@ -67,6 +67,15 @@ export class Game {
         if (this.field.fight) this.field.fight = undefined;
         if (!this.field.openCards) this.field.openCards = [card];
         else this.field.openCards.push(card)
+    }
+    /////////
+
+    endHod() {
+
+        this.queue++;
+        if (this.queue >= this.plcount)
+            this.queue = 0
+        
     }
 
     ///////// cards
@@ -194,25 +203,32 @@ export class Game {
     }
 }
 export class PlayerGame {
-    constructor(player: PlayerGlobal, sex: "Мужчина" | "Женщина") {
+    constructor(player: PlayerGlobal, sex: "Мужчина" | "Женщина", queue: number) {
         this.lvl = 1;
         this.player = player;
         this.sex = sex;
         this.alive = true;
+        this.queue = queue
     }
-    queue: number = -1;
+    readonly queue: number;
 
-    lvl: number;
+    private lvl: number;
+    private power: number;
     t_field_cards: fieldTreasureCards; // Шмотки
     d_field_cards: fieldDoorCards; // Классы Рассы
 
     cards: (TreasureCard | DoorsCard)[];
+    private maxCards: number = 5;
 
     alive: boolean;
 
 
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
+
+    returnVars() {
+
+    }
 
     get data() {
         return {

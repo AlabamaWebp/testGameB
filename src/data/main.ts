@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { Game, PlayerGame } from './mucnhkin';
+import { shuffle } from './munchkin/functions';
 
 export class Lobby {
     constructor(name: string, max: number, creator: Socket | undefined, nickname: string) {
@@ -80,8 +81,8 @@ export class Lobby {
         this.players.find(el => el.player.socket.id == player.id).sex = d;
     }
     createGame() {
-        const pls = this.players.map(el => {
-            return new PlayerGame(el.player, el.sex);
+        const pls = shuffle(this.players).map((el, i) => {
+            return new PlayerGame(el.player, el.sex, i);
         })
         return new Game(this.name, pls);
     }
