@@ -63,13 +63,12 @@ export class Game {
             gold: monster.data?.gold
         }
     }
-    openCard(card: TreasureCard | DoorsCard) {
+    private openCard(card: TreasureCard | DoorsCard) {
         if (this.field.fight) this.field.fight = undefined;
         if (!this.field.openCards) this.field.openCards = [card];
         else this.field.openCards.push(card)
     }
     /////////
-
     endHod() {
 
         this.queue++;
@@ -90,17 +89,17 @@ export class Game {
         return this.popPlayerCard(pl, pl.cards.find(el => el.id == id))
     }
 
-    get getDoor() {
+    private get getDoor() {
         return this.cards.doors.pop();
     }
-    get getTreasure() {
+    private get getTreasure() {
         return this.cards.treasures.pop();
     }
     private getPlBySocket(player: Socket) {
         return this.players.find(el => el.player.socket = player)
     }
     ////
-    private playerGetClosedDoor(player: Socket) {
+    playerGetClosedDoor(player: Socket) {
         const pl = this.getPlBySocket(player);
         if (this.step == 2
             && pl == this.players[this.queue]
@@ -146,7 +145,7 @@ export class Game {
     }
 
 
-    private getMainForPlayer(player: PlayerGlobal) {
+    getMainForPlayer(player: PlayerGlobal) {
         const plg = this.players.find(el => el.player == player)
         const pls = this.players
             .filter(el => el.player != player)

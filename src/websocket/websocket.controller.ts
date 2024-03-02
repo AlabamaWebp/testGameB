@@ -182,6 +182,45 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     }
   }
+  // refreshGame plusLog allLog
+  @SubscribeMessage('refreshGame')
+  refreshGame(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const pl = this.data.getClientById(client.id);
+    if (pl.position instanceof Game) {
+      client.emit("refreshGame", pl.position.getMainForPlayer(pl))
+    }
+    else {
+      client.emit("refreshGame", false)
+    }
+  }
+
+  @SubscribeMessage('allLog')
+  allLog(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const pl = this.data.getClientById(client.id);
+    if (pl.position instanceof Game) {
+      client.emit("refreshGame", pl.position.getAllLog(pl.socket))
+    }
+    else {
+      client.emit("refreshGame", false)
+    }
+  }
+  // getDoor endHod activateCard
+  @SubscribeMessage('getDoor')
+  getDoor(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const game = this.data.getClientById(client.id).position;
+    if (game instanceof Game) {
+      game.playerGetClosedDoor(client);
+    }
+    else {
+      client.emit("refreshGame", false)
+    }
+  }
 }
 
 interface createRoom {
