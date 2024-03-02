@@ -17,8 +17,10 @@ export class Game {
         this.name = name;
         // this.game = "Munchkin"
         this.players = shuffle(players);
+        this.players.forEach((el, i) => el.queue = ++i);
         this.plcount = players.length;
-        this.log = ["1. Игра началась!"];
+        this.log = [];
+        this.logging("Игра началась!");
         // this.is_fight = false;
         this.cards = {
             doors: shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES)),
@@ -38,7 +40,7 @@ export class Game {
     private queue: number = 0;
     // private is_fight: boolean;
     private log: string[];
-    private number_log: number = 2;
+    private number_log: number = 1;
 
     field: GameField = new GameField();
 
@@ -161,6 +163,11 @@ export class Game {
         this.log.push(l);
         this.plusLog(l);
     }
+    private logQueue() {
+        const name = this.players[this.queue].player.name;
+
+        this.logging("Ход игрока: " + name + " ")
+    }
 
 
     private broadcast(e: string, d: any) {
@@ -193,13 +200,16 @@ export class PlayerGame {
         this.sex = sex;
         this.alive = true;
     }
+    queue: number = -1;
+
     lvl: number;
-    t_field_cards: fieldTreasureCards;
-    d_field_cards: fieldDoorCards;
+    t_field_cards: fieldTreasureCards; // Шмотки
+    d_field_cards: fieldDoorCards; // Классы Рассы
 
     cards: (TreasureCard | DoorsCard)[];
 
     alive: boolean;
+
 
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
@@ -211,6 +221,7 @@ export class PlayerGame {
             sex: this.sex,
             t_field: p_getFieldCards(this.t_field_cards),
             d_field: p_getFieldCards(this.d_field_cards),
+            queue: this.queue
         }
     }
 
