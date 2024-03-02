@@ -52,3 +52,19 @@ export interface defsData {
     player?: PlayerGame
     game?: Game
 }
+export interface gameField {
+    fight?: {
+        players: {
+            main: PlayerGame,
+            secondary?: PlayerGame
+        }
+        cards?: {
+            players?: (TreasureCard | DoorsCard)[],
+            monsters?: (TreasureCard | DoorsCard)[]
+        }
+        monsters: DoorsCard[]
+        monstersProto: DoorsCard[]
+        treasures: number
+    }
+    openCards?: (TreasureCard | DoorsCard)[]
+}

@@ -7,7 +7,7 @@ import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
 import { PlayerGlobal } from "./main";
 import { fillId, p_getFieldCards, playersGetCard, shuffle } from "./munchkin/functions";
-import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards } from "./munchkin/interfaces";
+import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards, gameField } from "./munchkin/interfaces";
 import { Socket } from "socket.io";
 
 export class Game {
@@ -38,22 +38,7 @@ export class Game {
     private log: string[];
     private number_log: number = 2;
 
-    field: {
-        fight?: {
-            players: {
-                main: PlayerGame,
-                secondary?: PlayerGame
-            }
-            cards?: {
-                players?: (TreasureCard | DoorsCard)[],
-                monsters?: (TreasureCard | DoorsCard)[]
-            }
-            monsters: DoorsCard[]
-            monstersProto: DoorsCard[]
-            treasures: number
-        }
-        openCards?: (TreasureCard | DoorsCard)[]
-    } = {};
+    field: gameField = {};
 
     newFightOpenDoor(monster: DoorsCard) {
         this.field.openCards = undefined;
