@@ -1,11 +1,11 @@
 import { CLASSES } from "src/cards/Munchkin/doors/Classes";
-import { PlayerGlobal } from "./main";
 import { COURSES } from "src/cards/Munchkin/doors/Courses";
 import { MONSTERS } from "src/cards/Munchkin/doors/Monsters";
 import { RASES } from "src/cards/Munchkin/doors/Rases";
 import { EQUIPMENT } from "src/cards/Munchkin/treasures/equipment";
 import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
+import { PlayerGlobal } from "./main";
 import { fillId, p_getFieldCards, playersGetCard, shuffle } from "./munchkin/functions";
 import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards } from "./munchkin/interfaces";
 import { Socket } from "socket.io";
