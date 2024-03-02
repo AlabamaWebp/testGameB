@@ -52,7 +52,7 @@ export interface defsData {
     player?: PlayerGame
     game?: Game
 }
-export interface gameField {
+export class GameField {
     fight?: {
         players: {
             main: PlayerGame,
@@ -64,7 +64,26 @@ export interface gameField {
         }
         monsters: DoorsCard[]
         monstersProto: DoorsCard[]
-        treasures: number
+        gold: number
     }
     openCards?: (TreasureCard | DoorsCard)[]
+
+    get getField() {
+        return {
+            is_fight: this.fight ? true : false,
+            fight: {
+                players: {
+                    main: this.fight.players?.main?.pldata,
+                    secondary: this.fight.players?.secondary?.pldata
+                },
+                cards: {
+                    players: this.fight.cards?.players?.map(el => el.getData()),
+                    monsters: this.fight.cards?.monsters?.map(el => el.getData())
+                },
+                monsters: this.fight.monsters?.map(el => el.getData()),
+                treasures: this.fight.gold
+            },
+            openCards: this.openCards.map(el => el.getData())
+        }
+    }
 }

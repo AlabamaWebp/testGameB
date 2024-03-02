@@ -7,8 +7,10 @@ import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
 import { PlayerGlobal } from "./main";
 import { fillId, p_getFieldCards, playersGetCard, shuffle } from "./munchkin/functions";
-import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards, gameField } from "./munchkin/interfaces";
+import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards, GameField } from "./munchkin/interfaces";
 import { Socket } from "socket.io";
+
+// refreshGame plusLog allLog
 
 export class Game {
     constructor(name: string, players: PlayerGame[]) {
@@ -38,7 +40,7 @@ export class Game {
     private log: string[];
     private number_log: number = 2;
 
-    field: gameField = {};
+    field: GameField = new GameField();
 
     newFightOpenDoor(monster: DoorsCard) {
         this.field.openCards = undefined;
@@ -46,7 +48,7 @@ export class Game {
             players: { main: this.players[this.queue] },
             monsters: [structuredClone(monster)],
             monstersProto: [monster],
-            treasures: monster.monsterData?.gold
+            gold: monster.data?.gold
         }
     }
     newFightSamIgrok(monster_id: number) {
@@ -56,7 +58,7 @@ export class Game {
             players: { main: this.players[this.queue] },
             monsters: [structuredClone(monster)],
             monstersProto: [monster],
-            treasures: monster.monsterData?.gold
+            gold: monster.data?.gold
         }
     }
     openCard(card: TreasureCard | DoorsCard) {
@@ -117,7 +119,7 @@ export class Game {
         ) {
             const card = this.getDoor;
             pl.cards.push(card);
-            this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name +  " в открытую");
+            this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
             this.onePlayerRefresh(pl);
             this.openCard(card);
         }
@@ -133,24 +135,16 @@ export class Game {
     }
 
 
-
     private getMainForPlayer(player: PlayerGlobal) {
         const plg = this.players.find(el => el.player == player)
         const pls = this.players
             .filter(el => el.player != player)
-            .map((el: PlayerGame) => {
-                return {
-                    name: el.player.name,
-                    lvl: el.lvl,
-                    sex: el.sex,
-                    t_field: p_getFieldCards(el.t_field_cards),
-                    d_field: p_getFieldCards(el.d_field_cards)
-                }
-            })
+            .map((el: PlayerGame) => el.pldata)
         return {
             queue: this.players[this.queue],
             step: this.step,
             // is_fight: this.is_fight,
+            field: this.field.getField,
             sbros:
             {
                 doors: this.sbros.doors[this.sbros.doors.length],
@@ -183,7 +177,6 @@ export class Game {
         player.player.socket.emit("refreshGame", this.getMainForPlayer(player.player));
     }
 
-
     private plusLog(d: string) {
         this.players.forEach((el: PlayerGame) => {
             this.broadcast("plusLog", d)
@@ -210,6 +203,17 @@ export class PlayerGame {
 
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
+
+    get pldata() {
+        return {
+            name: this.player.name,
+            lvl: this.lvl,
+            sex: this.sex,
+            t_field: p_getFieldCards(this.t_field_cards),
+            d_field: p_getFieldCards(this.d_field_cards),
+        }
+    }
+
     changeLvl(count: number) {
         this.lvl += count;
         if (this.lvl < 1)
@@ -277,7 +281,7 @@ export class DoorsCard extends AbstractCard {
         img?: string
     ) {
         super({ name, description, cardType: type, img });
-        monster ? this.monsterData = {
+        monster ? this.data = {
             lvl: monster.lvl,
             strongest: monster.lvl,
             gold: monster.gold,
@@ -285,6 +289,21 @@ export class DoorsCard extends AbstractCard {
         } : 0;
         this.defs = defs;
     }
-    monsterData?: MonsterData;
+    data?: MonsterData;
     defs: DoorsDefs;
+    getData() {
+        return {
+            abstractData: this.abstractData,
+            data: this.data,
+            // name: this.abstractData.name,
+            // desciption: this.abstractData.description,
+            // cardType: this.abstractData.cardType,
+            // strongest: this.strong,
+            // treasureType: this.data.treasureType,
+            // template: this.data.template,
+            // cost: this.data.cost,
+            // big: this.data.big,
+            // img: this.abstractData.img
+        }
+    }
 }
