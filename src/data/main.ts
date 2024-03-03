@@ -82,7 +82,7 @@ export class Lobby {
     }
     createGame() {
         const pls = shuffle(this.players).map((el, i) => {
-            return new PlayerGame(el.player, el.sex, i);
+            return new PlayerGame(el.player, el.sex, i+1);
         })
         return new Game(this.name, pls);
     }

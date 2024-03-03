@@ -175,7 +175,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const tmp = player.position as Lobby;
       const game = tmp.setReady(client, d);
       if (game) {
+        const lname = tmp.name;
         this.games.createGame(game);
+        this.lobbys.lobbyGameStart(lname);
       }
       else {
         this.lobbys.refreshOneLobby(tmp.name);

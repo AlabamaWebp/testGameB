@@ -18,6 +18,8 @@ export const shuffle = (array) => {
 //     return array.sort(() => Math.random() - 0.5);
 // }
 export function p_getFieldCards(cards: fieldDoorCards | fieldTreasureCards) {
+    if (!cards) 
+        return
     const fields = Object.keys(cards);
     return fields
         .map(e => cards[e])

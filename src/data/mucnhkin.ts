@@ -20,7 +20,7 @@ export class PlayerGame {
     t_field_cards: fieldTreasureCards; // Шмотки
     d_field_cards: fieldDoorCards; // Классы Рассы
 
-    cards: (TreasureCard | DoorsCard)[];
+    cards: (TreasureCard | DoorsCard)[] = [];
     private maxCards: number = 5;
 
     alive: boolean;
@@ -166,7 +166,7 @@ export class Game {
     readonly players: PlayerGame[];
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
-    private sbros: { doors: DoorsCard[], treasures: TreasureCard[] };
+    private sbros: { doors: DoorsCard[], treasures: TreasureCard[] } = {doors: [], treasures: []};
     private step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
     private queue: number = 0;
     // private is_fight: boolean;
@@ -278,19 +278,19 @@ export class Game {
 
 
     getMainForPlayer(player: PlayerGlobal) {
-        const plg = this.players.find(el => el.player == player)
+        const plg = this.players.find(el => el.player == player).data;
         const pls = this.players
             .filter(el => el.player != player)
             .map((el: PlayerGame) => el.data)
         return {
-            queue: this.players[this.queue],
+            queue: this.players[this.queue].player.name,
             step: this.step,
             // is_fight: this.is_fight,
             field: this.field.getField,
             sbros:
             {
-                doors: this.sbros.doors[this.sbros.doors.length],
-                treasures: this.sbros.treasures[this.sbros.treasures.length]
+                doors: this.sbros.doors[this.sbros.doors.length]?.getData(),
+                treasures: this.sbros.treasures[this.sbros.treasures.length]?.getData()
             },
             log: this.log,
             players: pls,

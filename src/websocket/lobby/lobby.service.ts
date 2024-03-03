@@ -47,11 +47,17 @@ export class LobbyService {
 
     refreshOneLobby(roomName: string,) {
         const lobby = this.getOneLobby(roomName);
-        console.log(roomName);
-        
         lobby?.getLobbySocket().forEach(el => {
             el?.emit("statusLobby", lobby.lobbyGetRoom(this.data.getClientById(el.id)))
         })
+    }
+    
+    lobbyGameStart(roomName: string,) {
+        const lobby = this.getOneLobby(roomName);
+        lobby?.getLobbySocket().forEach(el => {
+            el?.emit("allReady")
+        })
+        this.lobbys.delete(roomName);
     }
 
     roomIn(socket: Socket, roomName: string) { // Войти в лобби
