@@ -204,7 +204,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const pl = this.data.getClientById(client.id);
     if (pl.position instanceof Game) {
-      client.emit("refreshGame", pl.position.getAllLog(pl.socket))
+      pl.position.getAllLog(pl.socket)
     }
     else {
       client.emit("refreshGame", false)

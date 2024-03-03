@@ -292,7 +292,7 @@ export class Game {
                 doors: this.sbros.doors[this.sbros.doors.length]?.getData(),
                 treasures: this.sbros.treasures[this.sbros.treasures.length]?.getData()
             },
-            log: this.log,
+            // log: this.log,
             players: pls,
             you: plg
         }
@@ -325,9 +325,7 @@ export class Game {
     }
 
     private plusLog(d: string) {
-        this.players.forEach((el: PlayerGame) => {
-            this.broadcast("plusLog", d)
-        })
+        this.broadcast("plusLog", d)
     }
     getAllLog(player: Socket) {
         player.emit("allLog", this.log);
