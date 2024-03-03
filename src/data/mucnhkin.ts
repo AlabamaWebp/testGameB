@@ -38,17 +38,17 @@ export class PlayerGame {
             name: this.player.name,
             lvl: this.lvl,
             sex: this.sex,
+            cards: this.cards.map(el => el.getData()),
             t_field: {
-                helmet: this.t_field_cards.helmet.map(el => el.getData()),
-                body: this.t_field_cards.body.map(el => el.getData()),
-                legs: this.t_field_cards.legs.map(el => el.getData()),
-                arm: this.t_field_cards.arm.map(el => el.getData()),
-                other: this.t_field_cards.other.map(el => el.getData()),
+                helmet: this.t_field_cards?.helmet?.map(el => el.getData()),
+                body: this.t_field_cards?.body?.map(el => el.getData()),
+                legs: this.t_field_cards?.legs?.map(el => el.getData()),
+                arm: this.t_field_cards?.arm?.map(el => el.getData()),
+                other: this.t_field_cards?.other?.map(el => el.getData()),
+            },d_field: {rasses: this.d_field_cards?.rasses?.map(el => el.getData()),
+                classes: this.d_field_cards?.classes?.map(el => el.getData()),
             },
-            d_field: {
-                rasses: this.d_field_cards.rasses.map(el => el.getData()),
-                classes: this.d_field_cards.classes.map(el => el.getData()),
-            },
+
             queue: this.queue
         }
     }
