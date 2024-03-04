@@ -1,10 +1,22 @@
 import { TreasureCard } from "src/data/mucnhkin";
+import { TreasureData } from "src/data/munchkin/interfaces";
 
+function createShmot(
+    name: string,
+    desc: string,
+    defs: TreasureData,
+    strong: number
+) {
+    return new TreasureCard(
+        name,
+        desc,
+        defs,
+        strong
+    )
+}
 const type = "Надеваемая"
 export const EQUIPMENT: TreasureCard[] = [
-    new TreasureCard(
-        "Шипастые коленки",
-        "",
+    createShmot("Шипастые коленки", "",
         {
             treasureType: type,
             template: "Рядом",
@@ -12,8 +24,8 @@ export const EQUIPMENT: TreasureCard[] = [
         },
         1
     ),
-    new TreasureCard(
-        "Слизистая оболочка",
+
+    createShmot("Слизистая оболочка",
         "",
         {
             treasureType: type,
@@ -22,9 +34,7 @@ export const EQUIPMENT: TreasureCard[] = [
         },
         1
     ),
-    new TreasureCard(
-        "Башмаки могучего пенделя",
-        "",
+    createShmot("Башмаки могучего пенделя", "",
         {
             treasureType: type,
             template: "Броник",
@@ -32,9 +42,7 @@ export const EQUIPMENT: TreasureCard[] = [
         },
         2
     ),
-    new TreasureCard(
-        "Огромный камень",
-        "",
+    createShmot("Огромный камень", "",
         {
             treasureType: type,
             template: "2 Руки",
@@ -42,8 +50,7 @@ export const EQUIPMENT: TreasureCard[] = [
         },
         3
     ),
-    new TreasureCard(
-        "Коротышные латы",
+    createShmot("Коротышные латы",
         "Только для дварфов",
         {
             treasureType: type,
@@ -53,9 +60,9 @@ export const EQUIPMENT: TreasureCard[] = [
                 }
             }
         },
+        3 /// HZ
     ),
-    new TreasureCard(
-        "Лучок с ленточками",
+    createShmot("Лучок с ленточками",
         "",
         {
             treasureType: type,
@@ -63,4 +70,5 @@ export const EQUIPMENT: TreasureCard[] = [
         },
         4
     ),
+
 ]
