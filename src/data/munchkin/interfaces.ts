@@ -8,7 +8,7 @@ export interface DoorsDefs {
     action?: (defs: defsData) => void,
     // https://metanit.com/web/javascript/4.8.php .call() для функции
 }
-export interface MonsterData {
+export class MonsterData {
     lvl: number;
     strongest: number;
     gold: number;
@@ -22,7 +22,6 @@ export interface TreasureData {
     | "2 Руки" | "3 Руки" | "Рядом" | undefined
 
     cost?: number | undefined
-    defs?: TreasureDefs | undefined
     big?: boolean | undefined
 }
 export interface TreasureDefs {

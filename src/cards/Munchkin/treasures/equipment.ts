@@ -1,22 +1,25 @@
 import { TreasureCard } from "src/data/mucnhkin";
-import { TreasureData } from "src/data/munchkin/interfaces";
+import { TreasureData, TreasureDefs } from "src/data/munchkin/interfaces";
 
 function createShmot(
     name: string,
     desc: string,
-    defs: TreasureData,
+    defs: TreasureDefs,
+    data: TreasureData,
     strong: number
 ) {
     return new TreasureCard(
         name,
         desc,
         defs,
+        data,
         strong
     )
 }
 const type = "Надеваемая"
 export const EQUIPMENT: TreasureCard[] = [
     createShmot("Шипастые коленки", "",
+        undefined,
         {
             treasureType: type,
             template: "Рядом",
@@ -27,6 +30,7 @@ export const EQUIPMENT: TreasureCard[] = [
 
     createShmot("Слизистая оболочка",
         "",
+        undefined,
         {
             treasureType: type,
             template: "Броник",
@@ -35,6 +39,7 @@ export const EQUIPMENT: TreasureCard[] = [
         1
     ),
     createShmot("Башмаки могучего пенделя", "",
+        undefined,
         {
             treasureType: type,
             template: "Броник",
@@ -43,6 +48,7 @@ export const EQUIPMENT: TreasureCard[] = [
         2
     ),
     createShmot("Огромный камень", "",
+        undefined,
         {
             treasureType: type,
             template: "2 Руки",
@@ -53,17 +59,18 @@ export const EQUIPMENT: TreasureCard[] = [
     createShmot("Коротышные латы",
         "Только для дварфов",
         {
-            treasureType: type,
-            defs: {
-                condition: (defs) => {
-                    return defs.player.d_field_cards.rasses.some(el => el.abstractData.name == "Дварф")
-                }
+            condition: (defs) => {
+                return defs.player.d_field_cards.rasses.some(el => el.abstractData.name == "Дварф")
             }
+        },
+        {
+            treasureType: type,
         },
         3 /// HZ
     ),
     createShmot("Лучок с ленточками",
         "",
+        undefined,
         {
             treasureType: type,
             template: "2 Руки"

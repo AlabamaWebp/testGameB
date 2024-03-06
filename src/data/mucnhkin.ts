@@ -1,7 +1,7 @@
 
 import { PlayerGlobal } from "./main";
 import { fillId, p_getFieldCards, playersGetCard, shuffle } from "./munchkin/functions";
-import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards, GameField } from "./munchkin/interfaces";
+import { AbstractData, DoorsDefs, MonsterData, TreasureData, fieldDoorCards, fieldTreasureCards, GameField, TreasureDefs } from "./munchkin/interfaces";
 import { Socket } from "socket.io";
 
 // refreshGame plusLog allLog
@@ -78,6 +78,7 @@ export class TreasureCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
+        defs?: TreasureDefs,
         data?: TreasureData,
         strongest?: number,
         img: string = ""
@@ -85,9 +86,11 @@ export class TreasureCard extends AbstractCard {
         super({ name, description, cardType: "Сокровище", img });
         this.data = data;
         this.strong = strongest;
+        this.defs = defs;
     }
-    strong: number | undefined;
+    strong?: number;
     data: TreasureData;
+    defs?: TreasureDefs 
     getData() {
         return {
             abstractData: this.abstractData,
