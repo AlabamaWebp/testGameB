@@ -111,10 +111,10 @@ export class PlayerGlobal {
         if (this.position instanceof Lobby) {
             this.position.out(this);
             this.position = "home";
-            return true;
         }
         else if (this.position instanceof Game) {
             this.socket = undefined
+            return true;
         }
     }
     getPositionStr(): "home" | "game" | "lobby" {
