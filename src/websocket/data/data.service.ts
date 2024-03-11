@@ -4,7 +4,7 @@ import { Socket } from 'socket.io';
 @Injectable()
 export class DataService {
     clients: PlayerGlobal[] = [];
-    
+
     getPl() {
         return this.clients.map(el => {
             return {
@@ -23,6 +23,8 @@ export class DataService {
         const tmp = this.clients.find(el => el.name == name)
         if (tmp) {
             tmp.socket = client;
+            console.log(1);
+            client.emit("goTo", tmp.getPositionStr())
         }
         else {
             this.clients.push(new PlayerGlobal(client, name));
@@ -30,13 +32,9 @@ export class DataService {
     }
     disconnectClient(client: Socket) {
         const player = this.getClientById(client.id);
-        if (player.getPositionStr() == "lobby") {
-            player.outLobby();
-            // player.socket = null
-        }
-        // else {
-        // }
-        this.clients = this.clients.filter(el => el.socket != client);
+        const tmp = player.out();
+        if (tmp)
+            this.clients = this.clients.filter(el => el.socket != client);
     }
     getClientById(id: string): PlayerGlobal | undefined {
         const tmp = this.clients.find(el => el.socket?.id == id);

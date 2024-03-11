@@ -115,7 +115,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (position == "lobby") {
       //@ts-ignore
       const name = this.data.getClientById(client.id).position.name;
-      const tmp = this.data.getClientById(client.id).outLobby();
+      const tmp = this.data.getClientById(client.id).out();
       if (tmp === true) { // если успешно 
         // client.emit("statusPlayer", this.data.getClientById(client.id)?.getPositionStr())
         this.lobbys.refreshOneLobby(name); // обновляем для всех в команте что удалился игрок
