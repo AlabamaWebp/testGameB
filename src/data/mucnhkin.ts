@@ -11,7 +11,7 @@ export class PlayerGame {
         this.player = player;
         this.sex = sex;
         this.alive = true;
-        this.queue = queue
+        this.queue = queue; // Очередь игрока
     }
     readonly queue: number;
 
