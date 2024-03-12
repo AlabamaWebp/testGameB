@@ -115,7 +115,8 @@ export class DoorsCard extends AbstractCard {
         description: string,
         type: "Класс" | "Раса" | "Проклятие" | "Монстр",
         monster?: {
-            lvl: number,
+            strongest: number, // Сила (включая усиления и уровень)
+            lvl: number, // Получаемый уровень
             gold: number,
             undead?: boolean,
         },

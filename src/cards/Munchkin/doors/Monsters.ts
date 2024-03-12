@@ -7,6 +7,7 @@ export const MONSTERS: DoorsCard[] = [
         "Победви траву, элфы тянут дополнительное сокровище",
         type,
         {
+            strongest: 1,
             lvl: 1,
             gold: 1,
             undead: false,
@@ -19,7 +20,8 @@ export const MONSTERS: DoorsCard[] = [
         "+6 против дварфов (старые счёты)", // description
         type,
         {
-            lvl: 10,
+            strongest: 10,
+            lvl: 2,
             gold: 3,
             undead: false,
         },
@@ -31,7 +33,8 @@ export const MONSTERS: DoorsCard[] = [
         "Если пришлось смыватся - теряешь уровень", // description
         type,
         {
-            lvl: 2,
+            strongest: 2,
+            lvl: 1,
             gold:1,
             undead: true,
         },
