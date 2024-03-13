@@ -72,7 +72,7 @@ export class Lobby {
     }
     setReady(player: Socket,d: boolean) {
         this.players.find(el => el.player.socket.id == player.id).ready = d;
-        if (this.players.every(el => el.ready)) {
+        if (this.players.every(el => el.ready) && this.players.length == this.maxPlayers) {
             return this.createGame()
         } 
         else return;

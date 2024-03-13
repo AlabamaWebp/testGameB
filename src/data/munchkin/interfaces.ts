@@ -65,7 +65,7 @@ export class GameField {
         monstersProto: DoorsCard[]
         gold: number
     }
-    openCards?: (TreasureCard | DoorsCard)[]
+    openCards?: (TreasureCard | DoorsCard)[] = []
 
     get getField() {
         return {
@@ -73,14 +73,17 @@ export class GameField {
             fight: {
                 players: {
                     main: this.fight?.players?.main?.data,
-                    secondary: this.fight?.players?.secondary?.data
+                    secondary: this.fight?.players?.secondary?.data,
+                    strongest: 1 ///
                 },
                 cards: {
                     players: this.fight?.cards?.players?.map(el => el.getData()),
                     monsters: this.fight?.cards?.monsters?.map(el => el.getData())
                 },
                 monsters: this.fight?.monsters?.map(el => el.getData()),
-                treasures: this.fight?.gold
+                monsterStrongest: 1, ///
+                treasures: this.fight?.gold,
+                lvls: 1 ///
             },
             openCards: this.openCards?.map(el => el.getData())
         }
