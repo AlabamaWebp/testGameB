@@ -15,8 +15,8 @@ export class PlayerGame {
     }
     readonly queue: number;
 
-    private lvl: number;
-    private power: number;
+    private lvl: number = 1;
+    private power: number = 1;
     t_field_cards: fieldTreasureCards; // Шмотки
     d_field_cards: fieldDoorCards; // Классы Рассы
 
@@ -29,8 +29,11 @@ export class PlayerGame {
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
 
-    returnVars() {
-
+    get getStrongest() {
+        this.power = 0;
+        const cards = Object.values(this.t_field_cards);
+        cards.forEach((el: TreasureCard) => this.power += el.strong)
+        return this.power;
     }
 
     get data() {
@@ -45,11 +48,12 @@ export class PlayerGame {
                 legs: this.t_field_cards?.legs?.map(el => el.getData()),
                 arm: this.t_field_cards?.arm?.map(el => el.getData()),
                 other: this.t_field_cards?.other?.map(el => el.getData()),
-            },d_field: {rasses: this.d_field_cards?.rasses?.map(el => el.getData()),
+            }, d_field: {
+                rasses: this.d_field_cards?.rasses?.map(el => el.getData()),
                 classes: this.d_field_cards?.classes?.map(el => el.getData()),
             },
-
-            queue: this.queue
+            queue: this.queue,
+            max_cards: this.maxCards
         }
     }
 
@@ -59,6 +63,13 @@ export class PlayerGame {
             this.lvl = 1;
         if (this.lvl > 10) {
             // победа
+        }
+    }
+
+    useCard(id: number) {
+        const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == id);
+        if (card instanceof TreasureCard) {
+            //////////////
         }
     }
 }
@@ -80,7 +91,7 @@ export class TreasureCard extends AbstractCard {
         description: string,
         defs?: TreasureDefs,
         data?: TreasureData,
-        strongest?: number,
+        strongest: number = 0,
         img: string = ""
     ) {
         super({ name, description, cardType: "Сокровище", img });
@@ -88,9 +99,9 @@ export class TreasureCard extends AbstractCard {
         this.strong = strongest;
         this.defs = defs;
     }
-    strong?: number;
+    strong: number;
     data: TreasureData;
-    defs?: TreasureDefs 
+    defs?: TreasureDefs
     getData() {
         return {
             abstractData: this.abstractData,
@@ -125,7 +136,7 @@ export class DoorsCard extends AbstractCard {
     ) {
         super({ name, description, cardType: type, img });
         monster ? this.data = {
-            lvl: monster.lvl,
+            get_lvls: monster.lvl,
             strongest: monster.lvl,
             gold: monster.gold,
             undead: monster.undead ? true : false
@@ -188,6 +199,10 @@ export class Game {
     /////////
 
     field: GameField = new GameField();
+
+    getPlayerById(id: string) {
+        return this.players.find(el => el.player.socket.id == id);
+    }
 
     newFightOpenDoor(monster: DoorsCard) {
         this.field.openCards = undefined;
