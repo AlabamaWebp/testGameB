@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
 import { Lobby, PlayerGlobal } from '../data/main';
-import { Game } from 'src/data/mucnhkin';
+import { Game, PlayerGame } from 'src/data/mucnhkin';
 import { MunchkinService } from './munchkin/munchkin.service';
 
 @WebSocketGateway(3001, {
@@ -222,6 +222,18 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     else {
       client.emit("refreshGame", false)
+    }
+  }
+  @SubscribeMessage('useCard')
+  useCard(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() id_card: number,
+  ) {
+    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    const game = player.position;
+    if (game instanceof Game) {
+      player = game.getPlayerById(player.socket.id);
+      player
     }
   }
 }
