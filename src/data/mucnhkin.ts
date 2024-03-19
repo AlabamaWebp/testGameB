@@ -17,8 +17,8 @@ export class PlayerGame {
 
     private lvl: number = 1;
     private power: number = 1;
-    t_field_cards: fieldTreasureCards; // Шмотки
-    d_field_cards: fieldDoorCards; // Классы Рассы
+    t_field_cards = new fieldTreasureCards(); // Шмотки
+    d_field_cards = new fieldDoorCards(); // Классы Рассы
 
     cards: (TreasureCard | DoorsCard)[] = [];
     private maxCards: number = 5;
@@ -68,9 +68,32 @@ export class PlayerGame {
 
     useCard(id: number) {
         const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == id);
+        if (!card) return;
+        const help = {
+            "Шлем": 'helmet',
+            "Броник": 'body',
+            "Ноги": 'legs',
+            "Рука": 'arm',
+        }
+        //  "Рядом" 
+        // other
+        const game = this.player.position as Game;
         if (card instanceof TreasureCard) {
             //////////////
+            if (card.data.treasureType == 'Надеваемая') {
+                const template_eng = help[card.data.template]
+                // if (!this.t_field_cards) this.t_field_cards 
+                if (this.t_field_cards[template_eng] && this.t_field_cards[template_eng].length) {
+                    const tmp = this.t_field_cards[template_eng]
+                    while (tmp.length) {
+                        game.toSbros(this.t_field_cards[template_eng].pop())
+                    }
+                }
+                this.t_field_cards[template_eng] = [card]
+                this.cards = this.cards.filter(el => el != card)
+            }
         }
+        game.playersGameRefresh();
     }
 }
 
@@ -107,6 +130,7 @@ export class TreasureCard extends AbstractCard {
             abstractData: this.abstractData,
             strongest: this.strong,
             data: this.data,
+            id: this.id
             // name: this.abstractData.name,
             // desciption: this.abstractData.description,
             // cardType: this.abstractData.cardType,
@@ -149,6 +173,7 @@ export class DoorsCard extends AbstractCard {
         return {
             abstractData: this.abstractData,
             data: this.data,
+            id: this.id
             // name: this.abstractData.name,
             // desciption: this.abstractData.description,
             // cardType: this.abstractData.cardType,
@@ -202,6 +227,26 @@ export class Game {
 
     getPlayerById(id: string) {
         return this.players.find(el => el.player.socket.id == id);
+    }
+
+    toSbros(card: TreasureCard | DoorsCard) {
+        if (card instanceof TreasureCard) {
+            this.sbros.treasures.push(card)
+        }
+        else if (card instanceof DoorsCard) {
+            this.sbros.doors.push(card)
+        }
+        else return
+        if (!this.cards.doors.length) {
+            this.cards = shuffle(this.sbros.doors.slice());
+            this.sbros.doors = []
+        }
+        else if (!this.cards.treasures.length) {
+            if (!this.cards.treasures.length) {
+                this.cards = shuffle(this.sbros.treasures.slice());
+                this.sbros.treasures = []
+            }
+        }
     }
 
     newFightOpenDoor(monster: DoorsCard) {
@@ -343,7 +388,7 @@ export class Game {
             el.player.socket.emit(e, d)
         })
     }
-    private playersGameRefresh() {
+    playersGameRefresh() {
         this.players.forEach((el: PlayerGame) => {
             this.broadcast("refreshGame", this.getMainForPlayer(el.player))
         })

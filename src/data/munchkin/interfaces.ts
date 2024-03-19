@@ -36,16 +36,17 @@ export interface AbstractData {
     img?: string;
 }
 
-export interface fieldTreasureCards {
-    helmet?: TreasureCard[]
-    body?: TreasureCard[]
-    legs?: TreasureCard[]
-    arm?: TreasureCard[]
-    other?: TreasureCard[]
+export class fieldTreasureCards {
+    helmet: TreasureCard[] = []
+    body: TreasureCard[] = []
+    legs: TreasureCard[] = []
+    arm: TreasureCard[] = []
+    other: TreasureCard[] = []
+
 }
-export interface fieldDoorCards {
-    rasses?: DoorsCard[]
-    classes?: DoorsCard[]
+export class fieldDoorCards {
+    rasses: DoorsCard[] = []
+    classes: DoorsCard[] = []
 }
 export interface defsData {
     player?: PlayerGame
