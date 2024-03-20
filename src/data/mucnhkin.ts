@@ -53,7 +53,8 @@ export class PlayerGame {
                 classes: this.d_field_cards?.classes?.map(el => el.getData()),
             },
             queue: this.queue,
-            max_cards: this.maxCards
+            max_cards: this.maxCards,
+            power: this.power
         }
     }
 
@@ -67,6 +68,7 @@ export class PlayerGame {
     }
 
     useCard(id: number) {
+        console.log(2);
         const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == id);
         const game = this.player.position as Game;
         if (!card || !game) {
@@ -86,7 +88,7 @@ export class PlayerGame {
         if (card instanceof TreasureCard) {
             //////////////
             if (card.data.treasureType == 'Надеваемая') {
-                if (!card.defs?.condition({player: this, game: game}))
+                if (card.defs?.condition({player: this, game: game}) === false)
                     return
                 const template_eng = help[card.data.template]
                 let count = 1;
@@ -105,6 +107,8 @@ export class PlayerGame {
                 this.cards = this.cards.filter(el => el != card)
             }
         }
+        
+        console.log(21);
         game.playersGameRefresh();
     }
 }
