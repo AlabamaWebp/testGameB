@@ -16,7 +16,6 @@ export class PlayerGame {
     readonly queue: number;
 
     private lvl: number = 1;
-    private power: number = 1;
     t_field_cards = new fieldTreasureCards(); // Шмотки
     d_field_cards = new fieldDoorCards(); // Классы Рассы
 
@@ -29,11 +28,17 @@ export class PlayerGame {
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
 
-    get getStrongest() {
-        this.power = 0;
-        const cards = Object.values(this.t_field_cards);
-        cards.forEach((el: TreasureCard) => this.power += el.strong)
-        return this.power;
+    get power() {
+        let tmp = this.lvl;
+        const cards = Object.keys(this.t_field_cards);
+        cards.forEach((el: string) => {
+            if (this.t_field_cards[el] && el != 'count') {
+                this.t_field_cards[el].forEach(card1 => {
+                    tmp += card1.strong
+                });
+            }
+        })
+        return tmp;
     }
 
     get data() {
@@ -68,7 +73,6 @@ export class PlayerGame {
     }
 
     useCard(id: number) {
-        console.log(2);
         const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == id);
         const game = this.player.position as Game;
         if (!card || !game) {
@@ -88,7 +92,7 @@ export class PlayerGame {
         if (card instanceof TreasureCard) {
             //////////////
             if (card.data.treasureType == 'Надеваемая') {
-                if (card.defs?.condition({player: this, game: game}) === false)
+                if (card.defs?.condition({ player: this, game: game }) === false)
                     return
                 const template_eng = help[card.data.template]
                 let count = 1;
@@ -96,7 +100,7 @@ export class PlayerGame {
                     count = 2
                 else if (card.data.template == '3 Руки')
                     count = 3
-                if (this.t_field_cards[template_eng] 
+                if (this.t_field_cards[template_eng]
                     && this.t_field_cards.count[template_eng] < this.t_field_cards[template_eng].length + count) {
                     const tmp = this.t_field_cards[template_eng]
                     while (tmp.length) {
@@ -107,8 +111,6 @@ export class PlayerGame {
                 this.cards = this.cards.filter(el => el != card)
             }
         }
-        
-        console.log(21);
         game.playersGameRefresh();
     }
 }

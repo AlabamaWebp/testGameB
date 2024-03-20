@@ -78,7 +78,7 @@ export class GameField {
     openCards?: (TreasureCard | DoorsCard)[] = []
 
     get getField() {
-        const pl_power = this.fight?.players.main.getStrongest + this.fight?.players?.secondary?.getStrongest ?? 0;
+        const pl_power = this.fight?.players.main.power + this.fight?.players?.secondary?.power ?? 0;
         let m_power = 0;
         this.fight?.monsters.forEach(el => m_power += el.data.strongest ?? 0);
         let m_lvls = 0;

@@ -23,7 +23,6 @@ export class DataService {
         const tmp = this.clients.find(el => el.name == name)
         if (tmp) {
             tmp.socket = client;
-            console.log(1);
             client.emit("goTo", tmp.getPositionStr())
         }
         else {
