@@ -68,22 +68,34 @@ export class PlayerGame {
 
     useCard(id: number) {
         const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == id);
-        if (!card) return;
+        const game = this.player.position as Game;
+        if (!card || !game) {
+            this.player.socket.emit('error', 'Ошибка использования карты')
+            return
+        };
         const help = {
             "Шлем": 'helmet',
             "Броник": 'body',
             "Ноги": 'legs',
             "Рука": 'arm',
+            "2 Руки": 'arm',
+            "3 Руки": 'arm',
         }
         //  "Рядом" 
         // other
-        const game = this.player.position as Game;
         if (card instanceof TreasureCard) {
             //////////////
             if (card.data.treasureType == 'Надеваемая') {
+                if (!card.defs?.condition({player: this, game: game}))
+                    return
                 const template_eng = help[card.data.template]
-                // if (!this.t_field_cards) this.t_field_cards 
-                if (this.t_field_cards[template_eng] && this.t_field_cards[template_eng].length) {
+                let count = 1;
+                if (card.data.template == '2 Руки')
+                    count = 2
+                else if (card.data.template == '3 Руки')
+                    count = 3
+                if (this.t_field_cards[template_eng] 
+                    && this.t_field_cards.count[template_eng] < this.t_field_cards[template_eng].length + count) {
                     const tmp = this.t_field_cards[template_eng]
                     while (tmp.length) {
                         game.toSbros(this.t_field_cards[template_eng].pop())

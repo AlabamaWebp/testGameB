@@ -60,11 +60,15 @@ export const EQUIPMENT: TreasureCard[] = [
         "Только для дварфов",
         {
             condition: (defs) => {
-                return defs.player.d_field_cards.rasses.some(el => el.abstractData.name == "Дварф")
+                const tmp = defs.player.d_field_cards.rasses.some(el => el.abstractData.name == "Дварф")
+                if (!tmp) defs.player.player.socket.emit('error', "Вы не дварф!")
+                return tmp
             }
         },
         {
             treasureType: type,
+            template: 'Броник',
+            cost: 400
         },
         3 /// HZ
     ),

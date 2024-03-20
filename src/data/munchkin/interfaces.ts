@@ -19,10 +19,10 @@ export interface TreasureData {
     treasureType: "Надеваемая" | "Используемая" | "Боевая"
 
     template?: "Шлем" | "Броник" | "Ноги" | "Рука"
-    | "2 Руки" | "3 Руки" | "Рядом" | undefined
+    | "2 Руки" | "3 Руки" | "Рядом"
 
-    cost?: number | undefined
-    big?: boolean | undefined
+    cost?: number
+    big?: boolean
 }
 export interface TreasureDefs {
     condition?: (defs: defsData) => boolean
@@ -42,11 +42,20 @@ export class fieldTreasureCards {
     legs: TreasureCard[] = []
     arm: TreasureCard[] = []
     other: TreasureCard[] = []
-
+    count = {
+        "helmet": 1,
+        "body": 1,
+        "legs": 1,
+        "arm": 2,
+    }
 }
 export class fieldDoorCards {
     rasses: DoorsCard[] = []
     classes: DoorsCard[] = []
+    count = {
+        "rasses": 1,
+        "classes": 1,
+    }
 }
 export interface defsData {
     player?: PlayerGame
