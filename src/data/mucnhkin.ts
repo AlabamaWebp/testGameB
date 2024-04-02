@@ -107,8 +107,9 @@ export class PlayerGame {
                         game.toSbros(this.t_field_cards[template_eng].pop())
                     }
                 }
-                this.t_field_cards[template_eng] = [card]
-                this.cards = this.cards.filter(el => el != card)
+                this.t_field_cards[template_eng] = [card];
+                this.cards = this.cards.filter(el => el != card);
+                game.logging(`${this.player.name} надевает ${card.abstractData.name}`)
             }
         }
         game.playersGameRefresh();
@@ -388,9 +389,10 @@ export class Game {
             you: plg
         }
     }
-    private logging(l: string) {
+    logging(l: string) {
         l = l.toString();
         l = this.number_log + ". " + l;
+        this.number_log++;
         this.log.push(l);
         this.plusLog(l);
     }
