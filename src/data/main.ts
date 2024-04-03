@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
-import { Game, PlayerGame } from './mucnhkin';
+import { Game } from './munchkin/mucnhkinGame';
 import { shuffle } from './munchkin/functions';
+import { PlayerGame } from './munchkin/playerAndCards';
 
 export class Lobby {
     constructor(name: string, max: number, creator: Socket | undefined, nickname: string) {

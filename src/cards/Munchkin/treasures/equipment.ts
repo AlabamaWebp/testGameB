@@ -1,5 +1,6 @@
-import { TreasureCard } from "src/data/mucnhkin";
+import { TreasureCard } from "src/data/munchkin/playerAndCards";
 import { TreasureData, TreasureDefs } from "src/data/munchkin/interfaces";
+import { Game } from "src/data/munchkin/mucnhkinGame";
 
 function createShmot(
     name: string,
@@ -42,7 +43,7 @@ export const EQUIPMENT: TreasureCard[] = [
         undefined,
         {
             treasureType: type,
-            template: "Броник",
+            template: "Ноги",
             cost: 400,
         },
         2
@@ -61,7 +62,7 @@ export const EQUIPMENT: TreasureCard[] = [
         {
             condition: (defs) => {
                 const tmp = defs.player.d_field_cards.rasses.some(el => el.abstractData.name == "Дварф")
-                if (!tmp) defs.player.player.socket.emit('error', "Вы не дварф!")
+                if (!tmp) defs.player.player.socket.emit('condition', "Вы не дварф!")
                 return tmp
             }
         },

@@ -1,4 +1,5 @@
-import { DoorsCard, Game, PlayerGame, TreasureCard } from "../mucnhkin";
+import { Game } from "./mucnhkinGame";
+import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
 
 export interface DoorsDefs {
     punishment?: (defs: defsData) => void,
@@ -27,6 +28,7 @@ export interface TreasureData {
 export interface TreasureDefs {
     condition?: (defs: defsData) => boolean
     action?: (defs: defsData) => void
+    log_txt?: string
 }
 
 export interface AbstractData {

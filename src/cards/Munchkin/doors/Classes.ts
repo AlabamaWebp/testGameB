@@ -1,4 +1,4 @@
-import { DoorsCard } from "src/data/mucnhkin"
+import { DoorsCard } from "src/data/munchkin/playerAndCards"
 
 
 function createClass(

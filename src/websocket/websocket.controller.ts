@@ -3,8 +3,9 @@ import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
 import { Lobby, PlayerGlobal } from '../data/main';
-import { Game, PlayerGame } from 'src/data/mucnhkin';
+import { Game } from 'src/data/munchkin/mucnhkinGame';
 import { MunchkinService } from './munchkin/munchkin.service';
+import { PlayerGame } from 'src/data/munchkin/playerAndCards';
 
 @WebSocketGateway(3001, {
   cors: {

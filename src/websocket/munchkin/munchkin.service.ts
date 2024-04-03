@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataService } from '../data/data.service';
-import { Game } from 'src/data/mucnhkin';
+import { Game } from 'src/data/munchkin/mucnhkinGame';
 
 @Injectable()
 export class MunchkinService {

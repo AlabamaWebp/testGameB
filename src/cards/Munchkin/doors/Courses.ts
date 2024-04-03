@@ -1,4 +1,4 @@
-import { DoorsCard } from "src/data/mucnhkin";
+import { DoorsCard } from "src/data/munchkin/playerAndCards";
 import { defsData } from "src/data/munchkin/interfaces";
 const type = "Проклятие"
 export const COURSES: DoorsCard[] = [
