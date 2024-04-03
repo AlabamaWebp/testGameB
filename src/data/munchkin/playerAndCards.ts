@@ -120,7 +120,16 @@ export class PlayerGame {
                 card.defs?.action(defs);
                 game.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
             }
+            if (card.data.treasureType == 'Боевая') {
+                // ????????????????
+                // game.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+            }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
+        }
+        else if (card instanceof DoorsCard) {
+            if (card.abstractData.cardType == "Класс") {
+                
+            }
         }
         game.playersGameRefresh();
     }
