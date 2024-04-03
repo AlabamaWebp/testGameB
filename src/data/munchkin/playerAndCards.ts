@@ -86,6 +86,9 @@ export class PlayerGame {
             "Рука": 'arm',
             "2 Руки": 'arm',
             "3 Руки": 'arm',
+
+            'Класс': 'classes',
+            'Раса': 'rasses'
         }
         //  "Рядом" 
         // other
@@ -105,7 +108,6 @@ export class PlayerGame {
                     count = 3
                 if (this.t_field_cards[template_eng]
                     && this.t_field_cards.count[template_eng] < this.t_field_cards[template_eng].length + count) {
-                    console.log('Удаляем');
                     const tmp = this.t_field_cards[template_eng]
                     while (tmp.length) {
                         game.toSbros(this.t_field_cards[template_eng].pop())
@@ -127,8 +129,15 @@ export class PlayerGame {
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
         else if (card instanceof DoorsCard) {
-            if (card.abstractData.cardType == "Класс") {
-                
+            if (card.abstractData.cardType == "Раса") {
+                const template_eng = help[card.abstractData.cardType] // 'rasses'
+                if (this.d_field_cards[template_eng] // если есть расы в принципе
+                && this.d_field_cards.count[template_eng] < this.d_field_cards[template_eng].length + 1) { // и число разрешённых карт меньше чем мы кладём (включая лежащие до этого)
+                    const tmp = this.d_field_cards[template_eng]
+                    while (tmp.length) {
+                        game.toSbros(this.t_field_cards[template_eng].pop()) // надо переделать 
+                    }
+                }
             }
         }
         game.playersGameRefresh();
