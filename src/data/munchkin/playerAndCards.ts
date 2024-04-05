@@ -52,8 +52,8 @@ export class PlayerGame {
                 arm: this.t_field_cards?.arm?.map(el => el.getData()),
                 other: this.t_field_cards?.other?.map(el => el.getData()),
             }, d_field: {
-                rasses: this.d_field_cards?.rasses?.map(el => el.getData()),
-                classes: this.d_field_cards?.classes?.map(el => el.getData()),
+                rasses: this.d_field_cards?.getRasses()?.map(el => el.getData()),
+                classes: this.d_field_cards?.getClasses()?.map(el => el.getData()),
             },
             queue: this.queue,
             max_cards: this.maxCards,
@@ -128,7 +128,12 @@ export class PlayerGame {
         }
         else if (card instanceof DoorsCard) {
             if (card.abstractData.cardType == "Класс") {
-                
+                if (this.d_field_cards.classes.first) {
+                    if (this.d_field_cards.classes.)
+                }
+                else {
+                    this.d_field_cards.classes.first = card;
+                }
             }
         }
         game.playersGameRefresh();

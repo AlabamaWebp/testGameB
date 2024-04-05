@@ -52,11 +52,29 @@ export class fieldTreasureCards {
     }
 }
 export class fieldDoorCards {
-    rasses: DoorsCard[] = []
-    classes: DoorsCard[] = []
-    count = {
-        "rasses": 1,
-        "classes": 1,
+    rasses = {
+        first: undefined,
+        second: undefined,
+        bonus: undefined,
+    }
+    classes = {
+        first: undefined,
+        second: undefined,
+        bonus: undefined,
+    }
+    getClasses() {
+        const tmp: DoorsCard[] = []
+        if (this.classes.first) tmp.push(this.classes.first)
+        if (this.classes.second) tmp.push(this.classes.second)
+        if (this.classes.bonus) tmp.push(this.classes.bonus)
+        return tmp;
+    }
+    getRasses() {
+        const tmp: DoorsCard[] = []
+        if (this.rasses.first) tmp.push(this.rasses.first)
+        if (this.rasses.second) tmp.push(this.rasses.second)
+        if (this.rasses.bonus) tmp.push(this.rasses.bonus)
+        return tmp;
     }
 }
 export interface defsData {
