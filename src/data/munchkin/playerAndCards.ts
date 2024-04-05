@@ -86,6 +86,9 @@ export class PlayerGame {
             "Рука": 'arm',
             "2 Руки": 'arm',
             "3 Руки": 'arm',
+
+            'Класс': 'classes',
+            'Раса': 'rasses'
         }
         //  "Рядом" 
         // other
@@ -105,7 +108,6 @@ export class PlayerGame {
                     count = 3
                 if (this.t_field_cards[template_eng]
                     && this.t_field_cards.count[template_eng] < this.t_field_cards[template_eng].length + count) {
-                    console.log('Удаляем');
                     const tmp = this.t_field_cards[template_eng]
                     while (tmp.length) {
                         game.toSbros(this.t_field_cards[template_eng].pop())
