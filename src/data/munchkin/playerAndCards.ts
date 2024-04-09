@@ -92,7 +92,7 @@ export class PlayerGame {
         }
         //  "Рядом" 
         // other
-        
+
         if (card instanceof TreasureCard) {
             const defs = { player: this, game: game }
             if (card.defs?.condition && !card.defs?.condition(defs))
@@ -115,7 +115,7 @@ export class PlayerGame {
                 }
                 // console.log(this.t_field_cards[template_eng], card);
                 this.t_field_cards[template_eng] = [card];
-                
+
                 game.logging(`${this.player.name} надевает ${card.abstractData.name} (+${card.strong} бонус)`)
             }
             if (card.data.treasureType == 'Используемая') {
@@ -128,20 +128,30 @@ export class PlayerGame {
             }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
-        else if (card instanceof DoorsCard) {
-            if (card.abstractData.cardType == "Класс") {
-                if (this.d_field_cards.classes.first) {
-                    if (this.d_field_cards.classes.)
-                }
-                else {
-                    this.d_field_cards.classes.first = card;
-                }
-            }
-        }
         game.playersGameRefresh();
     }
-}
 
+    useCardMesto(body: cardMestoEvent) {
+        const durak = ["first" , "second" , "bonus"];
+        if (!durak.includes(body.mesto)) return;
+
+        const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == body.id_card);
+        const game = this.player.position as Game;
+        if (!card || !game) {
+            this.player.socket.emit('error', 'Ошибка использования карты')
+            return
+        };
+        if (card instanceof DoorsCard) {
+            if (card.abstractData.cardType == "Класс") {
+                this.d_field_cards.classes[body.mesto] = card;
+            }
+        }
+    }
+}
+export interface cardMestoEvent {
+    id_card: number,
+    mesto: "first" | "second" | "bonus"
+}
 class AbstractCard {
     constructor(
         data: AbstractData

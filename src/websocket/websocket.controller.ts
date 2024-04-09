@@ -5,7 +5,7 @@ import { LobbyService } from './lobby/lobby.service';
 import { Lobby, PlayerGlobal } from '../data/main';
 import { Game } from 'src/data/munchkin/mucnhkinGame';
 import { MunchkinService } from './munchkin/munchkin.service';
-import { PlayerGame } from 'src/data/munchkin/playerAndCards';
+import { PlayerGame, cardMestoEvent } from 'src/data/munchkin/playerAndCards';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -235,6 +235,19 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (game instanceof Game) {
       player = game.getPlayerById(player.socket.id);
       player.useCard(id_card);
+    }
+  }
+  @SubscribeMessage('useCardMesto')
+  useCardMesto(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: cardMestoEvent,
+  ) {
+    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    const game = player.position;
+    if (game instanceof Game) {
+      player = game.getPlayerById(player.socket.id);
+
+      // player.useCard(body.id_card);
     }
   }
 }
