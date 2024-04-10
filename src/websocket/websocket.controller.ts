@@ -246,7 +246,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const game = player.position;
     if (game instanceof Game) {
       player = game.getPlayerById(player.socket.id);
-
+      player.useCardMesto(body);
       // player.useCard(body.id_card);
     }
   }

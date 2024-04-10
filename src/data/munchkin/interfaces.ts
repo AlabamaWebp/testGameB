@@ -63,17 +63,26 @@ export class fieldDoorCards {
         bonus: undefined,
     }
     getClasses() {
-        const tmp: DoorsCard[] = []
-        if (this.classes.first) tmp.push(this.classes.first)
-        if (this.classes.second) tmp.push(this.classes.second)
-        if (this.classes.bonus) tmp.push(this.classes.bonus)
+        // const tmp: DoorsCard[] = []
+        // if (this.classes.first) tmp.push(this.classes.first)
+        // if (this.classes.second) tmp.push(this.classes.second)
+        // if (this.classes.bonus) tmp.push(this.classes.bonus)
+
+        const tmp: any = {}
+        if (this.classes.first) tmp.first = (this.classes.first)
+        if (this.classes.second) tmp.second = (this.classes.second)
+        if (this.classes.bonus) tmp.bonus = (this.classes.bonus)
         return tmp;
     }
     getRasses() {
-        const tmp: DoorsCard[] = []
-        if (this.rasses.first) tmp.push(this.rasses.first)
-        if (this.rasses.second) tmp.push(this.rasses.second)
-        if (this.rasses.bonus) tmp.push(this.rasses.bonus)
+        // const tmp: DoorsCard[] = []
+        // if (this.rasses.first) tmp.push(this.rasses.first)
+        // if (this.rasses.second) tmp.push(this.rasses.second)
+        // if (this.rasses.bonus) tmp.push(this.rasses.bonus)
+        const tmp: any = {}
+        if (this.rasses.first) tmp.first = (this.rasses.first)
+        if (this.rasses.second) tmp.second = (this.rasses.second)
+        if (this.rasses.bonus) tmp.bonus = (this.rasses.bonus)
         return tmp;
     }
 }
@@ -105,7 +114,7 @@ export class GameField {
         this.fight?.monsters.forEach(el => m_power += el.data.get_lvls ?? 0);
         return {
             is_fight: this.fight ? true : false,
-            fight: this.fight ? { 
+            fight: this.fight ? {
                 players: {
                     main: this.fight?.players?.main?.data,
                     secondary: this.fight?.players?.secondary?.data,

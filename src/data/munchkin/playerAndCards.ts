@@ -52,8 +52,8 @@ export class PlayerGame {
                 arm: this.t_field_cards?.arm?.map(el => el.getData()),
                 other: this.t_field_cards?.other?.map(el => el.getData()),
             }, d_field: {
-                rasses: this.d_field_cards?.getRasses()?.map(el => el.getData()),
-                classes: this.d_field_cards?.getClasses()?.map(el => el.getData()),
+                rasses: this.d_field_cards?.getRasses(), // ?.map(el => el.getData())
+                classes: this.d_field_cards?.getClasses(), // ?.map(el => el.getData())
             },
             queue: this.queue,
             max_cards: this.maxCards,
@@ -145,7 +145,12 @@ export class PlayerGame {
             if (card.abstractData.cardType == "Класс") {
                 this.d_field_cards.classes[body.mesto] = card;
             }
+            else if (card.abstractData.cardType == "Раса") {
+                this.d_field_cards.classes[body.mesto] = card;
+            }
+            this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
+        game.playersGameRefresh();
     }
 }
 export interface cardMestoEvent {
