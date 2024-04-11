@@ -63,11 +63,6 @@ export class fieldDoorCards {
         bonus: undefined,
     }
     getClasses() {
-        // const tmp: DoorsCard[] = []
-        // if (this.classes.first) tmp.push(this.classes.first)
-        // if (this.classes.second) tmp.push(this.classes.second)
-        // if (this.classes.bonus) tmp.push(this.classes.bonus)
-
         const tmp: any = {}
         if (this.classes.first) tmp.first = (this.classes.first)
         if (this.classes.second) tmp.second = (this.classes.second)
@@ -75,10 +70,6 @@ export class fieldDoorCards {
         return tmp;
     }
     getRasses() {
-        // const tmp: DoorsCard[] = []
-        // if (this.rasses.first) tmp.push(this.rasses.first)
-        // if (this.rasses.second) tmp.push(this.rasses.second)
-        // if (this.rasses.bonus) tmp.push(this.rasses.bonus)
         const tmp: any = {}
         if (this.rasses.first) tmp.first = (this.rasses.first)
         if (this.rasses.second) tmp.second = (this.rasses.second)
