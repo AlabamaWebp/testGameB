@@ -246,9 +246,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (game instanceof Game) {
       game.firstStepHod(client);
     }
-    else {
-      client.emit("refreshGame", false)
-    }
   }
 }
 

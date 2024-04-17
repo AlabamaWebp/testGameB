@@ -35,7 +35,7 @@ export class Game {
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };
-    private step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
+    private step: 0 | 1 | 2 | 3 = 0; // перед боем | второй | после боя
     private queue: number = 0;
     // private is_fight: boolean;
     private log: string[];
@@ -140,6 +140,7 @@ export class Game {
             pl.cards.push(card);
             this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
             this.allPlayersRefresh();
+            this.step = 1;
             if (card.abstractData.cardType == "Монстр") 
                 this.startFight(pl, card)
             else
