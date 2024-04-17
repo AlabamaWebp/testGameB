@@ -213,18 +213,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
   // getDoor endHod activateCard
-  @SubscribeMessage('firstStepHod')
-  firstStepHod(
-    @ConnectedSocket() client: Socket,
-  ) {
-    const game = this.data.getClientById(client.id).position;
-    if (game instanceof Game) {
-      game.firstStepHod(client);
-    }
-    else {
-      client.emit("refreshGame", false)
-    }
-  }
   @SubscribeMessage('useCard')
   useCard(
     @ConnectedSocket() client: Socket,
@@ -250,15 +238,16 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // player.useCard(body.id_card);
     }
   }
-  @SubscribeMessage('openDoor')
-  openDoor(
+  @SubscribeMessage('firstStepHod')
+  firstStepHod(
     @ConnectedSocket() client: Socket,
-    @MessageBody() body: cardMestoEvent,
   ) {
-    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
-    const game = player.position;
+    const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      
+      game.firstStepHod(client);
+    }
+    else {
+      client.emit("refreshGame", false)
     }
   }
 }
