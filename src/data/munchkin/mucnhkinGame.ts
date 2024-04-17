@@ -44,30 +44,6 @@ export class Game {
 
     field: GameField = new GameField();
 
-    getPlayerById(id: string) {
-        return this.players.find(el => el.player.socket.id == id);
-    }
-
-    toSbros(card: TreasureCard | DoorsCard) {
-        if (card instanceof TreasureCard) {
-            this.sbros.treasures.push(card)
-        }
-        else if (card instanceof DoorsCard) {
-            this.sbros.doors.push(card)
-        }
-        else return
-        if (!this.cards.doors.length) {
-            this.cards = shuffle(this.sbros.doors.slice());
-            this.sbros.doors = []
-        }
-        else if (!this.cards.treasures.length) {
-            if (!this.cards.treasures.length) {
-                this.cards = shuffle(this.sbros.treasures.slice());
-                this.sbros.treasures = []
-            }
-        }
-    }
-
     newFightOpenDoor(monster: DoorsCard) {
         this.field.openCards = undefined;
         this.field.fight = {
@@ -87,32 +63,21 @@ export class Game {
             gold: monster.data?.gold
         }
     }
+    /////////
+    ///////// картовые
     private openCard(card: TreasureCard | DoorsCard) {
         if (this.field.fight) this.field.fight = undefined;
         if (!this.field.openCards) this.field.openCards = [card];
         else this.field.openCards.push(card)
     }
-    /////////
-    endHod() {
-
-        this.queue++;
-        if (this.queue >= this.plcount)
-            this.queue = 0
-
-    }
-
-    ///////// cards
-
     popPlayerCard(pl: PlayerGame, card: DoorsCard | TreasureCard): DoorsCard | TreasureCard {
         pl.cards = pl.cards.filter(el => el != card);
         return card
     }
-
     cardPlayerById(id: number): DoorsCard | TreasureCard {
         const pl = this.players[this.queue];
         return this.popPlayerCard(pl, pl.cards.find(el => el.id == id))
     }
-
     private get getDoor() {
         return this.cards.doors.pop();
     }
@@ -122,8 +87,11 @@ export class Game {
     private getPlBySocket(player: Socket) {
         return this.players.find(el => el.player.socket = player)
     }
-    ////
-    playerGetClosedDoor(player: Socket) {
+    //// Игровые
+    firstStepHod(player: Socket) {
+        this.playerGetOpenDoor(player);
+    }
+    private playerGetClosedDoor(player: Socket) {
         const pl = this.getPlBySocket(player);
         if (this.step == 2
             && pl == this.players[this.queue]
@@ -154,7 +122,9 @@ export class Game {
             const card = this.getDoor;
             pl.cards.push(card);
             this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
-            this.onePlayerRefresh(pl);
+
+            this.allPlayersRefresh();
+            // this.onePlayerRefresh(pl);
             this.openCard(card);
         }
     }
@@ -165,10 +135,15 @@ export class Game {
         this.logging(pl.player.name + " берёт сокровище: " + card.abstractData.name + " в открытую");
         this.onePlayerRefresh(pl);
         this.openCard(card);
-
     }
 
 
+    private endHod() {
+        this.queue++;
+        if (this.queue >= this.plcount)
+            this.queue = 0
+    }
+    //  // Служебные 
     getMainForPlayer(player: PlayerGlobal) {
         const plg = this.players.find(el => el.player == player).data;
         const pls = this.players
@@ -198,17 +173,15 @@ export class Game {
     }
     private logQueue() {
         const name = this.players[this.queue].player.name;
-
         this.logging("Ход игрока: " + name + " ")
     }
-
 
     private broadcast(e: string, d: any) {
         this.players.forEach((el: PlayerGame) => {
             el.player.socket.emit(e, d)
         })
     }
-    playersGameRefresh() {
+    allPlayersRefresh() {
         this.players.forEach((el: PlayerGame) => {
             this.broadcast("refreshGame", this.getMainForPlayer(el.player))
         })
@@ -222,5 +195,29 @@ export class Game {
     }
     getAllLog(player: Socket) {
         player.emit("allLog", this.log);
+    }
+    // export служебные 
+    getPlayerById(id: string) {
+        return this.players.find(el => el.player.socket.id == id);
+    }
+
+    toSbros(card: TreasureCard | DoorsCard) {
+        if (card instanceof TreasureCard) {
+            this.sbros.treasures.push(card)
+        }
+        else if (card instanceof DoorsCard) {
+            this.sbros.doors.push(card)
+        }
+        else return
+        if (!this.cards.doors.length) {
+            this.cards = shuffle(this.sbros.doors.slice());
+            this.sbros.doors = []
+        }
+        else if (!this.cards.treasures.length) {
+            if (!this.cards.treasures.length) {
+                this.cards = shuffle(this.sbros.treasures.slice());
+                this.sbros.treasures = []
+            }
+        }
     }
 }

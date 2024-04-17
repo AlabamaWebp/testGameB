@@ -128,7 +128,7 @@ export class PlayerGame {
             }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
-        game.playersGameRefresh();
+        game.allPlayersRefresh();
     }
 
     useCardMesto(body: cardMestoEvent) {
@@ -150,7 +150,7 @@ export class PlayerGame {
             }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
-        game.playersGameRefresh();
+        game.allPlayersRefresh();
     }
 }
 export interface cardMestoEvent {

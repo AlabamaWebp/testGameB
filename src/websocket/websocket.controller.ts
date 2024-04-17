@@ -213,13 +213,13 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
   // getDoor endHod activateCard
-  @SubscribeMessage('getDoor')
-  getDoor(
+  @SubscribeMessage('firstStepHod')
+  firstStepHod(
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      game.playerGetClosedDoor(client);
+      game.firstStepHod(client);
     }
     else {
       client.emit("refreshGame", false)
@@ -250,9 +250,27 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // player.useCard(body.id_card);
     }
   }
+  @SubscribeMessage('openDoor')
+  openDoor(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: cardMestoEvent,
+  ) {
+    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    const game = player.position;
+    if (game instanceof Game) {
+      
+    }
+  }
 }
 
 interface createRoom {
   name: string
   max: number
 }
+// function runInGame(client: Socket, func: () => void) {
+//   const player: PlayerGlobal = this.data.getClientById(client.id);
+//   const game = player.position;
+//   if (game instanceof Game) {
+//     func();
+//   }
+// }
