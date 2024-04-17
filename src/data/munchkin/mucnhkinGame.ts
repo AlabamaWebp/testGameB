@@ -71,7 +71,7 @@ export class Game {
         else this.field.openCards.push(card)
     }
     private startFight(player: PlayerGame, monster: DoorsCard) {
-        const m_proto = Object.assign({}, monster) as DoorsCard;
+        const m_proto = structuredClone(monster) as DoorsCard;
         if (!this.field.fight) this.field.fight = {
             players: {
                 main: player
