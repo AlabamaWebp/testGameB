@@ -65,10 +65,21 @@ export class Game {
     }
     /////////
     ///////// картовые
-    private openCard(card: TreasureCard | DoorsCard) {
+    private openCardField(card: TreasureCard | DoorsCard) {
         if (this.field.fight) this.field.fight = undefined;
         if (!this.field.openCards) this.field.openCards = [card];
         else this.field.openCards.push(card)
+    }
+    private startFight(player: PlayerGame, monster: DoorsCard) {
+        const m_proto = Object.assign({}, monster) as DoorsCard;
+        if (!this.field.fight) this.field.fight = {
+            players: {
+                main: player
+            },
+            monsters: [m_proto],
+            monstersProto: [monster],
+            gold: monster.data.gold
+        }
     }
     popPlayerCard(pl: PlayerGame, card: DoorsCard | TreasureCard): DoorsCard | TreasureCard {
         pl.cards = pl.cards.filter(el => el != card);
@@ -79,10 +90,16 @@ export class Game {
         return this.popPlayerCard(pl, pl.cards.find(el => el.id == id))
     }
     private get getDoor() {
+        this.checkSbros();
         return this.cards.doors.pop();
     }
     private get getTreasure() {
+        this.checkSbros();
         return this.cards.treasures.pop();
+    }
+    checkSbros() {
+        if (this.cards.treasures.length == 0) { this.cards.treasures = this.sbros.treasures.slice(); this.sbros.treasures = []; }
+        if (this.cards.doors.length == 0) { this.cards.doors = this.sbros.doors.slice(); this.sbros.doors = []; }
     }
     private getPlBySocket(player: Socket) {
         return this.players.find(el => el.player.socket = player)
@@ -122,10 +139,11 @@ export class Game {
             const card = this.getDoor;
             pl.cards.push(card);
             this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
-
             this.allPlayersRefresh();
-            // this.onePlayerRefresh(pl);
-            this.openCard(card);
+            if (card.abstractData.cardType == "Монстр") 
+                this.startFight(pl, card)
+            else
+                this.openCardField(card);
         }
     }
     private playerGetOpenTreasure(player: Socket) {
@@ -134,7 +152,7 @@ export class Game {
         pl.cards.push(card);
         this.logging(pl.player.name + " берёт сокровище: " + card.abstractData.name + " в открытую");
         this.onePlayerRefresh(pl);
-        this.openCard(card);
+        this.openCardField(card);
     }
 
 
