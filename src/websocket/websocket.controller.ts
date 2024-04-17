@@ -247,6 +247,34 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       game.firstStepHod(client);
     }
   }
+  @SubscribeMessage('chistkaNichek')
+  chistkaNichek(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const game = this.data.getClientById(client.id).position;
+    if (game instanceof Game) {
+      game.chistkaNichek(client);
+    }
+  }
+  @SubscribeMessage('pas')
+  pas(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const game = this.data.getClientById(client.id).position;
+    if (game instanceof Game) {
+      game.yaPas(client);
+    }
+  }
+  @SubscribeMessage('endFight')
+  endFight(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() smivka: boolean
+  ) {
+    const game = this.data.getClientById(client.id).position;
+    if (game instanceof Game) {
+      game.endFight(client, smivka);
+    }
+  }
 }
 
 interface createRoom {

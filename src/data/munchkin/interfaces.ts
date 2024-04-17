@@ -105,6 +105,7 @@ export class GameField {
             players?: (TreasureCard | DoorsCard)[],
             monsters?: (TreasureCard | DoorsCard)[]
         }
+        pas?: Set<string>;
         monsters: DoorsCard[]
         monstersProto: DoorsCard[]
         gold: number

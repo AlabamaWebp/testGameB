@@ -35,7 +35,7 @@ export class Game {
 
     private cards: { doors: DoorsCard[], treasures: TreasureCard[] };
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };
-    private step: 0 | 1 | 2 | 3 = 0; // перед боем | второй | после боя
+    private step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
     private queue: number = 0;
     // private is_fight: boolean;
     private log: string[];
@@ -43,6 +43,10 @@ export class Game {
     /////////
 
     field: GameField = new GameField();
+
+    get is_fight() {
+        return this.field.fight ? true : false;
+    }
 
     newFightOpenDoor(monster: DoorsCard) {
         this.field.openCards = undefined;
@@ -78,16 +82,25 @@ export class Game {
             },
             monsters: [m_proto],
             monstersProto: [monster],
-            gold: monster.data.gold
+            gold: monster.data.gold,
+            pas: new Set<string>
         }
+    }
+    endFight(client: Socket, smivka: boolean) {
+        const pl = this.getPlBySocket(client);
+        /// я устал
+    }
+    yaPas(player: Socket) {
+        const name = this.getPlBySocket(player).player.name;
+        this.field.fight.pas.add(name)
     }
     popPlayerCard(pl: PlayerGame, card: DoorsCard | TreasureCard): DoorsCard | TreasureCard {
         pl.cards = pl.cards.filter(el => el != card);
-        return card
+        return card;
     }
     cardPlayerById(id: number): DoorsCard | TreasureCard {
         const pl = this.players[this.queue];
-        return this.popPlayerCard(pl, pl.cards.find(el => el.id == id))
+        return this.popPlayerCard(pl, pl.cards.find(el => el.id == id));
     }
     private get getDoor() {
         this.checkSbros();
@@ -104,48 +117,48 @@ export class Game {
     private getPlBySocket(player: Socket) {
         return this.players.find(el => el.player.socket = player)
     }
-    //// Игровые
+    //// Игровые !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     firstStepHod(player: Socket) {
-        this.playerGetOpenDoor(player);
-    }
-    private playerGetClosedDoor(player: Socket) {
         const pl = this.getPlBySocket(player);
-        if (this.step == 2
-            && pl == this.players[this.queue]
-        ) {
-            const card = this.getDoor
-            pl.cards.push(card);
-            this.logging(pl.player.name + " берёт дверь в закрытую");
-            this.onePlayerRefresh(pl);
+        if (!(this.step == 0 && pl == this.players[this.queue])) return
+
+        const card = this.getDoor;
+        this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
+        if (card.abstractData.cardType == "Монстр") {
+            this.logging("Затесалась Драка!!!")
+            this.step = 2;
+            this.startFight(pl, card);
         }
+        else {
+            if (card.abstractData.cardType !== "Проклятие")
+                pl.cards.push(card);
+            else {
+                this.logging("Проклятуние")
+            } // Проклятуние
+            this.step = 1;
+            this.openCardField(card);
+        }
+        this.allPlayersRefresh();
+    }
+    chistkaNichek(player: Socket) {
+        const pl = this.getPlBySocket(player);
+        if (this.step == 1 && pl == this.players[this.queue])
+            this.playerGetClosedDoor(pl);
+    }
+    private playerGetClosedDoor(pl: PlayerGame) {
+        const card = this.getDoor
+        pl.cards.push(card);
+        this.logging(pl.player.name + " берёт дверь в закрытую");
+        this.onePlayerRefresh(pl);
     }
     private playerGetClosedTreasure(player: Socket, colvo: number) {
         const pl = this.getPlBySocket(player);
-        if (pl == this.players[this.queue]
-        ) {
-            for (let i = 0; i < colvo; i++) {
-                const card = this.getDoor
-                pl.cards.push(card);
-            }
-            this.logging(pl.player.name + " берёт в закрытую сокровищ в количестве " + colvo + "шт");
-            this.onePlayerRefresh(pl);
-        }
-    }
-    private playerGetOpenDoor(player: Socket) {
-        const pl = this.getPlBySocket(player);
-        if (this.step == 0
-            && pl == this.players[this.queue]
-        ) {
-            const card = this.getDoor;
+        for (let i = 0; i < colvo; i++) {
+            const card = this.getTreasure
             pl.cards.push(card);
-            this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
-            this.allPlayersRefresh();
-            this.step = 1;
-            if (card.abstractData.cardType == "Монстр") 
-                this.startFight(pl, card)
-            else
-                this.openCardField(card);
         }
+        this.logging(pl.player.name + " берёт в закрытую сокровищ в количестве " + colvo + "шт.");
+        this.onePlayerRefresh(pl);
     }
     private playerGetOpenTreasure(player: Socket) {
         const pl = this.getPlBySocket(player);
@@ -155,6 +168,8 @@ export class Game {
         this.onePlayerRefresh(pl);
         this.openCardField(card);
     }
+
+
 
 
     private endHod() {
