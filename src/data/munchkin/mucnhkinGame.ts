@@ -164,7 +164,7 @@ export class Game {
     }
     //  // Служебные 
     getMainForPlayer(player: PlayerGlobal) {
-        const plg = this.players.find(el => el.player == player).data;
+        const you = this.players.find(el => el.player == player).data;
         const pls = this.players
             .filter(el => el.player != player)
             .map((el: PlayerGame) => el.data)
@@ -180,7 +180,8 @@ export class Game {
             },
             // log: this.log,
             players: pls,
-            you: plg
+            you: you,
+            you_hodish: this.players[this.queue].player == player,
         }
     }
     logging(l: string) {
