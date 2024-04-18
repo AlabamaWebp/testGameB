@@ -48,26 +48,16 @@ export class Game {
     get is_fight() {
         return this.field.fight ? true : false;
     }
-
-    newFightOpenDoor(monster: DoorsCard) {
-        this.field.openCards = undefined;
-        this.field.fight = {
-            players: { main: this.players[this.queue] },
-            monsters: [structuredClone(monster)],
-            monstersProto: [monster],
-            gold: monster.data?.gold
-        }
-    }
-    newFightSamIgrok(monster_id: number) {
-        this.field.openCards = undefined;
-        const monster = this.cardPlayerById(monster_id) as DoorsCard;
-        this.field.fight = {
-            players: { main: this.players[this.queue] },
-            monsters: [structuredClone(monster)],
-            monstersProto: [monster],
-            gold: monster.data?.gold,
-        }
-    }
+    // newFightSamIgrok(monster_id: number) {
+    //     this.field.openCards = undefined;
+    //     const monster = this.cardPlayerById(monster_id) as DoorsCard;
+    //     this.field.fight = {
+    //         players: { main: this.players[this.queue] },
+    //         monsters: [structuredClone(monster)],
+    //         monstersProto: [monster],
+    //         gold: monster.data?.gold,
+    //     }
+    // }
     /////////
     ///////// картовые
     private openCardField(card: TreasureCard | DoorsCard) {
@@ -84,7 +74,11 @@ export class Game {
             monsters: [m_proto],
             monstersProto: [monster],
             gold: monster.data.gold,
-            pas: new Set<string>
+            lvls: m_proto.data.get_lvls,
+            pas: new Set<string>,
+
+            monsters_power: m_proto.data.strongest,
+            players_power: player.power,
         }
     }
     endFight(client: Socket) {

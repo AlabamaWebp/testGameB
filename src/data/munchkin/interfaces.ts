@@ -109,15 +109,21 @@ export class GameField {
         monsters: DoorsCard[]
         monstersProto: DoorsCard[]
         gold: number;
+        lvls: number;
+
+        monsters_power: number;
+        players_power: number
+
     }
     openCards?: (TreasureCard | DoorsCard)[] = []
 
     get getField() {
-        const pl_power = this.fight?.players.main.power + this.fight?.players?.secondary?.power ?? 0;
-        let m_power = 0;
-        this.fight?.monsters.forEach(el => m_power += el.data.strongest ?? 0);
-        let m_lvls = 0;
-        this.fight?.monsters.forEach(el => m_power += el.data.get_lvls ?? 0);
+        const pl_power = this.fight.players_power;
+        // this.fight?.players.main.power + this.fight?.players?.secondary?.power ?? 0;
+        let m_power = this.fight.monsters_power;
+        // this.fight?.monsters.forEach(el => m_power += el.data.strongest ?? 0);
+        let m_lvls = this.fight.lvls;
+        // this.fight?.monsters.forEach(el => m_power += el.data.get_lvls ?? 0);
         return {
             is_fight: this.fight ? true : false,
             fight: this.fight ? {
