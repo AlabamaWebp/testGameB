@@ -108,7 +108,7 @@ export class GameField {
         pas?: Set<string>;
         monsters: DoorsCard[]
         monstersProto: DoorsCard[]
-        gold: number
+        gold: number;
     }
     openCards?: (TreasureCard | DoorsCard)[] = []
 

@@ -37,6 +37,7 @@ export class Game {
     private sbros: { doors: DoorsCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };
     private step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
     private queue: number = 0;
+    private cubik: number = 1;
     // private is_fight: boolean;
     private log: string[];
     private number_log: number = 1;
@@ -64,7 +65,7 @@ export class Game {
             players: { main: this.players[this.queue] },
             monsters: [structuredClone(monster)],
             monstersProto: [monster],
-            gold: monster.data?.gold
+            gold: monster.data?.gold,
         }
     }
     /////////
@@ -86,9 +87,24 @@ export class Game {
             pas: new Set<string>
         }
     }
-    endFight(client: Socket, smivka: boolean) {
+    endFight(client: Socket) {
         const pl = this.getPlBySocket(client);
-        /// я устал
+        if (!pl) return
+        if (this.field.fight?.pas.size == (this.plcount - 1)){
+            const monsters = this.field.fight.monsters
+            let str_monsters = 0;
+            monsters.forEach(el => str_monsters += el.data.strongest);
+            // НАдо подумать над применяемыми картами во время боя
+        }
+        else {
+            this.sendError(pl.player.socket, "Не все пасанули");
+        }
+    }
+    smivka(client: Socket) {
+        const pl = this.getPlBySocket(client);
+        if (!pl) return
+        this.cubik = randomInteger(1, 6);
+        this.allPlayersRefresh();
     }
     yaPas(player: Socket) {
         const name = this.getPlBySocket(player).player.name;
@@ -255,4 +271,12 @@ export class Game {
             }
         }
     }
+    sendError(pl: Socket, message: string) {
+        pl.send("error", message)
+    }
+}
+function randomInteger(min, max) {
+    // случайное число от min до (max+1)
+    let rand = min + Math.random() * (max + 1 - min);
+    return Math.floor(rand);
 }

@@ -265,14 +265,22 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       game.yaPas(client);
     }
   }
-  @SubscribeMessage('endFight')
-  endFight(
+  @SubscribeMessage('smivka')
+  smivka(
     @ConnectedSocket() client: Socket,
-    @MessageBody() smivka: boolean
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      game.endFight(client, smivka);
+      game.smivka(client);
+    }
+  }
+  @SubscribeMessage('endFight')
+  endFight(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const game = this.data.getClientById(client.id).position;
+    if (game instanceof Game) {
+      game.endFight(client);
     }
   }
 }
