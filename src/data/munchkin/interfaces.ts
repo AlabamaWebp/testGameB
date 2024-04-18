@@ -112,8 +112,14 @@ export class GameField {
         lvls: number;
 
         monsters_power: number;
-        players_power: number
+        players_power: number;
 
+        smivka: boolean;
+        gold_first_pl: number;
+        gold_second_pl: number;
+
+        smivka_first: number
+        smivka_second: number
     }
     openCards?: (TreasureCard | DoorsCard)[] = []
 

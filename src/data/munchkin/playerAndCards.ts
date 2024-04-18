@@ -21,6 +21,7 @@ export class PlayerGame {
     private maxCards: number = 5;
 
     alive: boolean;
+    smivka_power: number = 4; // x > 4
 
 
     readonly player: PlayerGlobal;

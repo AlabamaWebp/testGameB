@@ -48,17 +48,6 @@ export class Game {
     get is_fight() {
         return this.field.fight ? true : false;
     }
-    // newFightSamIgrok(monster_id: number) {
-    //     this.field.openCards = undefined;
-    //     const monster = this.cardPlayerById(monster_id) as DoorsCard;
-    //     this.field.fight = {
-    //         players: { main: this.players[this.queue] },
-    //         monsters: [structuredClone(monster)],
-    //         monstersProto: [monster],
-    //         gold: monster.data?.gold,
-    //     }
-    // }
-    /////////
     ///////// картовые
     private openCardField(card: TreasureCard | DoorsCard) {
         if (this.field.fight) this.field.fight = undefined;
@@ -79,26 +68,54 @@ export class Game {
 
             monsters_power: m_proto.data.strongest,
             players_power: player.power,
+
+            gold_first_pl: monster.data.gold,
+            gold_second_pl: 0,
+
+            smivka: false,
+            smivka_first: 0,
+            smivka_second: 0,
         }
     }
     endFight(client: Socket) {
         const pl = this.getPlBySocket(client);
         if (!pl) return
-        if (this.field.fight?.pas.size == (this.plcount - 1)){
-            const monsters = this.field.fight.monsters
-            let str_monsters = 0;
-            monsters.forEach(el => str_monsters += el.data.strongest);
+        if (this.field.fight?.pas.size == (this.plcount - 1)) { // все пасанули
+            const monsters = this.field.fight.monsters;
+            const f = this.field.fight;
+            if (f.players_power > f.monsters_power) { // Победа игрока
+                this.playerGetClosedTreasure(f.players.main, f.gold_first_pl);
+                f.players.main.changeLvl(f.lvls);
+            }
+            else { // победа монстров
+                if (f.smivka) {
+                    
+                }
+            }
             // НАдо подумать над применяемыми картами во время боя
         }
         else {
             this.sendError(pl.player.socket, "Не все пасанули");
         }
     }
-    smivka(client: Socket) {
+    kidokSmivka(client: Socket) {
         const pl = this.getPlBySocket(client);
-        if (!pl) return
-        this.cubik = randomInteger(1, 6);
-        this.allPlayersRefresh();
+        const f = this.field.fight;
+        if (!pl || !f) return;
+
+        let templ: 0 | 1 | 2 = 0; // 0 - net na pole; 1 - first, 2 - second;
+        if (f.players.main == pl) templ = 1;
+        else if (f.players.secondary == pl) templ = 2
+        if (templ == 1 || templ == 2) {
+            f.smivka == true;
+            // this.cubik = randomInteger(1, 6);
+            if (templ == 1 && f.smivka_first == 0)
+                f.smivka_first = randomInteger(1, 6)
+            else if (templ == 2 && f.smivka_second == 0)
+                f.smivka_second = randomInteger(1, 6);
+            this.logging(pl.data.name + "выбрасывает " + this.cubik + " на кубике")
+            this.allPlayersRefresh();
+        }
     }
     yaPas(player: Socket) {
         const name = this.getPlBySocket(player).player.name;
@@ -161,8 +178,8 @@ export class Game {
         this.logging(pl.player.name + " берёт дверь в закрытую");
         this.onePlayerRefresh(pl);
     }
-    private playerGetClosedTreasure(player: Socket, colvo: number) {
-        const pl = this.getPlBySocket(player);
+    private playerGetClosedTreasure(pl: PlayerGame, colvo: number) {
+        // const pl = this.getPlBySocket(player);
         for (let i = 0; i < colvo; i++) {
             const card = this.getTreasure
             pl.cards.push(card);

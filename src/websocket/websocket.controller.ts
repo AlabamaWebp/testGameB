@@ -271,7 +271,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      game.smivka(client);
+      game.kidokSmivka(client);
     }
   }
   @SubscribeMessage('endFight')
