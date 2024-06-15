@@ -111,17 +111,17 @@ export class PlayerGame {
                     && this.t_field_cards.count[template_eng] < this.t_field_cards[template_eng].length + count) {
                     const tmp = this.t_field_cards[template_eng]
                     while (tmp.length) {
-                        game.toSbros(this.t_field_cards[template_eng].pop())
+                        game.Card.toSbros(this.t_field_cards[template_eng].pop())
                     }
                 }
                 // console.log(this.t_field_cards[template_eng], card);
                 this.t_field_cards[template_eng] = [card];
 
-                game.logging(`${this.player.name} надевает ${card.abstractData.name} (+${card.strong} бонус)`)
+                game.Player.logging(`${this.player.name} надевает ${card.abstractData.name} (+${card.strong} бонус)`)
             }
             if (card.data.treasureType == 'Используемая') {
                 card.defs?.action(defs);
-                game.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
             }
             if (card.data.treasureType == 'Боевая') {
                 // ????????????????
@@ -129,7 +129,7 @@ export class PlayerGame {
             }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
-        game.allPlayersRefresh();
+        game.Player.allPlayersRefresh();
     }
 
     useCardMesto(body: cardMestoEvent) {
@@ -151,7 +151,7 @@ export class PlayerGame {
             }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
-        game.allPlayersRefresh();
+        game.Player.allPlayersRefresh();
     }
 }
 export interface cardMestoEvent {

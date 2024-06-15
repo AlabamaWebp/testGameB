@@ -193,7 +193,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const pl = this.data.getClientById(client.id);
     if (pl.position instanceof Game) {
-      client.emit("refreshGame", pl.position.getMainForPlayer(pl))
+      client.emit("refreshGame", pl.position.Player.getMainForPlayer(pl))
     }
     else {
       client.emit("refreshGame", false)
@@ -206,7 +206,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const pl = this.data.getClientById(client.id);
     if (pl.position instanceof Game) {
-      pl.position.getAllLog(pl.socket)
+      pl.position.Player.getAllLog(pl.socket)
     }
     else {
       client.emit("refreshGame", false)
@@ -244,7 +244,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) 
-      game.getDoorCardByPlayer(client);
+      game.Action.getDoorCardByPlayer(client);
   }
   @SubscribeMessage('pas')
   pas(
@@ -252,7 +252,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      game.yaPas(client);
+      game.Fight.yaPas(client);
     }
   }
   @SubscribeMessage('smivka')
@@ -261,7 +261,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      game.kidokSmivka(client);
+      game.Fight.kidokSmivka(client);
     }
   }
   @SubscribeMessage('endFight')
@@ -270,7 +270,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const game = this.data.getClientById(client.id).position;
     if (game instanceof Game) {
-      game.endFight(client);
+      game.Fight.endFight(client);
     }
   }
 }
