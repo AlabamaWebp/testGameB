@@ -238,23 +238,13 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // player.useCard(body.id_card);
     }
   }
-  @SubscribeMessage('firstStepHod')
-  firstStepHod(
+  @SubscribeMessage('getDoorCardByPlayer')
+  getDoorCardByPlayer(
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClientById(client.id).position;
-    if (game instanceof Game) {
-      game.firstStepHod(client);
-    }
-  }
-  @SubscribeMessage('chistkaNichek')
-  chistkaNichek(
-    @ConnectedSocket() client: Socket,
-  ) {
-    const game = this.data.getClientById(client.id).position;
-    if (game instanceof Game) {
-      game.chistkaNichek(client);
-    }
+    if (game instanceof Game) 
+      game.getDoorCardByPlayer(client);
   }
   @SubscribeMessage('pas')
   pas(

@@ -124,11 +124,12 @@ export class GameField {
     openCards?: (TreasureCard | DoorsCard)[] = []
 
     get getField() {
-        const pl_power = this.fight.players_power;
+        const pl_power = this.fight?.players_power;
+        let m_power = this.fight?.monsters_power;
+        let m_lvls = this.fight?.lvls;
+
         // this.fight?.players.main.power + this.fight?.players?.secondary?.power ?? 0;
-        let m_power = this.fight.monsters_power;
         // this.fight?.monsters.forEach(el => m_power += el.data.strongest ?? 0);
-        let m_lvls = this.fight.lvls;
         // this.fight?.monsters.forEach(el => m_power += el.data.get_lvls ?? 0);
         return {
             is_fight: this.fight ? true : false,

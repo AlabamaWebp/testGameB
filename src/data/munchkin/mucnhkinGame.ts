@@ -89,7 +89,7 @@ export class Game {
             }
             else { // победа монстров
                 if (f.smivka) {
-                    
+
                 }
             }
             // НАдо подумать над применяемыми картами во время боя
@@ -119,7 +119,7 @@ export class Game {
     }
     yaPas(player: Socket) {
         const name = this.getPlBySocket(player).player.name;
-        this.field.fight.pas.add(name)
+        this.field.fight.pas.add(name);
     }
     popPlayerCard(pl: PlayerGame, card: DoorsCard | TreasureCard): DoorsCard | TreasureCard {
         pl.cards = pl.cards.filter(el => el != card);
@@ -145,10 +145,13 @@ export class Game {
         return this.players.find(el => el.player.socket = player)
     }
     //// Игровые !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    firstStepHod(player: Socket) {
+    getDoorCardByPlayer(player: Socket) {
         const pl = this.getPlBySocket(player);
-        if (!(this.step == 0 && pl == this.players[this.queue])) return
-
+        if (pl != this.players[this.queue]) return;
+        if (this.step == 0) this.firstStepHod(pl);
+        else if (this.step == 1) this.chistkaNichek(pl);
+    }
+    firstStepHod(pl: PlayerGame) {
         const card = this.getDoor;
         this.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
         if (card.abstractData.cardType == "Монстр") {
@@ -167,10 +170,11 @@ export class Game {
         }
         this.allPlayersRefresh();
     }
-    chistkaNichek(player: Socket) {
-        const pl = this.getPlBySocket(player);
-        if (this.step == 1 && pl == this.players[this.queue])
+    chistkaNichek(pl: PlayerGame) {
+        if (this.step == 1 && pl == this.players[this.queue]) {
             this.playerGetClosedDoor(pl);
+            this.step = 3;
+        }
     }
     private playerGetClosedDoor(pl: PlayerGame) {
         const card = this.getDoor
