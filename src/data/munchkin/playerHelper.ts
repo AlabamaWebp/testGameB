@@ -8,7 +8,7 @@ export class PlayerHelper {
         this.game = game;
     }
     game: Game;
-    private log: string[];
+    private log: string[] = [];
     private number_log: number = 1;
 
     getMainForPlayer(player: PlayerGlobal) {
