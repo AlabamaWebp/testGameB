@@ -43,7 +43,6 @@ export class PlayerHelper {
         const name = this.game.players[this.game.queue].player.name;
         this.logging("Ход игрока: " + name + " ")
     }
-
     broadcast(e: string, d: any) {
         this.game.players.forEach((el: PlayerGame) => {
             el.player.socket.emit(e, d)
@@ -54,17 +53,8 @@ export class PlayerHelper {
             this.broadcast("refreshGame", this.getMainForPlayer(el.player))
         })
     }
-    onePlayerRefresh(player: PlayerGame) {
-        player.player.socket.emit("refreshGame", this.getMainForPlayer(player.player));
-    }
-
-    plusLog(d: string) {
-        this.broadcast("plusLog", d)
-    }
-    getAllLog(player: Socket) {
-        player.emit("allLog", this.log);
-    }
-    sendError(pl: Socket, message: string) {
-        pl.send("error", message)
-    }
+    onePlayerRefresh(player: PlayerGame) { player.player.socket.emit("refreshGame", this.getMainForPlayer(player.player)); }
+    plusLog(d: string) { this.broadcast("plusLog", d) }
+    sendAllLog(player: Socket) { player.emit("allLog", this.log); }
+    sendError(pl: Socket, message: string) { pl.send("error", message) }
 }

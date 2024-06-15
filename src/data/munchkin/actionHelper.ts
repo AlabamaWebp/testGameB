@@ -38,7 +38,6 @@ export class ActionHelper {
             this.game.step = 3;
         }
     }
-
     endHod() {
         this.game.queue++;
         if (this.game.queue >= this.game.plcount)
