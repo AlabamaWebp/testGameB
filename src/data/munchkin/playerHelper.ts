@@ -30,7 +30,7 @@ export class PlayerHelper {
             players: pls,
             you: you,
             you_hodish: this.game.players[this.game.queue] == player,
-            // pas: !this.game.field.fight?.pas?.has(player.data.name) ?? false  
+            pas: this.game.field.fight?.pas?.has(player.data.name) == false ? true : false  
         }
     }
     logging(l: string) {
