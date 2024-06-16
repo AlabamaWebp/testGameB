@@ -269,15 +269,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       game.Fight.kidokSmivka(client);
     }
   }
-  @SubscribeMessage('endFight')
-  endFight(
-    @ConnectedSocket() client: Socket,
-  ) {
-    const game = this.data.getClient(client).position;
-    if (game instanceof Game) {
-      game.Fight.endFight(client);
-    }
-  }
+  // @SubscribeMessage('endFight')
+  // endFight(
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   const game = this.data.getClient(client).position;
+  //   if (game instanceof Game) {
+  //     game.Fight.endFight(client);
+  //   }
+  // }
 }
 
 interface createRoom {

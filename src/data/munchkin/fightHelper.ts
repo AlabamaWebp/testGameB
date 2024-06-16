@@ -32,10 +32,8 @@ export class FightHelper {
             smivka_second: 0,
         }
     }
-    endFight(client: Socket) {
-        const pl = this.game.getPlayer(client);
-        if (!pl) return
-        if (this.game.field.fight?.pas.size == (this.game.plcount - 1)) { // все пасанули
+    endFight(pl: PlayerGame) {
+        if (this.game.field.fight?.pas.size == this.game.plcount) { // все пасанули
             const monsters = this.game.field.fight.monsters;
             const f = this.game.field.fight;
             if (f.players_power > f.monsters_power) { // Победа игрока
@@ -43,9 +41,7 @@ export class FightHelper {
                 f.players.main.changeLvl(f.lvls);
             }
             else { // победа монстров
-                if (f.smivka) {
-
-                }
+                
             }
             // НАдо подумать над применяемыми картами во время боя
         }
@@ -75,6 +71,9 @@ export class FightHelper {
     yaPas(player: Socket) {
         const name = this.game.getPlayer(player).player.name;
         this.game.field.fight.pas.add(name);
+        if (this.game.field.fight.pas.size == this.game.plcount) {
+
+        }
         this.game.Player.allPlayersRefresh();
     }
 }

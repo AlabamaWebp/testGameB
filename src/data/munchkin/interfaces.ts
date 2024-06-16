@@ -118,8 +118,8 @@ export class GameField {
         gold_first_pl: number;
         gold_second_pl: number;
 
-        smivka_first: number
-        smivka_second: number
+        // smivka_first: number;
+        // smivka_second: number;
     }
     openCards?: (TreasureCard | DoorsCard)[] = []
 
