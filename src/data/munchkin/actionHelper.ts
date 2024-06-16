@@ -8,7 +8,7 @@ export class ActionHelper {
     }
     game: Game;
     getDoorCardByPlayer(player: Socket) {
-        const pl = this.game.getPlBySocket(player);
+        const pl = this.game.getPlayer(player);
         if (pl != this.game.players[this.game.queue]) return;
         if (this.game.step == 0) this.firstStepHod(pl);
         else if (this.game.step == 1) this.chistkaNichek(pl);

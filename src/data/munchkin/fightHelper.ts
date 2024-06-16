@@ -33,7 +33,7 @@ export class FightHelper {
         }
     }
     endFight(client: Socket) {
-        const pl = this.game.getPlBySocket(client);
+        const pl = this.game.getPlayer(client);
         if (!pl) return
         if (this.game.field.fight?.pas.size == (this.game.plcount - 1)) { // все пасанули
             const monsters = this.game.field.fight.monsters;
@@ -54,7 +54,7 @@ export class FightHelper {
         }
     }
     kidokSmivka(client: Socket) {
-        const pl = this.game.getPlBySocket(client);
+        const pl = this.game.getPlayer(client);
         const f = this.game.field.fight;
         if (!pl || !f) return;
 
@@ -73,7 +73,8 @@ export class FightHelper {
         }
     }
     yaPas(player: Socket) {
-        const name = this.game.getPlBySocket(player).player.name;
+        const name = this.game.getPlayer(player).player.name;
         this.game.field.fight.pas.add(name);
+        this.game.Player.allPlayersRefresh();
     }
 }

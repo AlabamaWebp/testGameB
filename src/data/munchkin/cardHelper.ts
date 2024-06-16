@@ -49,7 +49,7 @@ export class CardHelper {
         this.game.Player.onePlayerRefresh(pl);
     }
     playerGetOpenTreasure(player: Socket) {
-        const pl = this.game.getPlBySocket(player);
+        const pl = this.game.getPlayer(player);
         const card = this.getTreasure;
         pl.cards.push(card);
         this.game.Player.logging(pl.player.name + " берёт сокровище: " + card.abstractData.name + " в открытую");

@@ -191,13 +191,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   refreshGame(
     @ConnectedSocket() client: Socket,
   ) {
-    const pl = this.data.getClient(client);
-    if (pl.position instanceof Game) {
-      client.emit("refreshGame", pl.position.Player.getMainForPlayer(pl))
-    }
-    else {
-      client.emit("refreshGame", false)
-    }
+    const game = this.data.getClient(client).position;
+    client.emit("refreshGame", game instanceof Game ? game.Player.getMainForPlayer(game.getPlayer(client)) : false)
   }
 
   @SubscribeMessage('allLog')
@@ -205,12 +200,10 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const pl = this.data.getClient(client);
-    if (pl.position instanceof Game) {
+    if (pl.position instanceof Game) 
       pl.position.Player.sendAllLog(pl.socket)
-    }
-    else {
+    else 
       client.emit("refreshGame", false)
-    }
   }
   // getDoor endHod activateCard
   @SubscribeMessage('endHod')
@@ -220,7 +213,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
     if (game instanceof Game) {
-      player = game.getPlayerById(player.socket.id);
+      player = game.getPlayer(client);
       game.Action.endHod(player)
     }
   }
@@ -232,7 +225,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
     if (game instanceof Game) {
-      player = game.getPlayerById(player.socket.id);
+      player = game.getPlayer(client);
       player.useCard(id_card);
     }
   }
@@ -244,7 +237,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
     if (game instanceof Game) {
-      player = game.getPlayerById(player.socket.id);
+      player = game.getPlayer(client);
       player.useCardMesto(body);
       // player.useCard(body.id_card);
     }
@@ -254,7 +247,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClient(client).position;
-    if (game instanceof Game) 
+    console.log(game);
+    if (game instanceof Game)
       game.Action.getDoorCardByPlayer(client);
   }
   @SubscribeMessage('pas')

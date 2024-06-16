@@ -41,21 +41,6 @@ export class DataService {
         const tmp = this.clients.find(el => el.socket == id);
         return tmp;
     }
-    // getClientByName(client: Socket): PlayerGlobal | undefined {
-    //     return this.clients.find(el => el.socket == client)
-    // }
-    // setClientName(id: string, newName: string) {
-    //     const client = this.getClientById(id);
-    //     if (client) {
-    //         if (this.clients.filter(el => el != client).find(el => el.name == newName)) { // .filter(el => el != client) test
-    //             return "Игрок с таким ником уже есть"
-    //         }
-    //         else {
-    //             return client.setName(newName);
-    //         }
-    //     }
-    //     return "Ошибка сервера"
-    // }
     getHomeClients() {
         return this.clients.filter(el => el.position == "home");
     }

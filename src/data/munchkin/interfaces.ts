@@ -131,7 +131,6 @@ export class GameField {
         // this.fight?.players.main.power + this.fight?.players?.secondary?.power ?? 0;
         // this.fight?.monsters.forEach(el => m_power += el.data.strongest ?? 0);
         // this.fight?.monsters.forEach(el => m_power += el.data.get_lvls ?? 0);
-        console.log(this.fight?.monsters[0].getData);
         return {
             is_fight: this.fight ? true : false,
             fight: this.fight ? {

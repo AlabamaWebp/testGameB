@@ -52,6 +52,9 @@ export class Game {
 
     get is_fight() { return this.field.fight }
 
-    getPlBySocket(player: Socket) { return this.players.find(el => el.player.socket = player) }
-    getPlayerById(id: string) { return this.players.find(el => el.player.socket.id == id); }
+    getPlayer(player: Socket) {
+        const pl = this.players.find(el => el.player.socket == player)
+        console.log(pl);
+        return pl
+    }
 }
