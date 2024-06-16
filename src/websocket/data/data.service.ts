@@ -30,15 +30,15 @@ export class DataService {
         }
     }
     disconnectClient(client: Socket) {
-        const player = this.getClientById(client.id);
+        const player = this.getClient(client);
         if (player) {
             const tmp = player.out();
             if (tmp) return
             this.clients = this.clients.filter(el => el.socket != client);
         }
     }
-    getClientById(id: string): PlayerGlobal | undefined {
-        const tmp = this.clients.find(el => el.socket?.id == id);
+    getClient(id: Socket): PlayerGlobal | undefined {
+        const tmp = this.clients.find(el => el.socket == id);
         return tmp;
     }
     // getClientByName(client: Socket): PlayerGlobal | undefined {

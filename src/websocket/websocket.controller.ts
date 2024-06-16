@@ -59,7 +59,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   getLobby(
     @ConnectedSocket() client: Socket,
   ) {
-    client.emit("refreshRooms", this.lobbys.getLobbys(this.data.getClientById(client.id)));
+    client.emit("refreshRooms", this.lobbys.getLobbys(this.data.getClient(client)));
     return true;
   } // Получить все лобби
 
@@ -68,7 +68,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: createRoom,
     @ConnectedSocket() client: Socket,
   ) {
-    const tmp = this.lobbys.createLobby(data.name, data.max, client, this.data.getClientById(client.id).name);
+    const tmp = this.lobbys.createLobby(data.name, data.max, client, this.data.getClient(client).name);
 
     if (typeof tmp == "string") {
       client.emit("statusCreate", tmp)
@@ -112,13 +112,13 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     //@ts-ignore
-    const position = this.data.getClientById(client.id).getPositionStr();
+    const position = this.data.getClient(client).getPositionStr();
     if (position == "lobby") {
       //@ts-ignore
-      const name = this.data.getClientById(client.id).position.name;
-      const tmp = this.data.getClientById(client.id).out();
+      const name = this.data.getClient(client).position.name;
+      const tmp = this.data.getClient(client).out();
       if (tmp === true) { // если успешно 
-        // client.emit("statusPlayer", this.data.getClientById(client.id)?.getPositionStr())
+        // client.emit("statusPlayer", this.data.getClient(client)?.getPositionStr())
         this.lobbys.refreshOneLobby(name); // обновляем для всех в команте что удалился игрок
         this.refreshHomeFromAll(); // обнорвляем у всех в home что место заняли
       }
@@ -131,7 +131,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // @MessageBody() roomName: string,
     @ConnectedSocket() client: Socket,
   ) {
-    const pl = this.data.getClientById(client.id);
+    const pl = this.data.getClient(client);
     //@ts-ignore
     const tmp = pl.position.lobbyGetRoom(pl);
     client.emit("statusLobby", tmp)
@@ -146,7 +146,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (typeof d != 'string') {
       return false
     }
-    const player = this.data.getClientById(client.id);
+    const player = this.data.getClient(client);
     if (player.getPositionStr() == "lobby") {
       const tmp = player.position as Lobby;
       tmp.setSex(client, d);
@@ -159,7 +159,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // @MessageBody() roomName: string,
     @ConnectedSocket() client: Socket,
   ) {
-    client.emit("statusPlayer", this.data.getClientById(client.id)?.getPositionStr())
+    client.emit("statusPlayer", this.data.getClient(client)?.getPositionStr())
     return true;
   }
 
@@ -171,7 +171,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (typeof d != 'boolean') {
       return false
     }
-    const player = this.data.getClientById(client.id);
+    const player = this.data.getClient(client);
     if (player.getPositionStr() == "lobby") {
       const tmp = player.position as Lobby;
       const game = tmp.setReady(client, d);
@@ -191,7 +191,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   refreshGame(
     @ConnectedSocket() client: Socket,
   ) {
-    const pl = this.data.getClientById(client.id);
+    const pl = this.data.getClient(client);
     if (pl.position instanceof Game) {
       client.emit("refreshGame", pl.position.Player.getMainForPlayer(pl))
     }
@@ -204,7 +204,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   allLog(
     @ConnectedSocket() client: Socket,
   ) {
-    const pl = this.data.getClientById(client.id);
+    const pl = this.data.getClient(client);
     if (pl.position instanceof Game) {
       pl.position.Player.sendAllLog(pl.socket)
     }
@@ -217,7 +217,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   endHod(
     @ConnectedSocket() client: Socket,
   ) {
-    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
     if (game instanceof Game) {
       player = game.getPlayerById(player.socket.id);
@@ -229,7 +229,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() id_card: number,
   ) {
-    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
     if (game instanceof Game) {
       player = game.getPlayerById(player.socket.id);
@@ -241,7 +241,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() body: cardMestoEvent,
   ) {
-    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
     if (game instanceof Game) {
       player = game.getPlayerById(player.socket.id);
@@ -253,7 +253,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   getDoorCardByPlayer(
     @ConnectedSocket() client: Socket,
   ) {
-    const game = this.data.getClientById(client.id).position;
+    const game = this.data.getClient(client).position;
     if (game instanceof Game) 
       game.Action.getDoorCardByPlayer(client);
   }
@@ -261,7 +261,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   pas(
     @ConnectedSocket() client: Socket,
   ) {
-    const game = this.data.getClientById(client.id).position;
+    const game = this.data.getClient(client).position;
     if (game instanceof Game) {
       game.Fight.yaPas(client);
     }
@@ -270,7 +270,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   smivka(
     @ConnectedSocket() client: Socket,
   ) {
-    const game = this.data.getClientById(client.id).position;
+    const game = this.data.getClient(client).position;
     if (game instanceof Game) {
       game.Fight.kidokSmivka(client);
     }
@@ -279,7 +279,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   endFight(
     @ConnectedSocket() client: Socket,
   ) {
-    const game = this.data.getClientById(client.id).position;
+    const game = this.data.getClient(client).position;
     if (game instanceof Game) {
       game.Fight.endFight(client);
     }
@@ -291,7 +291,7 @@ interface createRoom {
   max: number
 }
 // function runInGame(client: Socket, func: () => void) {
-//   const player: PlayerGlobal = this.data.getClientById(client.id);
+//   const player: PlayerGlobal = this.data.getClient(client);
 //   const game = player.position;
 //   if (game instanceof Game) {
 //     func();

@@ -31,7 +31,7 @@ export class LobbyService {
 
     deleteLobby(name: string, client: Socket) {
         const tmp = this.getOneLobby(name);
-        const player = this.data.getClientById(client.id)
+        const player = this.data.getClient(client)
         if (tmp) {
             if (tmp.getPlayersLenght().count) {
                 return "В комнате есть игроки"
@@ -48,7 +48,7 @@ export class LobbyService {
     refreshOneLobby(roomName: string,) {
         const lobby = this.getOneLobby(roomName);
         lobby?.getLobbySocket().forEach(el => {
-            el?.emit("statusLobby", lobby.lobbyGetRoom(this.data.getClientById(el.id)))
+            el?.emit("statusLobby", lobby.lobbyGetRoom(this.data.getClient(el)))
         })
     }
     
@@ -61,7 +61,7 @@ export class LobbyService {
     }
 
     roomIn(socket: Socket, roomName: string) { // Войти в лобби
-        const client = this.data.getClientById(socket.id);
+        const client = this.data.getClient(socket);
         const lobby = this.getOneLobby(roomName);
         if (!lobby || !client)
             return "Что-то не так"
