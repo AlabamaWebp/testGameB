@@ -22,6 +22,7 @@ export class Game {
     constructor(name: string, players: PlayerGame[]) {
         this.name = name;
         this.players = shuffle(players);
+        this.current_player = players[0];
         this.plcount = players.length;
         this.Player.logging("Игра началась!");
         this.cards = {
@@ -35,6 +36,7 @@ export class Game {
     plcount: number;
     name: string;
     players: PlayerGame[];
+    current_player: PlayerGame;
 
     cards: { doors: DoorsCard[], treasures: TreasureCard[] };
     sbros: { doors: DoorsCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };

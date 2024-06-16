@@ -45,7 +45,7 @@ export class PlayerGame {
             name: this.player.name,
             lvl: this.lvl,
             sex: this.sex,
-            cards: this.cards.map(el => el.getData()),
+            cards: this.cards.map(el => el.getData()).reverse(),
             t_field: {
                 helmet: this.t_field_cards?.helmet?.map(el => el.getData()),
                 body: this.t_field_cards?.body?.map(el => el.getData()),
@@ -230,7 +230,7 @@ export class DoorsCard extends AbstractCard {
     }
     data?: MonsterData;
     defs: DoorsDefs;
-    getData() {
+    getData = () => {
         return {
             abstractData: this.abstractData,
             data: this.data,

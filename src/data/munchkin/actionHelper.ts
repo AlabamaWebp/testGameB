@@ -36,11 +36,19 @@ export class ActionHelper {
         if (this.game.step == 1 && pl == this.game.players[this.game.queue]) {
             this.game.Card.playerGetClosedDoor(pl);
             this.game.step = 3;
+            this.game.Player.onePlayerRefresh(pl);
         }
     }
-    endHod() {
-        this.game.queue++;
-        if (this.game.queue >= this.game.plcount)
-            this.game.queue = 0
+    endHod(pl: PlayerGame) {
+        if (pl == this.game.current_player) {
+            this.game.Player.logging(this.game.current_player.data.name + " закончил свой ход")
+            this.game.queue++;
+            if (this.game.queue >= this.game.plcount)
+                this.game.queue = 0
+            this.game.current_player = this.game.players[this.game.queue]
+            this.game.step = 0;
+            this.game.Player.logging("Ход игрока " + this.game.current_player.data.name)
+            this.game.Player.allPlayersRefresh();
+        }
     }
 }

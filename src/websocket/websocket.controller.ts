@@ -213,6 +213,17 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
   // getDoor endHod activateCard
+  @SubscribeMessage('endHod')
+  endHod(
+    @ConnectedSocket() client: Socket,
+  ) {
+    let player: PlayerGlobal | PlayerGame = this.data.getClientById(client.id);
+    const game = player.position;
+    if (game instanceof Game) {
+      player = game.getPlayerById(player.socket.id);
+      game.Action.endHod(player)
+    }
+  }
   @SubscribeMessage('useCard')
   useCard(
     @ConnectedSocket() client: Socket,
