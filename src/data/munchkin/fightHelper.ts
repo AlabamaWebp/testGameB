@@ -10,7 +10,7 @@ export class FightHelper {
     game: Game;
 
      startFight(player: PlayerGame, monster: DoorsCard) {
-        const m_proto = structuredClone(monster) as DoorsCard;
+        const m_proto = monster.clone(monster)
         if (!this.game.field.fight) this.game.field.fight = {
             players: {
                 main: player

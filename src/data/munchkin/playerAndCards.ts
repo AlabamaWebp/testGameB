@@ -222,7 +222,7 @@ export class DoorsCard extends AbstractCard {
         super({ name, description, cardType: type, img });
         monster ? this.data = {
             get_lvls: monster.lvl,
-            strongest: monster.lvl,
+            strongest: monster.strongest,
             gold: monster.gold,
             undead: monster.undead ? true : false
         } : 0;
@@ -245,5 +245,20 @@ export class DoorsCard extends AbstractCard {
             // big: this.data.big,
             // img: this.abstractData.img
         }
+    }
+    clone = (d: DoorsCard) => {
+        return new DoorsCard(
+            this.abstractData.name,
+            this.abstractData.description,
+            this.abstractData.cardType as "Класс" | "Раса" | "Проклятие" | "Монстр",
+            {
+                strongest: this.data.strongest,
+                lvl: this.data.get_lvls,
+                gold: this.data.gold,
+                undead: this.data.undead,
+            },
+            this.defs,
+            this.abstractData.img,
+        )
     }
 }
