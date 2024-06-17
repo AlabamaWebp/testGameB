@@ -1,5 +1,4 @@
 import { Socket } from "socket.io";
-import { PlayerGlobal } from "../../main";
 import { Game } from "../mucnhkinGame";
 import { PlayerGame } from "../playerAndCards";
 

@@ -57,12 +57,10 @@ export class CardHelper {
         this.openCardField(card);
     }
     toSbros(card: TreasureCard | DoorsCard) {
-        if (card instanceof TreasureCard) {
+        if (card instanceof TreasureCard)
             this.game.sbros.treasures.push(card)
-        }
-        else if (card instanceof DoorsCard) {
+        else if (card instanceof DoorsCard)
             this.game.sbros.doors.push(card)
-        }
         else return
         if (!this.game.cards.doors.length) {
             this.game.cards = shuffle(this.game.sbros.doors.slice());
