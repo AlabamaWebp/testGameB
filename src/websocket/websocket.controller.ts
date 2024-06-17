@@ -247,7 +247,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClient(client).position;
-    console.log(game);
     if (game instanceof Game)
       game.Action.getDoorCardByPlayer(client);
   }

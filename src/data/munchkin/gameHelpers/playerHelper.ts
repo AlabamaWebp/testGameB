@@ -12,6 +12,10 @@ export class PlayerHelper {
     private number_log: number = 1;
 
     getMainForPlayer(player: PlayerGame) {
+        let smivka = false;
+        const field = this.game.field
+        if (field.fight?.players.first.player == player && !field.fight.players.first.smivka) smivka = true;
+        if (field.fight?.players.second?.player == player && !field.fight.players.second.smivka) smivka = true;
         const you = this.game.players.find(el => el == player).data;
         const pls = this.game.players
             .filter(el => el != player)
@@ -20,7 +24,7 @@ export class PlayerHelper {
             queue: this.game.players[this.game.queue].player.name,
             step: this.game.step,
             // is_fight: this.is_fight,
-            field: this.game.field.getField,
+            field: field.getField,
             sbros:
             {
                 doors: this.game.sbros.doors[this.game.sbros.doors.length]?.getData(),
@@ -30,7 +34,8 @@ export class PlayerHelper {
             players: pls,
             you: you,
             you_hodish: this.game.players[this.game.queue] == player,
-            pas: this.game.field.fight?.pas?.has(player.data.name) == false ? true : false  
+            pas: field.fight?.pas?.has(player.data.name) == false ? true : false,
+            smivka: smivka
         }
     }
     logging(l: string) {

@@ -15,22 +15,25 @@ export class ActionHelper {
     }
     firstStepHod(pl: PlayerGame) {
         const card = this.game.Card.getDoor;
-        this.game.Player.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
-        if (card.abstractData.cardType == "Монстр") {
-            this.game.Player.logging("Затесалась Драка!!!")
-            this.game.step = 2;
-            this.game.Fight.startFight(pl, card);
-        }
-        else {
-            if (card.abstractData.cardType !== "Проклятие")
-                pl.cards.push(card);
+        if (card) {
+            this.game.Player.logging(pl.player.name + " берёт дверь: " + card.abstractData.name + " в открытую");
+            if (card.abstractData.cardType == "Монстр") {
+                this.game.Player.logging("Затесалась Драка!!!")
+                this.game.step = 2;
+                this.game.Fight.startFight(pl, card);
+            }
             else {
-                this.game.Player.logging("Проклятуние")
-            } // Проклятуние
-            this.game.step = 1;
-            this.game.Card.openCardField(card);
+                if (card.abstractData.cardType !== "Проклятие")
+                    pl.cards.push(card);
+                else {
+                    this.game.Player.logging("Проклятуние")
+                } // Проклятуние
+                this.game.step = 1;
+                this.game.Card.openCardField(card);
+            }
+            this.game.Player.allPlayersRefresh();
         }
-        this.game.Player.allPlayersRefresh();
+        else { console.log("Нет карты"); }
     }
     chistkaNichek(pl: PlayerGame) {
         if (this.game.step == 1 && pl == this.game.players[this.game.queue]) {

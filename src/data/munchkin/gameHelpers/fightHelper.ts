@@ -15,21 +15,40 @@ export class FightHelper {
         if (this.game.field.fight?.pas.size == this.game.plcount) { // все пасанули
             const monsters = this.game.field.fight.monsters;
             const f = this.game.field.fight;
+            const players = [f.players.first]
+            if (f.players.second) players.push(f.players.second);
             if (f.smivka) {
-                const pl1 = f.players.main;
-                if (pl1.cubik > pl1.smivka_power)
-                    this.game.Player.logging(pl1.data.name + " успешно сбегает!")
-                const pl2 = f.players.secondary;
-                if (pl2?.cubik > pl2?.smivka_power)
-                    this.game.Player.logging(pl2.data.name + " успешно сбегает!")
+                for (let i = 0; i < players.length; i++) {
+                    const pl = players[i];
+                    if (pl.player.cubik > pl.player.smivka_power) {
+                        this.game.Player.logging(pl.player.data.name + " успешно сбегает!");
+                        players.splice(i, 1);
+                    }
+                }
             }
-            else if (f.players_power > f.monsters_power) { // Победа игрока
-                this.game.Card.playerGetClosedTreasure(f.players.main, f.gold_first_pl);
-                f.players.main.changeLvl(f.lvls);
+            console.log("Игроков " + players.length);
+            if (players.length) {
+                if (!f.smivka && f.players_power > f.monsters_power) { // Победа игрока (надо делить сокровища)
+                    this.game.Card.playerGetClosedTreasure(f.players.first.player, f.gold);
+                    f.players.first.player.changeLvl(f.lvls);
+                    if (f.players.second)
+                        this.game.Card.playerGetClosedTreasure(f.players.second.player, f.gold);
+                }
+                else { // победа монстров
+                    let tmp = ""
+                    monsters.forEach(m => {
+                        players.forEach(p => {
+                            if (m.defs.punishment)
+                                m.defs.punishment({ player: p.player, game: this.game });
+                            else console.log("Нет наказания");
+                            tmp += p.player.data.name + " наказан " + m.abstractData.name + "\n"
+                        })
+                    })
+                    this.game.Player.logging(tmp);
+                }
             }
-            else { // победа монстров
-
-            }
+            delete this.game.field.fight;
+            this.game.step = 3;
             // НАдо подумать над применяемыми картами во время боя
         }
     }
@@ -39,13 +58,14 @@ export class FightHelper {
         if (!pl || !f) return;
 
         let templ: undefined | "first" | "second"; // 0 - net na pole; 1 - first, 2 - second;
-        if (f.players.main == pl) templ = "first";
-        else if (f.players.secondary == pl) templ = "second"
+        if (f.players.first.player == pl) templ = "first";
+        else if (f.players.second.player == pl) templ = "second"
         if (templ) {
             f.smivka = true;
+            f.players[templ].smivka = true;
             pl.cubik = randomInteger(1, 6);
             f["smivka_" + templ] = true;
-            this.game.Player.logging(pl.data.name + "выбрасывает " + this.game.cubik + " на кубике")
+            this.game.Player.logging(pl.data.name + " выбрасывает " + this.game.cubik + " на кубике")
             // this.game.Player.allPlayersRefresh();
         }
     }

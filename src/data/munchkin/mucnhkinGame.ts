@@ -1,10 +1,7 @@
 
-import { PlayerGlobal } from "../main";
 import { fillId, playersGetCard, shuffle } from "./functions";
 import { GameField } from "./interfaces";
 import { Socket } from "socket.io";
-
-
 import { CLASSES } from "src/cards/Munchkin/doors/Classes";
 import { COURSES } from "src/cards/Munchkin/doors/Courses";
 import { MONSTERS } from "src/cards/Munchkin/doors/Monsters";
@@ -54,7 +51,6 @@ export class Game {
 
     getPlayer(player: Socket) {
         const pl = this.players.find(el => el.player.socket == player)
-        console.log(pl);
         return pl
     }
 }

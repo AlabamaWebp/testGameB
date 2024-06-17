@@ -2,8 +2,8 @@ import { Game } from "./mucnhkinGame";
 import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
 
 export interface DoorsDefs {
-    punishment?: (defs: defsData) => void,
-    startActions?: (defs: defsData) => void,
+    punishment?: (defs: defsData) => void, // видимо непотребство
+    startActions?: (defs: defsData) => void, // 
     winActions?: (defs: defsData) => void,
     beforeSmivka?: (defs: defsData) => void,
     action?: (defs: defsData) => void,
@@ -95,11 +95,15 @@ export interface defsData {
     player?: PlayerGame
     game?: Game
 }
+interface PlayerFight {
+    player: PlayerGame
+    gold: number
+    smivka: boolean
+}
 export class Fight {
     constructor(pl: PlayerGame, monster: DoorsCard) {
         const m_ = monster.clone(monster)
 
-        this.players.main = pl;
         this.pas = new Set<string>();
         this.monsters = [m_];
         this.lvls = m_.data.get_lvls;
@@ -107,15 +111,18 @@ export class Fight {
         this.monstersProto = [monster];
         this.gold = monster.data.gold;
         this.players_power = pl.power;
-        this.gold_first_pl = monster.data.gold;
-        this.gold_second_pl = 0;
         this.smivka = false;
-        this.smivka_first = false;
-        this.smivka_second = false;
+        this.players = {
+            first: {
+                player: pl,
+                gold: monster.data.gold,
+                smivka: false
+            }
+        }
     }
     players: {
-        main: PlayerGame,
-        secondary?: PlayerGame
+        first: PlayerFight,
+        second?: PlayerFight
     }
     cards?: {
         players?: (TreasureCard | DoorsCard)[],
@@ -131,11 +138,6 @@ export class Fight {
     players_power: number;
 
     smivka: boolean;
-    gold_first_pl: number;
-    gold_second_pl: number;
-
-    smivka_first: boolean;
-    smivka_second: boolean;
 }
 export class GameField {
     fight?: Fight
@@ -153,8 +155,16 @@ export class GameField {
             is_fight: this.fight ? true : false,
             fight: this.fight ? {
                 players: {
-                    main: this.fight?.players?.main?.data,
-                    secondary: this.fight?.players?.secondary?.data,
+                    main: {
+                        player: this.fight?.players?.first?.player.data,
+                        gold: this.fight?.players?.first?.gold,
+                        smivka: this.fight?.players?.first?.smivka
+                    },
+                    secondary: {
+                        player: this.fight?.players?.second?.player.data,
+                        gold: this.fight?.players?.second?.gold,
+                        smivka: this.fight?.players?.second?.smivka
+                    },
                     strongest: pl_power ///
                 },
                 cards: {
