@@ -22,6 +22,7 @@ export class PlayerGame {
 
     alive: boolean;
     smivka_power: number = 4; // x > 4
+    cubik = 0;
 
 
     readonly player: PlayerGlobal;

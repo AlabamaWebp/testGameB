@@ -95,32 +95,50 @@ export interface defsData {
     player?: PlayerGame
     game?: Game
 }
-export class GameField {
-    fight?: {
-        players: {
-            main: PlayerGame,
-            secondary?: PlayerGame
-        }
-        cards?: {
-            players?: (TreasureCard | DoorsCard)[],
-            monsters?: (TreasureCard | DoorsCard)[]
-        }
-        pas?: Set<string>;
-        monsters: DoorsCard[]
-        monstersProto: DoorsCard[]
-        gold: number;
-        lvls: number;
+export class Fight {
+    constructor(pl: PlayerGame, monster: DoorsCard) {
+        const m_ = monster.clone(monster)
 
-        monsters_power: number;
-        players_power: number;
-
-        smivka: boolean;
-        gold_first_pl: number;
-        gold_second_pl: number;
-
-        // smivka_first: number;
-        // smivka_second: number;
+        this.players.main = pl;
+        this.pas = new Set<string>();
+        this.monsters = [m_];
+        this.lvls = m_.data.get_lvls;
+        this.monsters_power = m_.data.strongest;
+        this.monstersProto = [monster];
+        this.gold = monster.data.gold;
+        this.players_power = pl.power;
+        this.gold_first_pl = monster.data.gold;
+        this.gold_second_pl = 0;
+        this.smivka = false;
+        this.smivka_first = false;
+        this.smivka_second = false;
     }
+    players: {
+        main: PlayerGame,
+        secondary?: PlayerGame
+    }
+    cards?: {
+        players?: (TreasureCard | DoorsCard)[],
+        monsters?: (TreasureCard | DoorsCard)[]
+    }
+    pas: Set<string>;
+    monsters: DoorsCard[]
+    monstersProto: DoorsCard[]
+    gold: number;
+    lvls: number;
+
+    monsters_power: number;
+    players_power: number;
+
+    smivka: boolean;
+    gold_first_pl: number;
+    gold_second_pl: number;
+
+    smivka_first: boolean;
+    smivka_second: boolean;
+}
+export class GameField {
+    fight?: Fight
     openCards?: (TreasureCard | DoorsCard)[] = []
 
     get getField() {

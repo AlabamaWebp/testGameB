@@ -1,4 +1,5 @@
 import { randomInteger } from "./functions";
+import { Fight } from "./interfaces";
 import { Game } from "./mucnhkinGame";
 import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
 import { Socket } from "socket.io";
@@ -9,44 +10,27 @@ export class FightHelper {
     }
     game: Game;
 
-     startFight(player: PlayerGame, monster: DoorsCard) {
-        const m_proto = monster.clone(monster)
-        if (!this.game.field.fight) this.game.field.fight = {
-            players: {
-                main: player
-            },
-            monsters: [m_proto],
-            monstersProto: [monster],
-            gold: monster.data.gold,
-            lvls: m_proto.data.get_lvls,
-            pas: new Set<string>,
-
-            monsters_power: m_proto.data.strongest,
-            players_power: player.power,
-
-            gold_first_pl: monster.data.gold,
-            gold_second_pl: 0,
-
-            smivka: false,
-            smivka_first: 0,
-            smivka_second: 0,
-        }
-    }
-    endFight(pl: PlayerGame) {
+    startFight(player: PlayerGame, monster: DoorsCard) { if (!this.game.field.fight) this.game.field.fight = new Fight(player, monster) }
+    endFight() {
         if (this.game.field.fight?.pas.size == this.game.plcount) { // все пасанули
             const monsters = this.game.field.fight.monsters;
             const f = this.game.field.fight;
-            if (f.players_power > f.monsters_power) { // Победа игрока
+            if (f.smivka) {
+                const pl1 = f.players.main;
+                if (pl1.cubik > pl1.smivka_power)
+                    this.game.Player.logging(pl1.data.name + " успешно сбегает!")
+                const pl2 = f.players.secondary;
+                if (pl2?.cubik > pl2?.smivka_power)
+                    this.game.Player.logging(pl2.data.name + " успешно сбегает!")
+            }
+            else if (f.players_power > f.monsters_power) { // Победа игрока
                 this.game.Card.playerGetClosedTreasure(f.players.main, f.gold_first_pl);
                 f.players.main.changeLvl(f.lvls);
             }
             else { // победа монстров
-                
+
             }
             // НАдо подумать над применяемыми картами во время боя
-        }
-        else {
-            this.game.Player.sendError(pl.player.socket, "Не все пасанули");
         }
     }
     kidokSmivka(client: Socket) {
@@ -54,26 +38,22 @@ export class FightHelper {
         const f = this.game.field.fight;
         if (!pl || !f) return;
 
-        let templ: 0 | 1 | 2 = 0; // 0 - net na pole; 1 - first, 2 - second;
-        if (f.players.main == pl) templ = 1;
-        else if (f.players.secondary == pl) templ = 2
-        if (templ == 1 || templ == 2) {
-            f.smivka == true;
-            // this.cubik = randomInteger(1, 6);
-            if (templ == 1 && f.smivka_first == 0)
-                f.smivka_first = randomInteger(1, 6)
-            else if (templ == 2 && f.smivka_second == 0)
-                f.smivka_second = randomInteger(1, 6);
+        let templ: undefined | "first" | "second"; // 0 - net na pole; 1 - first, 2 - second;
+        if (f.players.main == pl) templ = "first";
+        else if (f.players.secondary == pl) templ = "second"
+        if (templ) {
+            f.smivka = true;
+            pl.cubik = randomInteger(1, 6);
+            f["smivka_" + templ] = true;
             this.game.Player.logging(pl.data.name + "выбрасывает " + this.game.cubik + " на кубике")
-            this.game.Player.allPlayersRefresh();
+            // this.game.Player.allPlayersRefresh();
         }
     }
     yaPas(player: Socket) {
         const name = this.game.getPlayer(player).player.name;
         this.game.field.fight.pas.add(name);
-        if (this.game.field.fight.pas.size == this.game.plcount) {
-
-        }
+        if (this.game.field.fight.pas.size == this.game.plcount)
+            this.endFight();
         this.game.Player.allPlayersRefresh();
     }
 }
