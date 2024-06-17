@@ -1,4 +1,4 @@
-import { TreasureCard } from "src/data/munchkin/playerAndCards";
+import { TreasureCard } from "src/data/munchkin/cards";
 import { TreasureData, TreasureDefs } from "src/data/munchkin/interfaces";
 
 function createUsed(

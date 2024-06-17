@@ -1,5 +1,6 @@
 import { Game } from "./mucnhkinGame";
-import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
+import { DoorsCard, TreasureCard } from "./cards";
+import { PlayerGame } from "./player";
 
 export interface DoorsDefs {
     punishment?: (defs: defsData) => void, // видимо непотребство
