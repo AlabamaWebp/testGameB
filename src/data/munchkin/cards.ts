@@ -4,10 +4,6 @@ import { Game } from "./mucnhkinGame";
 
 // refreshGame plusLog allLog
 
-export interface cardMestoEvent {
-    id_card: number,
-    mesto: "first" | "second" | "bonus"
-}
 class AbstractCard {
     constructor(
         data: AbstractData

@@ -5,7 +5,7 @@ import { LobbyService } from './lobby/lobby.service';
 import { Lobby, PlayerGlobal } from '../data/main';
 import { Game } from 'src/data/munchkin/mucnhkinGame';
 import { MunchkinService } from './munchkin/munchkin.service';
-import { cardMestoEvent } from 'src/data/munchkin/cards';
+import { cardMestoEvent } from 'src/data/munchkin/player';
 import { PlayerGame } from 'src/data/munchkin/player';
 
 @WebSocketGateway(3001, {

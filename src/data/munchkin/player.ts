@@ -1,5 +1,5 @@
 import { PlayerGlobal } from "../main";
-import { TreasureCard, DoorsCard, cardMestoEvent } from "./cards";
+import { TreasureCard, DoorsCard } from "./cards";
 import { fieldTreasureCards, fieldDoorCards } from "./interfaces";
 import { Game } from "./mucnhkinGame";
 
@@ -148,10 +148,14 @@ export class PlayerGame {
                 this.d_field_cards.classes[body.mesto] = card;
             }
             else if (card.abstractData.cardType == "Раса") {
-                this.d_field_cards.classes[body.mesto] = card;
+                this.d_field_cards.rasses[body.mesto] = card;
             }
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
         game.Player.allPlayersRefresh();
     }
+}
+export interface cardMestoEvent {
+    id_card: number,
+    mesto: "first" | "second" | "bonus"
 }
