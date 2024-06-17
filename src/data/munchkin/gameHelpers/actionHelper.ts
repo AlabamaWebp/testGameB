@@ -33,7 +33,10 @@ export class ActionHelper {
             }
             this.game.Player.allPlayersRefresh();
         }
-        else { console.log("Нет карты"); }
+        else {
+            console.log("Нет карты");
+            this.game.Player.logging("Нет карт в колоде");
+        }
     }
     chistkaNichek(pl: PlayerGame) {
         if (this.game.step == 1 && pl == this.game.players[this.game.queue]) {

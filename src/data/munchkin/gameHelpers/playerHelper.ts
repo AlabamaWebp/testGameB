@@ -30,6 +30,10 @@ export class PlayerHelper {
                 doors: this.game.sbros.doors[this.game.sbros.doors.length]?.getData(),
                 treasures: this.game.sbros.treasures[this.game.sbros.treasures.length]?.getData(),
             },
+            cards: {
+                doors: this.game.cards.doors.length,
+                treasures: this.game.cards.treasures.length,
+            },
             // log: this.log,
             players: pls,
             you: you,
