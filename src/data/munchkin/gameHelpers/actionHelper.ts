@@ -1,6 +1,6 @@
-import { Game } from "./mucnhkinGame";
+import { Game } from "../mucnhkinGame";
 import { Socket } from "socket.io";
-import { PlayerGame } from "./playerAndCards";
+import { PlayerGame } from "../playerAndCards";
 
 export class ActionHelper {
     constructor(game: Game) {

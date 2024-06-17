@@ -13,10 +13,10 @@ import { EQUIPMENT } from "src/cards/Munchkin/treasures/equipment";
 import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
 import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
-import { CardHelper } from "./cardHelper";
-import { PlayerHelper } from "./playerHelper";
-import { ActionHelper } from "./actionHelper";
-import { FightHelper } from "./fightHelper";
+import { CardHelper } from "./gameHelpers/cardHelper";
+import { PlayerHelper } from "./gameHelpers/playerHelper";
+import { ActionHelper } from "./gameHelpers/actionHelper";
+import { FightHelper } from "./gameHelpers/fightHelper";
 
 export class Game {
     constructor(name: string, players: PlayerGame[]) {

@@ -1,7 +1,7 @@
-import { randomInteger } from "./functions";
-import { Fight } from "./interfaces";
-import { Game } from "./mucnhkinGame";
-import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
+import { randomInteger } from "../functions";
+import { Fight } from "../interfaces";
+import { Game } from "../mucnhkinGame";
+import { DoorsCard, PlayerGame, TreasureCard } from "../playerAndCards";
 import { Socket } from "socket.io";
 
 export class FightHelper {

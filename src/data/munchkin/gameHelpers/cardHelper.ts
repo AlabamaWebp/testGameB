@@ -1,6 +1,6 @@
-import { shuffle } from "./functions";
-import { Game } from "./mucnhkinGame";
-import { DoorsCard, PlayerGame, TreasureCard } from "./playerAndCards";
+import { shuffle } from "../functions";
+import { Game } from "../mucnhkinGame";
+import { DoorsCard, PlayerGame, TreasureCard } from "../playerAndCards";
 import { Socket } from "socket.io";
 export class CardHelper {
     constructor(game: Game) {
