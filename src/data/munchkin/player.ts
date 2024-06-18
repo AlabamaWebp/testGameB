@@ -134,7 +134,7 @@ export class PlayerGame {
     }
 
     useCardMesto(body: cardMestoEvent) {
-        const durak = ["first" , "second" , "bonus"];
+        const durak = ["first", "second", "bonus"];
         if (!durak.includes(body.mesto)) return;
 
         const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == body.id_card);
@@ -144,12 +144,17 @@ export class PlayerGame {
             return
         };
         if (card instanceof DoorsCard) {
-            if (card.abstractData.cardType == "Класс") {
-                this.d_field_cards.classes[body.mesto] = card;
+            let tmp: { first: any; second: any; bonus: any; };
+            if (card.abstractData.cardType == "Класс") tmp = this.d_field_cards.classes
+            else if (card.abstractData.cardType == "Раса") tmp = this.d_field_cards.rasses
+            if (!tmp) {
+                this.player.socket.emit('error', 'Ошибка использования карты')
+                console.log('Ошибка использования карты');
+                return
             }
-            else if (card.abstractData.cardType == "Раса") {
-                this.d_field_cards.rasses[body.mesto] = card;
-            }
+            const l = Object.values(tmp).filter(el => el != undefined).length;
+            // Тип же новый надо, я забыл
+            tmp[body.mesto] = card;
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
         game.Player.allPlayersRefresh();
