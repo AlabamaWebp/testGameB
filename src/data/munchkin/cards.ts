@@ -63,6 +63,7 @@ export class DoorsCard extends AbstractCard {
             undead?: boolean,
         },
         defs?: DoorsDefs,
+        is_super?: boolean,
         img?: string
     ) {
         super({ name, description, cardType: type, img });
@@ -73,14 +74,17 @@ export class DoorsCard extends AbstractCard {
             undead: monster.undead ? true : false
         } : 0;
         this.defs = defs;
+        this.is_super = is_super
     }
     data?: MonsterData;
     defs: DoorsDefs;
+    is_super: boolean
     getData = () => {
         return {
             abstractData: this.abstractData,
             data: this.data,
-            id: this.id
+            id: this.id,
+            is_super: this.is_super
             // name: this.abstractData.name,
             // desciption: this.abstractData.description,
             // cardType: this.abstractData.cardType,
@@ -104,6 +108,7 @@ export class DoorsCard extends AbstractCard {
                 undead: this.data.undead,
             },
             this.defs,
+            this.is_super,
             this.abstractData.img,
         )
     }

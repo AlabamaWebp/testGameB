@@ -13,7 +13,6 @@ export const MONSTERS: DoorsCard[] = [
             undead: false,
         },
         {}, // Если эльф + сокровище
-        ""
     ),
     new DoorsCard(
         "3872 орка", // name
@@ -26,7 +25,6 @@ export const MONSTERS: DoorsCard[] = [
             undead: false,
         },
         {}, // кубик, 2 и меньше смерть иначе потеря уровней сколько выпало
-        "", // img
     ),
     new DoorsCard(
         "Костян", // name
@@ -39,6 +37,5 @@ export const MONSTERS: DoorsCard[] = [
             undead: true,
         },
         {}, // -2 lvl
-        "", // img
     ),
 ]

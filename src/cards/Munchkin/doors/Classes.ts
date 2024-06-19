@@ -4,11 +4,15 @@ import { DoorsCard } from "src/data/munchkin/cards"
 function createClass(
     name: string,
     desc: string,
+    super1: boolean = false
 ) {
     return new DoorsCard(
         name,
         desc,
-        "Класс"
+        "Класс",
+        undefined,
+        undefined,
+        super1
     )
 }
 export const CLASSES: DoorsCard[] = [
@@ -27,5 +31,15 @@ export const CLASSES: DoorsCard[] = [
     createClass(
         "Волшебник",
         "Полёт: Можешь сбросить до 3 карт после смывки, каждая тебе прибавит + 1 на смывку, Усмирение: Сбрось всю руку (не меньше 3 карт) чтобы усмирить монстра (он отдаёт сокровища, но не уровень)",
-    )
+    ),
+    createClass(
+        "Суперманчкин",
+        "Позволяет носить 2 класса, либо убирает недостатки единственного",
+        true
+    ),
+    createClass(
+        "Суперманчкин",
+        "Позволяет носить 2 класса, либо убирает недостатки единственного",
+        true
+    ),
 ]

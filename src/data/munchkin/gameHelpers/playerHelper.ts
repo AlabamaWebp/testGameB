@@ -38,7 +38,9 @@ export class PlayerHelper {
             you: you,
             you_hodish: this.game.players[this.game.queue] == player,
             pas: field.fight?.pas?.has(player.data.name) == false ? true : false,
-            smivka: smivka
+            smivka: smivka,
+            rasses_mesto: player.field_cards.doors.rasses.bonus && player.field_cards.doors.rasses.first,
+            classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first
         }
     }
     logging(l: string) {

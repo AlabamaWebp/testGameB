@@ -61,7 +61,7 @@ export const EQUIPMENT: TreasureCard[] = [
         "Только для дварфов",
         {
             condition: (defs) => {
-                const tmp = defs.player.d_field_cards.getRasesMass().some(el => el.abstractData.name == "Дварф")
+                const tmp = defs.player.field_cards.doors.getRasesMass().some(el => el.abstractData.name == "Дварф")
                 if (!tmp) defs.player.player.socket.emit('condition', "Вы не дварф!")
                 return tmp
             }

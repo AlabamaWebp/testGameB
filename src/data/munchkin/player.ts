@@ -14,9 +14,12 @@ export class PlayerGame {
     readonly queue: number;
 
     private lvl: number = 1;
-    t_field_cards = new fieldTreasureCards(); // Шмотки
-    d_field_cards = new fieldDoorCards(); // Классы Рассы
-
+    // t_field_cards = new fieldTreasureCards(); // Шмотки
+    // d_field_cards = new fieldDoorCards(); // Классы Рассы
+    field_cards = {
+        doors: new fieldDoorCards(),
+        treasures: new fieldTreasureCards()
+    }
     cards: (TreasureCard | DoorsCard)[] = [];
     private maxCards: number = 5;
 
@@ -30,10 +33,10 @@ export class PlayerGame {
 
     get power() {
         let tmp = this.lvl;
-        const cards = Object.keys(this.t_field_cards);
+        const cards = Object.keys(this.field_cards.treasures);
         cards.forEach((el: string) => {
-            if (this.t_field_cards[el] && el != 'count') {
-                this.t_field_cards[el].forEach(card1 => {
+            if (this.field_cards.treasures[el] && el != 'count') {
+                this.field_cards.treasures[el].forEach(card1 => {
                     tmp += card1.strong
                 });
             }
@@ -48,14 +51,14 @@ export class PlayerGame {
             sex: this.sex,
             cards: this.cards.map(el => el.getData()).reverse(),
             t_field: {
-                helmet: this.t_field_cards?.helmet?.map(el => el.getData()),
-                body: this.t_field_cards?.body?.map(el => el.getData()),
-                legs: this.t_field_cards?.legs?.map(el => el.getData()),
-                arm: this.t_field_cards?.arm?.map(el => el.getData()),
-                other: this.t_field_cards?.other?.map(el => el.getData()),
+                helmet: this.field_cards.treasures?.helmet?.map(el => el.getData()),
+                body: this.field_cards.treasures?.body?.map(el => el.getData()),
+                legs: this.field_cards.treasures?.legs?.map(el => el.getData()),
+                arm: this.field_cards.treasures?.arm?.map(el => el.getData()),
+                other: this.field_cards.treasures?.other?.map(el => el.getData()),
             }, d_field: {
-                rasses: this.d_field_cards?.getRasses(), // ?.map(el => el.getData())
-                classes: this.d_field_cards?.getClasses(), // ?.map(el => el.getData())
+                rasses: this.field_cards.doors?.getRasses(), // ?.map(el => el.getData())
+                classes: this.field_cards.doors?.getClasses(), // ?.map(el => el.getData())
             },
             queue: this.queue,
             max_cards: this.maxCards,
@@ -108,33 +111,51 @@ export class PlayerGame {
                     count = 2
                 else if (card.data.template == '3 Руки')
                     count = 3
-                if (this.t_field_cards[template_eng]
-                    && this.t_field_cards.count[template_eng] < this.t_field_cards[template_eng].length + count) {
-                    const tmp = this.t_field_cards[template_eng]
+                if (this.field_cards.treasures[template_eng]
+                    && this.field_cards.treasures.count[template_eng] < this.field_cards.treasures[template_eng].length + count) {
+                    const tmp = this.field_cards.treasures[template_eng]
                     while (tmp.length) {
-                        game.Card.toSbros(this.t_field_cards[template_eng].pop())
+                        game.Card.toSbros(this.field_cards.treasures[template_eng].pop())
                     }
                 }
-                // console.log(this.t_field_cards[template_eng], card);
-                this.t_field_cards[template_eng] = [card];
+                // console.log(this.field_cards.treasures[template_eng], card);
+                this.field_cards.treasures[template_eng] = [card];
 
                 game.Player.logging(`${this.player.name} надевает ${card.abstractData.name} (+${card.strong} бонус)`)
             }
             if (card.data.treasureType == 'Используемая') {
                 card.defs?.action(defs);
                 game.Player.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+                game.Card.toSbros(card);
             }
             if (card.data.treasureType == 'Боевая') {
                 // ????????????????
-                // game.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+                game.Card.toSbros(card);
             }
-            this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
+        else {
+            if (card.is_super) {
+                if (card.abstractData.cardType == "Класс")
+                    this.field_cards.doors.classes.bonus = card;
+                else if (card.abstractData.cardType == "Раса")
+                    this.field_cards.doors.rasses.bonus = card;
+                game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
+            }
+            else {
+                if (card.abstractData.cardType == "Класс")
+                    this.field_cards.doors.classes.first = card;
+                else if (card.abstractData.cardType == "Раса")
+                    this.field_cards.doors.rasses.first = card;
+                game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
+            }
+        }
+        this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         game.Player.allPlayersRefresh();
     }
 
     useCardMesto(body: cardMestoEvent) {
-        const durak = ["first", "second", "bonus"];
+        const durak = ["first", "second", ]; // "bonus"
         if (!durak.includes(body.mesto)) return;
 
         const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == body.id_card);
@@ -145,16 +166,15 @@ export class PlayerGame {
         };
         if (card instanceof DoorsCard) {
             let tmp: { first: any; second: any; bonus: any; };
-            if (card.abstractData.cardType == "Класс") tmp = this.d_field_cards.classes
-            else if (card.abstractData.cardType == "Раса") tmp = this.d_field_cards.rasses
+            if (card.abstractData.cardType == "Класс") tmp = this.field_cards.doors.classes;
+            else if (card.abstractData.cardType == "Раса") tmp = this.field_cards.doors.rasses;
             if (!tmp) {
                 this.player.socket.emit('error', 'Ошибка использования карты')
                 console.log('Ошибка использования карты');
                 return
             }
-            const l = Object.values(tmp).filter(el => el != undefined).length;
-            // Тип же новый надо, я забыл
-            tmp[body.mesto] = card;
+            tmp[body.mesto] = card
+            game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
         game.Player.allPlayersRefresh();

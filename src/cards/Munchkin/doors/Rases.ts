@@ -1,25 +1,44 @@
 import { DoorsCard } from "src/data/munchkin/cards";
 
-const type = "Раса"
+function createClass(
+    name: string,
+    desc: string,
+    super1: boolean = false
+) {
+    return new DoorsCard(
+        name,
+        desc,
+        "Раса",
+        undefined,
+        undefined,
+        super1
+    )
+}
 export const RASES: DoorsCard[] = [
-    new DoorsCard(
+    createClass(
         "Эльф",
         "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра",
-        type
     ),
-    new DoorsCard(
+    createClass(
         "Эльф",
         "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра",
-        type
     ),
-    new DoorsCard(
+    createClass(
         "Дварф",
         "Может нести 6 карт и сколько угодно больших вещей",
-        type
-    ), new DoorsCard(
+    ), createClass(
         "Дварф",
         "Может нести 6 карт и сколько угодно больших вещей",
-        type
+    ),
+    createClass(
+        "Полукровка",
+        "Позволяет носить 2 расы, либо убирает недостатки единственной",
+        true
+    ),
+    createClass(
+        "Полукровка",
+        "Позволяет носить 2 расы, либо убирает недостатки единственной",
+        true
     ),
 
 ]
