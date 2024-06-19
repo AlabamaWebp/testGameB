@@ -9,27 +9,21 @@ export class EventMunchkin {
     }
     game: Game;
 
-    help = new HelpObj()
+    help = new Map()
     helpAsk(pl: Socket, t: { to: string, gold: number }) {
         const target = this.game.players.find(el => el.player.name == t.to);
         if (!target) { console.log("helpAsk break"); return }
-        const ask = this.help.createAsk(target, t.gold);
+        const ask = this.help.set(target, t.gold);
         target.player.socket.emit("help", ask)
     }
     helpAnswer(socket: Socket, ans: boolean) {
         const pl = this.game.getPlayer(socket);
-        const d = this.help.asks.get(pl);
+        const d = this.help.get(pl);
         if (ans) {
             this.game.Fight.addToFight(d.pl, d.gold);
             this.game.Player.logging(d.pl.player.name + " помогает в бою за " + d.gold + " сокровищ");
         }
         else this.game.field.fight?.players.first.player.player.socket.emit("notice", "отказ в помощи от " + d.pl.player.name);
-        this.help.asks.delete(pl);
+        this.help.delete(pl);
     }
-}
-class HelpObj {
-    constructor() { }
-    private count = 0;
-    asks = new Map()
-    createAsk(pl: PlayerGame, gold: number) { this.asks.set(pl, gold); return this.asks[this.count++] }
 }

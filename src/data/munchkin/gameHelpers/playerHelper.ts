@@ -40,7 +40,8 @@ export class PlayerHelper {
             pas: field.fight?.pas?.has(player.data.name) == false ? true : false,
             smivka: smivka,
             rasses_mesto: player.field_cards.doors.rasses.bonus && player.field_cards.doors.rasses.first,
-            classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first
+            classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first,
+            help_asks: this.game.Event.help.get(player) 
         }
     }
     logging(l: string) {
