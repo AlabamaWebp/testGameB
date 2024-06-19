@@ -201,9 +201,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const pl = this.data.getClient(client);
-    if (pl.position instanceof Game) 
+    if (pl.position instanceof Game)
       pl.position.Player.sendAllLog(pl.socket)
-    else 
+    else
       client.emit("refreshGame", false)
   }
   // getDoor endHod activateCard
@@ -267,6 +267,25 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const game = this.data.getClient(client).position;
     if (game instanceof Game) {
       game.Fight.kidokSmivka(client);
+    }
+  }
+  @SubscribeMessage('helpAsk')
+  helpAsk(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() d: { to: string, gold: number }
+  ) {
+    const game = this.data.getClient(client).position;
+    if (game instanceof Game)
+      game.Event.helpAsk(client, d);
+  }
+  @SubscribeMessage('helpAnswer')
+  helpAnswer(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() d: boolean
+  ) {
+    const game = this.data.getClient(client).position;
+    if (game instanceof Game) {
+      game.Event.helpAnswer(client, d);
     }
   }
   // @SubscribeMessage('endFight')

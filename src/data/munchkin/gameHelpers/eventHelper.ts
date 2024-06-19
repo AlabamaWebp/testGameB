@@ -11,6 +11,7 @@ export class EventMunchkin {
 
     help = new Map()
     helpAsk(pl: Socket, t: { to: string, gold: number }) {
+        if (this.game.field.fight.players.first.player.player.socket != pl) return
         const target = this.game.players.find(el => el.player.name == t.to);
         if (!target) { console.log("helpAsk break"); return }
         const ask = this.help.set(target, t.gold);
