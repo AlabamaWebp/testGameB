@@ -1,6 +1,6 @@
 import { PlayerGlobal } from "../main";
 import { TreasureCard, DoorsCard } from "./cards";
-import { fieldTreasureCards, fieldDoorCards } from "./interfaces";
+import { fieldTreasureCards, fieldDoorCards, defsData } from "./interfaces";
 import { Game } from "./mucnhkinGame";
 
 export class PlayerGame {
@@ -178,6 +178,18 @@ export class PlayerGame {
             this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
         }
         game.Player.allPlayersRefresh();
+    }
+    useCardOnPlayer(idc: number, pl: string) {
+        const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == idc);
+        const game = this.player.position as Game;
+        const target_pl = game.players.find(el => el.player.name) 
+        if (!card || !game || !target_pl) {
+            this.player.socket.emit('error', 'Ошибка использования карты')
+            return
+        };
+        const params: defsData = {player: target_pl, game: game}
+        card.defs.action(params);
+        game.Player.logging(this.player.name + " использует " + card.abstractData.name + " на " + target_pl.player.name);
     }
 }
 export interface cardMestoEvent {
