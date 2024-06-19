@@ -77,4 +77,10 @@ export class FightHelper {
             this.endFight();
         this.game.Player.allPlayersRefresh();
     }
+    addToFight(pl: PlayerGame, gold: number) {
+        if (this.game.field.fight.players.second) return
+        this.game.field.fight.players.second.player = pl;
+        this.game.field.fight.players.second.gold = gold;
+        this.game.Player.allPlayersRefresh();
+    }
 }
