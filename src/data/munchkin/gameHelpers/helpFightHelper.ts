@@ -1,9 +1,7 @@
 import { Socket } from "socket.io";
 import { Game } from "../mucnhkinGame";
-import { PlayerGame } from "../player";
-import { TreasureCard, DoorsCard } from "../cards";
 
-export class EventMunchkin {
+export class HelpFightMunchkin {
     constructor(game: Game) {
         this.game = game;
     }

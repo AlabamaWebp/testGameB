@@ -22,7 +22,6 @@ export class PlayerHelper {
         return {
             queue: this.game.players[this.game.queue].player.name,
             step: this.game.step,
-            // is_fight: this.is_fight,
             field: field.getField,
             sbros:
             {
@@ -33,7 +32,6 @@ export class PlayerHelper {
                 doors: this.game.cards.doors.length,
                 treasures: this.game.cards.treasures.length,
             },
-            // log: this.log,
             players: pls,
             you: you,
             you_hodish: this.game.players[this.game.queue] == player,
@@ -41,7 +39,7 @@ export class PlayerHelper {
             smivka: smivka,
             rasses_mesto: player.field_cards.doors.rasses.bonus && player.field_cards.doors.rasses.first,
             classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first,
-            help_asks: this.game.Event.help.get(player) 
+            help_ask: this.game.Event.help.get(player) ? {pl: player, gold: this.game.Event.help.get(player) } : undefined,
         }
     }
     logging(l: string) {

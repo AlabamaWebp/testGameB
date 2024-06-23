@@ -15,7 +15,7 @@ import { PlayerHelper } from "./gameHelpers/playerHelper";
 import { ActionHelper } from "./gameHelpers/actionHelper";
 import { FightHelper } from "./gameHelpers/fightHelper";
 import { PlayerGame } from "./player";
-import { EventMunchkin } from "./gameHelpers/eventHelper";
+import { HelpFightMunchkin } from "./gameHelpers/helpFightHelper";
 
 export class Game {
     constructor(name: string, players: PlayerGame[]) {
@@ -48,7 +48,7 @@ export class Game {
     Player: PlayerHelper = new PlayerHelper(this);
     Fight: FightHelper = new FightHelper(this);
     Action: ActionHelper = new ActionHelper(this);
-    Event: EventMunchkin = new EventMunchkin(this)
+    Event: HelpFightMunchkin = new HelpFightMunchkin(this)
     
     get is_fight() { return this.field.fight }
 
