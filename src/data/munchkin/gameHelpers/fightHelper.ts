@@ -78,9 +78,12 @@ export class FightHelper {
         this.game.Player.allPlayersRefresh();
     }
     addToFight(pl: PlayerGame, gold: number) {
-        if (this.game.field.fight.players.second) return
-        this.game.field.fight.players.second.player = pl;
-        this.game.field.fight.players.second.gold = gold;
+        if (this.game.field.fight.players.second) return;
+        this.game.field.fight.players.second = {
+            player: pl,
+            gold: gold,
+            smivka: false
+        }
         this.game.Player.allPlayersRefresh();
     }
 }

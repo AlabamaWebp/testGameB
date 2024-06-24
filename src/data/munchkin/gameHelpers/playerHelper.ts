@@ -40,7 +40,7 @@ export class PlayerHelper {
             smivka: smivka,
             rasses_mesto: player.field_cards.doors.rasses.bonus && player.field_cards.doors.rasses.first,
             classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first,
-            help_ask: this.game.Event.help.get(player) ? {pl: player, gold: this.game.Event.help.get(player) } : undefined,
+            help_ask: this.game.Event.help.get(player) ? {pl: player.data, gold: this.game.Event.help.get(player) } : undefined,
             is_help: you_first_fight && !field.fight.players.second // Можно ли позвать на помощь
         }
     }

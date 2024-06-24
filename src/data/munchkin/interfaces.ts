@@ -162,7 +162,7 @@ export class GameField {
                         smivka: this.fight?.players?.first?.smivka
                     },
                     secondary: {
-                        player: this.fight?.players?.second?.player.data,
+                        player: this.fight?.players?.second?.player?.data,
                         gold: this.fight?.players?.second?.gold,
                         smivka: this.fight?.players?.second?.smivka
                     },
@@ -174,7 +174,7 @@ export class GameField {
                 },
                 monsters: this.fight?.monsters?.map(el => el?.getData()),
                 monsterStrongest: m_power, ///
-                treasures: this.fight?.gold,
+                gold: this.fight?.gold,
                 lvls: m_lvls ///
             } : undefined,
             openCards: this.openCards?.map(el => el.getData())

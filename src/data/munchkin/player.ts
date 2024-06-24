@@ -21,7 +21,7 @@ export class PlayerGame {
         treasures: new fieldTreasureCards()
     }
     cards: (TreasureCard | DoorsCard)[] = [];
-    private maxCards: number = 5;
+    private max_cards: number = 5;
 
     alive: boolean;
     smivka_power: number = 4; // x > 4
@@ -61,7 +61,7 @@ export class PlayerGame {
                 classes: this.field_cards.doors?.getClasses(), // ?.map(el => el.getData())
             },
             queue: this.queue,
-            max_cards: this.maxCards,
+            max_cards: this.max_cards,
             power: this.power
         }
     }
