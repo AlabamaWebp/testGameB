@@ -84,6 +84,5 @@ export class FightHelper {
             gold: gold,
             smivka: false
         }
-        this.game.Player.allPlayersRefresh();
     }
 }

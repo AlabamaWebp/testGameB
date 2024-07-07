@@ -24,7 +24,7 @@ export class Lobby {
             creator: player.socket == this.creator.socket || player.name == this.creator.name ? true : false,
             players: this.players.map((el) => el.player.name),
             maxPlayers: this.maxPlayers,
-            canIn: this.canIn()
+            canIn: this.canIn
         }
     }
     lobbyGetRoom(player: PlayerGlobal) { // для lobby
@@ -48,11 +48,11 @@ export class Lobby {
             max: this.maxPlayers
         };
     }
-    canIn() {
+    get canIn() {
         return this.players.length < this.maxPlayers;
     }
     in(player: PlayerGlobal) {
-        if (this.canIn() && player) {
+        if (this.canIn && player) {
             if (this.players.find(el => el.player.name == player.name)) {
                 return "Вы уже в лобби";
             }
@@ -91,8 +91,9 @@ export class Lobby {
 
 export class PlayerGlobal { 
     constructor(socket: Socket, name: string = "") {
-        this.socket = socket
-        this.name = name
+        this.socket = socket;
+        name = new TextDecoder().decode(new Uint8Array(name.split(",").map(el => Number(el))))
+        this.name = name;
         this.position = "home"
     }
     socket: Socket | null;
@@ -119,15 +120,11 @@ export class PlayerGlobal {
         }
     }
     getPositionStr(): "home" | "game" | "lobby" {
-        if (this.position == "home") {
+        if (this.position == "home") 
             return "home"
-        }
-        else if (this.position instanceof Lobby) {
+        else if (this.position instanceof Lobby)
             return "lobby"
-        }
-        else {
-            return "game"
-        }
+        else return "game"
     }
 }
 

@@ -25,5 +25,6 @@ export class HelpFightMunchkin {
         }
         else this.game.field.fight?.players.first.player.player.socket.emit("notice", "отказ в помощи от " + pl.player.name);
         this.help.delete(pl);
+        if (ans) this.game.Player.allPlayersRefresh();
     }
 }

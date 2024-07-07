@@ -133,10 +133,12 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const pl = this.data.getClient(client);
-    //@ts-ignore
-    const tmp = pl.position.lobbyGetRoom(pl);
-    client.emit("statusLobby", tmp)
-    return tmp;
+    if (pl.position instanceof Lobby) {
+      const tmp = pl.position.lobbyGetRoom(pl);
+      console.log(tmp.players.map(el => el.nickname));
+      client.emit("statusLobby", tmp)
+      return tmp;
+    }
   }
 
   @SubscribeMessage('setSex')

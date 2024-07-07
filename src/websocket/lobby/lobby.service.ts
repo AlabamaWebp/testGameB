@@ -6,7 +6,7 @@ import { DataService } from '../data/data.service';
 export class LobbyService {
     // events: refreshLobby,  МОИ ИВЕНТЫ
     constructor(private data: DataService,) {}
-    private lobbys: Map<string, Lobby> = new Map();
+    private lobbys: Map<any, Lobby> = new Map();
     getLobbys(player: PlayerGlobal) {
         let tmp: any[] = [];
         this.lobbys.forEach((value: Lobby) => {
