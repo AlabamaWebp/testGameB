@@ -20,8 +20,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // refreshRooms 
   handleConnection(client: Socket) {
+    
     this.data.connectClient(client);
-
   }
   handleDisconnect(client: Socket) {
     this.data.disconnectClient(client)
@@ -135,7 +135,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const pl = this.data.getClient(client);
     if (pl.position instanceof Lobby) {
       const tmp = pl.position.lobbyGetRoom(pl);
-      console.log(tmp.players.map(el => el.nickname));
       client.emit("statusLobby", tmp)
       return tmp;
     }

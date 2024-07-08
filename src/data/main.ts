@@ -92,7 +92,7 @@ export class Lobby {
 export class PlayerGlobal { 
     constructor(socket: Socket, name: string = "") {
         this.socket = socket;
-        name = new TextDecoder().decode(new Uint8Array(name.split(",").map(el => Number(el))))
+        // name = new TextDecoder().decode(new Uint8Array(name.split(",").map(el => Number(el))))
         this.name = name;
         this.position = "home"
     }

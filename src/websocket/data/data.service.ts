@@ -19,15 +19,15 @@ export class DataService {
         mass = mass.filter((el) => !els.includes(el))
     }
     connectClient(client: Socket) {
-        const name: string = client.handshake.headers.name as string;
+        let name: string = client.handshake.headers.name as string;
+        if (!name) return;
+        name = new TextDecoder().decode(new Uint8Array(name.split(",").map(el => Number(el))))
         const tmp = this.clients.find(el => el.name == name)
         if (tmp) {
             tmp.socket = client;
             client.emit("goTo", tmp.getPositionStr())
         }
-        else {
-            this.clients.push(new PlayerGlobal(client, name));
-        }
+        else this.clients.push(new PlayerGlobal(client, name));
     }
     disconnectClient(client: Socket) {
         const player = this.getClient(client);
