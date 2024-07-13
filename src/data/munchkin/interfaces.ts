@@ -51,14 +51,26 @@ export class fieldTreasureCards {
         "legs": 1,
         "arm": 2,
     }
+    findAndDel(id: number): TreasureCard | undefined {
+        const f = [this.helmet,
+        this.body,
+        this.legs,
+        this.arm,]
+        return findInMassAndDelete(id, f) as TreasureCard
+    }
+}
+interface _fieldDoorCards {
+    first: DoorsCard | undefined,
+    second: DoorsCard | undefined,
+    bonus: DoorsCard | undefined,
 }
 export class fieldDoorCards {
-    rasses = {
+    rasses: _fieldDoorCards = {
         first: undefined,
         second: undefined,
         bonus: undefined,
     }
-    classes = {
+    classes: _fieldDoorCards = {
         first: undefined,
         second: undefined,
         bonus: undefined,
@@ -91,6 +103,31 @@ export class fieldDoorCards {
         if (this.classes.bonus) tmp.push(this.classes.bonus)
         return tmp;
     }
+    findAndDel(id: number): DoorsCard | undefined {
+        const t = ['first', 'second', 'bonus',]
+        for (const i of t) {
+            const r = this.rasses[i]
+            const c = this.classes[i]
+            if (r?.id == id) {
+                const tmp = r
+                delete this.rasses[i]
+                return tmp
+            }
+            if (c?.id == id) {
+                const tmp = c
+                delete this.classes[i]
+                return tmp
+            }
+        } /// это надо переписать
+    }
+}
+function findInMassAndDelete(id: number, f: DoorsCard[][] | TreasureCard[][]) {
+    const tmp = f.find(el => el.find(e => e.id == id));
+    if (!tmp) return
+    const ret = tmp.find(e => e.id == id);
+    //@ts-ignore
+    tmp.splice(tmp.indexOf(ret), 1)
+    return ret
 }
 export interface defsData {
     player?: PlayerGame

@@ -50,7 +50,7 @@ export class Game {
     Action: ActionHelper = new ActionHelper(this);
     Event: HelpFightMunchkin = new HelpFightMunchkin(this)
     
-    get is_fight() { return this.field.fight }
+    get is_fight() { return !!this.field.fight }
 
     getPlayer(player: Socket) {
         const pl = this.players.find(el => el.player.socket == player)

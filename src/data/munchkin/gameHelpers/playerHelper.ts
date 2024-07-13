@@ -24,6 +24,7 @@ export class PlayerHelper {
             queue: this.game.players[this.game.queue].player.name,
             step: this.game.step,
             field: field.getField,
+            is_fight: this.game.is_fight,
             sbros:
             {
                 doors: this.game.sbros.doors[this.game.sbros.doors.length]?.getData(),

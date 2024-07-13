@@ -31,8 +31,8 @@ export class CardHelper {
         return this.game.cards.treasures.pop();
     }
     checkSbros() {
-        if (this.game.cards.treasures.length == 0) { this.game.cards.treasures = this.game.sbros.treasures.slice(); this.game.sbros.treasures = []; }
-        if (this.game.cards.doors.length == 0) { this.game.cards.doors = this.game.sbros.doors.slice(); this.game.sbros.doors = []; }
+        if (this.game.cards.treasures.length == 0) { this.game.cards.treasures = shuffle(this.game.sbros.treasures.slice()); this.game.sbros.treasures = []; }
+        if (this.game.cards.doors.length == 0) { this.game.cards.doors = shuffle(this.game.sbros.doors.slice()); this.game.sbros.doors = []; }
     }
     playerGetClosedDoor(pl: PlayerGame) {
         const card = this.getDoor
@@ -63,15 +63,7 @@ export class CardHelper {
         else if (card instanceof DoorsCard)
             this.game.sbros.doors.push(card)
         else return
-        if (!this.game.cards.doors.length) {
-            this.game.cards = shuffle(this.game.sbros.doors.slice());
-            this.game.sbros.doors = []
-        }
-        else if (!this.game.cards.treasures.length) {
-            if (!this.game.cards.treasures.length) {
-                this.game.cards = shuffle(this.game.sbros.treasures.slice());
-                this.game.sbros.treasures = []
-            }
-        }
+        this.checkSbros();
     }
+    
 }

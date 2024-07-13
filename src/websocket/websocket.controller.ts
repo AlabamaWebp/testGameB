@@ -20,7 +20,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // refreshRooms 
   handleConnection(client: Socket) {
-    
+
     this.data.connectClient(client);
   }
   handleDisconnect(client: Socket) {
@@ -288,6 +288,24 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (game instanceof Game) {
       game.Event.helpAnswer(client, d);
     }
+  }
+  @SubscribeMessage('sbrosCard')
+  sbrosCard(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() d: number
+  ) {
+    const pl = this.data.getClient(client);
+    if (pl.position instanceof Game)
+      pl.position.getPlayer(client).sbrosCard(d);
+  }
+  @SubscribeMessage('sbrosEquip')
+  sbrosEquip(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() d: number
+  ) {
+    const pl = this.data.getClient(client);
+    if (pl.position instanceof Game)
+      pl.position.getPlayer(client).sbrosEquip(d);
   }
   // @SubscribeMessage('endFight')
   // endFight(

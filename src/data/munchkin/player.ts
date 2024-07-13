@@ -77,9 +77,12 @@ export class PlayerGame {
         // game.playersGameRefresh();
     }
 
+    private cardById(id: number): TreasureCard | DoorsCard { return this.cards.find(el => el.id == id) }
+    private get game(): Game | undefined { return this.player.position instanceof Game ? this.player.position : undefined }
+
     useCard(id: number) {
-        const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == id);
-        const game = this.player.position as Game;
+        const card = this.cardById(id);
+        const game = this.game;
         if (!card || !game) {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
@@ -104,7 +107,6 @@ export class PlayerGame {
                 return // Если не выполнено условие то габелла
             ////////////// 
             if (card.data.treasureType == 'Надеваемая') {
-
                 const template_eng = help[card.data.template]
                 let count = 1;
                 if (card.data.template == '2 Руки')
@@ -114,9 +116,8 @@ export class PlayerGame {
                 if (this.field_cards.treasures[template_eng]
                     && this.field_cards.treasures.count[template_eng] < this.field_cards.treasures[template_eng].length + count) {
                     const tmp = this.field_cards.treasures[template_eng]
-                    while (tmp.length) {
+                    while (tmp.length)
                         game.Card.toSbros(this.field_cards.treasures[template_eng].pop())
-                    }
                 }
                 // console.log(this.field_cards.treasures[template_eng], card);
                 this.field_cards.treasures[template_eng] = [card];
@@ -155,10 +156,10 @@ export class PlayerGame {
     }
 
     useCardMesto(body: cardMestoEvent) {
-        const durak = ["first", "second", ]; // "bonus"
+        const durak = ["first", "second",]; // "bonus"
         if (!durak.includes(body.mesto)) return;
 
-        const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == body.id_card);
+        const card = this.cardById(body.id_card)
         const game = this.player.position as Game;
         if (!card || !game) {
             this.player.socket.emit('error', 'Ошибка использования карты')
@@ -179,17 +180,38 @@ export class PlayerGame {
         }
         game.Player.allPlayersRefresh();
     }
-    useCardOnPlayer(idc: number, pl: string) {
-        const card: TreasureCard | DoorsCard = this.cards.find(el => el.id == idc);
+    useCardOnPlayer(idc: number, pl: string) { // не использовалось
+        const card = this.cardById(idc)
         const game = this.player.position as Game;
-        const target_pl = game.players.find(el => el.player.name) 
+        const target_pl = game.players.find(el => el.player.name)
         if (!card || !game || !target_pl) {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
         };
-        const params: defsData = {player: target_pl, game: game}
+        const params: defsData = { player: target_pl, game: game }
         card.defs.action(params);
         game.Player.logging(this.player.name + " использует " + card.abstractData.name + " на " + target_pl.player.name);
+    }
+    sbrosCard(idc: number) {
+        const card = this.cardById(idc);
+        const game = this.game;
+        if (!card || !game 
+            || game.step != 3
+        ) return;
+        this.cards.splice(this.cards.indexOf(card), 1);
+        game.Card.toSbros(card); // самому мелкому уровню потом
+        game.Player.onePlayerRefresh(this);
+    }
+    sbrosEquip(idc: number) {
+        let card: TreasureCard | DoorsCard = this.field_cards.treasures.findAndDel(idc);
+        if (!card) card = this.field_cards.doors.findAndDel(idc);
+        const game = this.game;
+        if (!card || !game
+            || !game.is_fight
+        ) return;
+        game.Card.toSbros(card);
+        game.Player.logging(this.player.name + " снимает " + card.abstractData.name);
+        game.Player.onePlayerRefresh(this);
     }
 }
 export interface cardMestoEvent {
