@@ -27,7 +27,6 @@ export class FightHelper {
                     }
                 }
             }
-            console.log("Игроков " + players.length);
             if (players.length) {
                 if (!f.smivka && f.players_power > f.monsters_power) { // Победа игрока (надо делить сокровища)
                     this.game.Card.playerGetClosedTreasure(f.players.first.player, f.gold);
@@ -48,8 +47,9 @@ export class FightHelper {
                     this.game.Player.logging(tmp);
                 }
             }
+            this.game.field.fight.monsters.forEach(el => this.game.Card.toSbros(el));
             delete this.game.field.fight;
-            this.game.step = 3;
+            this.game.Action.setStep3();
             // НАдо подумать над применяемыми картами во время боя
         }
     }

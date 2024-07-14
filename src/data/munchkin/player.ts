@@ -49,7 +49,7 @@ export class PlayerGame {
             name: this.player.name,
             lvl: this.lvl,
             sex: this.sex,
-            cards: this.cards.map(el => el.getData()).reverse(),
+            cards: this.cards.map(el => el?.getData()).reverse(),
             t_field: {
                 helmet: this.field_cards.treasures?.helmet?.map(el => el.getData()),
                 body: this.field_cards.treasures?.body?.map(el => el.getData()),

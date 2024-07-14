@@ -9,7 +9,7 @@ export const MONSTERS: DoorsCard[] = [
         {
             strongest: 1,
             lvl: 1,
-            gold: 10,
+            gold: 1,
             undead: false,
         },
         {}, // Если эльф + сокровище
@@ -21,7 +21,7 @@ export const MONSTERS: DoorsCard[] = [
         {
             strongest: 1,
             lvl: 1,
-            gold: 10,
+            gold: 1,
             undead: false,
         },
         {}, // Если эльф + сокровище
@@ -33,31 +33,7 @@ export const MONSTERS: DoorsCard[] = [
         {
             strongest: 1,
             lvl: 1,
-            gold: 10,
-            undead: false,
-        },
-        {}, // Если эльф + сокровище
-    ),
-    new DoorsCard(
-        "Огоршённая трава",
-        "Победви траву, элфы тянут дополнительное сокровище",
-        type,
-        {
-            strongest: 1,
-            lvl: 1,
-            gold: 10,
-            undead: false,
-        },
-        {}, // Если эльф + сокровище
-    ),
-    new DoorsCard(
-        "Огоршённая трава",
-        "Победви траву, элфы тянут дополнительное сокровище",
-        type,
-        {
-            strongest: 1,
-            lvl: 1,
-            gold: 10,
+            gold: 1,
             undead: false,
         },
         {}, // Если эльф + сокровище
