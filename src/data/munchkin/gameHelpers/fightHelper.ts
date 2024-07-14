@@ -56,7 +56,7 @@ export class FightHelper {
     kidokSmivka(client: Socket) {
         const pl = this.game.getPlayer(client);
         const f = this.game.field.fight;
-        if (!pl || !f) return;
+        if (!pl || !f || f.smivka) return;
 
         let templ: undefined | "first" | "second"; // 0 - net na pole; 1 - first, 2 - second;
         if (f.players.first.player == pl) templ = "first";
@@ -66,7 +66,8 @@ export class FightHelper {
             f.players[templ].smivka = true;
             pl.cubik = randomInteger(1, 6);
             f["smivka_" + templ] = true;
-            this.game.Player.logging(pl.data.name + " выбрасывает " + this.game.cubik + " на кубике")
+            this.game.Player.logging(pl.data.name + " выбрасывает " + pl.cubik + " на кубике")
+            this.game.Player.onePlayerRefresh(pl);
             // this.game.Player.allPlayersRefresh();
         }
     }

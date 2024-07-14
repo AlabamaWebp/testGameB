@@ -107,7 +107,7 @@ export class PlayerGame {
                 return // Если не выполнено условие то габелла
             ////////////// 
             if (card.data.treasureType == 'Надеваемая') {
-                const template_eng = help[card.data.template]
+                const template_eng = help[card.data.template];
                 let count = 1;
                 if (card.data.template == '2 Руки')
                     count = 2
