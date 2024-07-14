@@ -124,7 +124,6 @@ export class PlayerGame {
                     }
                     this.field_cards.treasures[template_eng] = [card];
                 }
-
                 game.Player.logging(`${this.player.name} надевает ${card.abstractData.name} (+${card.strong} бонус)`)
             }
             if (card.data.treasureType == 'Используемая') {
