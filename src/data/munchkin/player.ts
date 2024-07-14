@@ -94,7 +94,7 @@ export class PlayerGame {
             "Рука": 'arm',
             "2 Руки": 'arm',
             "3 Руки": 'arm',
-
+            "Рядом": "other",
             'Класс': 'classes',
             'Раса': 'rasses'
         }
@@ -108,19 +108,22 @@ export class PlayerGame {
             ////////////// 
             if (card.data.treasureType == 'Надеваемая') {
                 const template_eng = help[card.data.template];
-                let count = 1;
-                if (card.data.template == '2 Руки')
-                    count = 2
-                else if (card.data.template == '3 Руки')
-                    count = 3
-                if (this.field_cards.treasures[template_eng]
-                    && this.field_cards.treasures.count[template_eng] < this.field_cards.treasures[template_eng].length + count) {
-                    const tmp = this.field_cards.treasures[template_eng]
-                    while (tmp.length)
-                        game.Card.toSbros(this.field_cards.treasures[template_eng].pop())
+                if (template_eng == "other") 
+                    this.field_cards.treasures[template_eng].push(card);
+                else {
+                    let count = 1;
+                    if (card.data.template == '2 Руки')
+                        count = 2
+                    else if (card.data.template == '3 Руки')
+                        count = 3
+                    if (this.field_cards.treasures[template_eng]
+                        && this.field_cards.treasures.count[template_eng] < this.field_cards.treasures[template_eng].length + count) {
+                        const tmp = this.field_cards.treasures[template_eng]
+                        while (tmp.length)
+                            game.Card.toSbros(this.field_cards.treasures[template_eng].pop())
+                    }
+                    this.field_cards.treasures[template_eng] = [card];
                 }
-                // console.log(this.field_cards.treasures[template_eng], card);
-                this.field_cards.treasures[template_eng] = [card];
 
                 game.Player.logging(`${this.player.name} надевает ${card.abstractData.name} (+${card.strong} бонус)`)
             }
@@ -195,7 +198,7 @@ export class PlayerGame {
     sbrosCard(idc: number) {
         const card = this.cardById(idc);
         const game = this.game;
-        if (!card || !game 
+        if (!card || !game
             || game.step != 3
         ) return;
         this.cards.splice(this.cards.indexOf(card), 1);
