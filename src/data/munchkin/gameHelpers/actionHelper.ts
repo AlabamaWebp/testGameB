@@ -47,7 +47,7 @@ export class ActionHelper {
     }
     setStep3() {
         this.game.step = 3;
-        this.game.Player.logging("Игрок может зхавершить ход если у него не больше " + this.game.current_player.data.max_cards + " карт")
+        this.game.Player.logging("Игрок может завершить ход если у него не больше " + this.game.current_player.data.max_cards + " карт")
     }
     endHod(pl: PlayerGame) {
         if (pl == this.game.current_player) {
