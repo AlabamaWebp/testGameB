@@ -22,11 +22,10 @@ export class PlayerGame {
     }
     cards: (TreasureCard | DoorsCard)[] = [];
     private max_cards: number = 5;
-
     alive: boolean;
     smivka_power: number = 4; // x > 4
     cubik = 0;
-
+    coins: number = 0;
 
     readonly player: PlayerGlobal;
     readonly sex: "Мужчина" | "Женщина";
@@ -62,7 +61,8 @@ export class PlayerGame {
             },
             queue: this.queue,
             max_cards: this.max_cards,
-            power: this.power
+            power: this.power,
+            coins: this.coins
         }
     }
 
@@ -78,6 +78,7 @@ export class PlayerGame {
     }
 
     private cardById(id: number): TreasureCard | DoorsCard { return this.cards.find(el => el.id == id) }
+    private delCard(card: TreasureCard | DoorsCard) { this.cards = this.cards.filter(el => el != card) }
     private get game(): Game | undefined { return this.player.position instanceof Game ? this.player.position : undefined }
 
     useCard(id: number) {
@@ -108,7 +109,7 @@ export class PlayerGame {
             ////////////// 
             if (card.data.treasureType == 'Надеваемая') {
                 const template_eng = help[card.data.template];
-                if (template_eng == "other") 
+                if (template_eng == "other")
                     this.field_cards.treasures[template_eng].push(card);
                 else {
                     let count = 1;
@@ -153,7 +154,7 @@ export class PlayerGame {
                 game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
             }
         }
-        this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
+        this.delCard(card); // Удаление карты из руки
         game.Player.allPlayersRefresh();
     }
 
@@ -178,7 +179,7 @@ export class PlayerGame {
             }
             tmp[body.mesto] = card
             game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
-            this.cards = this.cards.filter(el => el != card); // Удаление карты из руки
+            this.delCard(card); // Удаление карты из руки
         }
         game.Player.allPlayersRefresh();
     }
@@ -194,8 +195,8 @@ export class PlayerGame {
         card.defs.action(params);
         game.Player.logging(this.player.name + " использует " + card.abstractData.name + " на " + target_pl.player.name);
     }
-    sbrosCard(idc: number) {
-        const card = this.cardById(idc);
+    sbrosCard(id: number) {
+        const card = this.cardById(id);
         const game = this.game;
         if (!card || !game
             || game.step != 3
@@ -204,9 +205,9 @@ export class PlayerGame {
         game.Card.toSbros(card); // самому мелкому уровню потом
         game.Player.onePlayerRefresh(this);
     }
-    sbrosEquip(idc: number) {
-        let card: TreasureCard | DoorsCard = this.field_cards.treasures.findAndDel(idc);
-        if (!card) card = this.field_cards.doors.findAndDel(idc);
+    sbrosEquip(id: number) {
+        let card: TreasureCard | DoorsCard = this.field_cards.treasures.findAndDel(id);
+        if (!card) card = this.field_cards.doors.findAndDel(id);
         const game = this.game;
         if (!card || !game
             || !game.is_fight
@@ -214,6 +215,18 @@ export class PlayerGame {
         game.Card.toSbros(card);
         game.Player.logging(this.player.name + " снимает " + card.abstractData.name);
         game.Player.onePlayerRefresh(this);
+    }
+    sellCard(id: number) {
+        const card = this.cardById(id);
+        if (!card || !card.abstractData.cost) return;
+        this.delCard(card);
+        this.game.Card.toSbros(card);
+        this.coins += card.abstractData.cost;
+        const lvls = Math.floor(this.coins / 1000);
+        this.changeLvl(lvls);
+        this.coins -= lvls * 1000;
+        this.game.Player.logging(this.player.name + " продаёт " + card.abstractData.name + " за " + card.abstractData.cost + " монет" +(lvls ? " и получает " + lvls + " уровней" : ""))
+        this.game.Player.allPlayersRefresh();
     }
 }
 export interface cardMestoEvent {

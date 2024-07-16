@@ -53,6 +53,7 @@ export class ActionHelper {
         if (pl == this.game.current_player) {
             if (pl.data.max_cards < pl.cards.length) return;
             this.game.Player.logging(this.game.current_player.data.name + " закончил свой ход")
+            this.game.current_player.coins = 0;
             this.game.queue++;
             if (this.game.queue >= this.game.plcount)
                 this.game.queue = 0
