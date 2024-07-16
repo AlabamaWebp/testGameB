@@ -23,7 +23,6 @@ export interface TreasureData {
     template?: "Шлем" | "Броник" | "Ноги" | "Рука"
     | "2 Руки" | "3 Руки" | "Рядом"
 
-    cost?: number
     big?: boolean
 }
 export interface TreasureDefs {
@@ -37,6 +36,7 @@ export interface AbstractData {
     description: string;
     cardType: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
     img?: string;
+    cost?: number
 }
 
 export class fieldTreasureCards {

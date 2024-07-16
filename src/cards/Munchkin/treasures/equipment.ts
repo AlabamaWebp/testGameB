@@ -7,14 +7,16 @@ function createShmot(
     desc: string,
     defs: TreasureDefs,
     data: TreasureData,
-    strong: number
+    strong: number,
+    cost?: number
 ) {
     return new TreasureCard(
         name,
         desc,
         defs,
         data,
-        strong
+        strong,
+        cost
     )
 }
 const type = "Надеваемая"
@@ -24,9 +26,9 @@ export const EQUIPMENT: TreasureCard[] = [
         {
             treasureType: type,
             template: "Рядом",
-            cost: 200,
         },
-        1
+        1,
+        200,
     ),
 
     createShmot("Слизистая оболочка",
@@ -35,18 +37,18 @@ export const EQUIPMENT: TreasureCard[] = [
         {
             treasureType: type,
             template: "Броник",
-            cost: 200,
         },
-        1
+        1,
+        200,
     ),
     createShmot("Башмаки могучего пенделя", "",
         undefined,
         {
             treasureType: type,
             template: "Ноги",
-            cost: 400,
         },
-        2
+        2,
+        400
     ),
     createShmot("Огромный камень", "",
         undefined,
@@ -69,9 +71,9 @@ export const EQUIPMENT: TreasureCard[] = [
         {
             treasureType: type,
             template: 'Броник',
-            cost: 400
         },
-        3 /// HZ
+        3, /// HZ
+        400
     ),
     createShmot("Лучок с ленточками",
         "",

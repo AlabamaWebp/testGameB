@@ -5,11 +5,7 @@ import { Game } from "./mucnhkinGame";
 // refreshGame plusLog allLog
 
 class AbstractCard {
-    constructor(
-        data: AbstractData
-    ) {
-        this.abstractData = data
-    }
+    constructor(data: AbstractData) { this.abstractData = data }
     abstractData: AbstractData;
     id: number;
 }
@@ -21,15 +17,16 @@ export class TreasureCard extends AbstractCard {
         description: string,
         defs?: TreasureDefs,
         data?: TreasureData,
-        strongest: number = 0,
-        img: string = ""
+        strongest?: number,
+        cost?: number,
+        img?: string
     ) {
-        super({ name, description, cardType: "Сокровище", img });
+        super({ name, description, cardType: "Сокровище", cost, img });
         this.data = data;
         this.strong = strongest;
         this.defs = defs;
     }
-    strong: number;
+    strong?: number;
     data: TreasureData;
     defs?: TreasureDefs
     getData() {
@@ -64,9 +61,10 @@ export class DoorsCard extends AbstractCard {
         },
         defs?: DoorsDefs,
         is_super?: boolean,
+        cost?: number,
         img?: string
     ) {
-        super({ name, description, cardType: type, img });
+        super({ name, description, cardType: type, img, cost });
         monster ? this.data = {
             get_lvls: monster.lvl,
             strongest: monster.strongest,
@@ -109,6 +107,7 @@ export class DoorsCard extends AbstractCard {
             },
             this.defs,
             this.is_super,
+            this.abstractData.cost,
             this.abstractData.img,
         )
     }

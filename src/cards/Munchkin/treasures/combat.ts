@@ -5,15 +5,19 @@ function createCombat(
     name: string,
     desc: string,
     defs?: TreasureDefs,
+    cost?: number
 ) {
     return new TreasureCard(
         name,
         desc,
         defs,
+        {treasureType: "Боевая"},
+        undefined,
+        cost
     )
 }
-const type = "Боевая"
 export const COMBAT: TreasureCard[] = [
     createCombat("Спячечное зелье", "Играть в бой, +2 любой стороне.",
-    ),
+        {},
+        200),
 ]

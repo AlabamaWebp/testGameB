@@ -3,7 +3,8 @@ import { DoorsCard } from "src/data/munchkin/cards";
 function createClass(
     name: string,
     desc: string,
-    super1: boolean = false
+    // cost?: number,
+    super1: boolean = false,
 ) {
     return new DoorsCard(
         name,
@@ -11,7 +12,8 @@ function createClass(
         "Раса",
         undefined,
         undefined,
-        super1
+        super1,
+        // cost
     )
 }
 export const RASES: DoorsCard[] = [
