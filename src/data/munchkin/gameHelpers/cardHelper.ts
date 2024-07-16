@@ -22,13 +22,17 @@ export class CardHelper {
         const pl = this.game.players[this.game.queue];
         return this.popPlayerCard(pl, pl.cards.find(el => el.id == id));
     }
-    get getDoor() {
+    get getDoor(): DoorsCard | undefined {
         this.checkSbros();
-        return this.game.cards.doors.pop();
+        const tmp: DoorsCard | undefined = this.game.cards.doors.pop();
+        if (!tmp) this.game.Player.logging("Карты дверей - всё")
+        return tmp;
     }
-    get getTreasure() {
+    get getTreasure(): TreasureCard | undefined {
         this.checkSbros();
-        return this.game.cards.treasures.pop();
+        const tmp: TreasureCard | undefined = this.game.cards.treasures.pop();
+        if (!tmp) this.game.Player.logging("Карты сокровищ - всё")
+        return tmp;
     }
     checkSbros() {
         if (this.game.cards.treasures.length == 0) { this.game.cards.treasures = shuffle(this.game.sbros.treasures.slice()); this.game.sbros.treasures = []; }
@@ -65,5 +69,5 @@ export class CardHelper {
         else return
         this.checkSbros();
     }
-    
+
 }
