@@ -82,7 +82,8 @@ export const EQUIPMENT: TreasureCard[] = [
             treasureType: type,
             template: "2 Руки"
         },
-        4
+        4,
+        800
     ),
 
 ]
