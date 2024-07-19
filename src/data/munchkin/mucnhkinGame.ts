@@ -17,7 +17,7 @@ import { FightHelper } from "./gameHelpers/fightHelper";
 import { PlayerGame } from "./player";
 import { HelpFightMunchkin } from "./gameHelpers/helpFightHelper";
 
-export class Game {
+export class MunchkinGame {
     constructor(name: string, players: PlayerGame[]) {
         this.name = name;
         this.players = shuffle(players);
@@ -31,6 +31,7 @@ export class Game {
         fillId.call(this);
         playersGetCard.call(this);
     }
+    endgame = false
 
     plcount: number;
     name: string;

@@ -1,17 +1,17 @@
 import { randomInteger } from "../functions";
 import { Fight } from "../interfaces";
-import { Game } from "../mucnhkinGame";
+import { MunchkinGame } from "../mucnhkinGame";
 import { DoorsCard, TreasureCard } from "../cards";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
 
 export class FightHelper {
-    constructor(game: Game) {
+    constructor(game: MunchkinGame) {
         this.game = game;
     }
-    game: Game;
+    game: MunchkinGame;
 
-    startFight(player: PlayerGame, monster: DoorsCard) { if (!this.game.field.fight) this.game.field.fight = new Fight(player, monster) }
+    startFight(player: PlayerGame, monster: DoorsCard) { if (!this.game.field.fight) this.game.field.fight = new Fight(player, monster); this.game.field.openCards = [] }
     endFight() {
         if (this.game.field.fight?.pas.size == this.game.plcount) { // все пасанули
             const monsters = this.game.field.fight.monsters;
@@ -30,7 +30,7 @@ export class FightHelper {
             if (players.length) {
                 if (!f.smivka && f.players_power > f.monsters_power) { // Победа игрока (надо делить сокровища)
                     this.game.Card.playerGetClosedTreasure(f.players.first.player, f.gold);
-                    f.players.first.player.changeLvl(f.lvls);
+                    f.players.first.player.changeLvl(f.lvls, true);
                     if (f.players.second)
                         this.game.Card.playerGetClosedTreasure(f.players.second.player, f.gold);
                 }

@@ -1,11 +1,10 @@
 import { PlayerGlobal } from "../main";
 import { TreasureCard, DoorsCard } from "./cards";
 import { fieldTreasureCards, fieldDoorCards, defsData } from "./interfaces";
-import { Game } from "./mucnhkinGame";
+import { MunchkinGame } from "./mucnhkinGame";
 
 export class PlayerGame {
     constructor(player: PlayerGlobal, sex: "Мужчина" | "Женщина", queue: number) {
-        this.lvl = 1;
         this.player = player;
         this.sex = sex;
         this.alive = true;
@@ -13,7 +12,7 @@ export class PlayerGame {
     }
     readonly queue: number;
 
-    private lvl: number = 1;
+    private lvl: number = 9;
     // t_field_cards = new fieldTreasureCards(); // Шмотки
     // d_field_cards = new fieldDoorCards(); // Классы Рассы
     field_cards = {
@@ -66,12 +65,20 @@ export class PlayerGame {
         }
     }
 
-    changeLvl(count: number) {
+    changeLvl(count: number, canWin = false) {
         this.lvl += count;
         if (this.lvl < 1)
             this.lvl = 1;
-        if (this.lvl > 10) {
-            // победа
+        if (this.lvl > 9) {
+            if (canWin) {
+                // победа
+                setTimeout(() => this.game.Player.logging("Победа игрока " + this.player.name), 100);
+                this.game.endgame = true;
+            }
+            else {
+                this.game.Player.logging(this.player.name + " попытался повысить уровень до 10, но увы неудачно")
+                this.lvl = 9;
+            }
         }
         // const game = this.player.position as Game;
         // game.playersGameRefresh();
@@ -79,7 +86,7 @@ export class PlayerGame {
 
     private cardById(id: number): TreasureCard | DoorsCard { return this.cards.find(el => el.id == id) }
     private delCard(card: TreasureCard | DoorsCard) { this.cards = this.cards.filter(el => el != card) }
-    private get game(): Game | undefined { return this.player.position instanceof Game ? this.player.position : undefined }
+    private get game(): MunchkinGame | undefined { return this.player.position instanceof MunchkinGame ? this.player.position : undefined }
 
     useCard(id: number) {
         const card = this.cardById(id);
@@ -163,7 +170,7 @@ export class PlayerGame {
         if (!durak.includes(body.mesto)) return;
 
         const card = this.cardById(body.id_card)
-        const game = this.player.position as Game;
+        const game = this.player.position as MunchkinGame;
         if (!card || !game) {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
@@ -185,7 +192,7 @@ export class PlayerGame {
     }
     useCardOnPlayer(idc: number, pl: string) { // не использовалось
         const card = this.cardById(idc)
-        const game = this.player.position as Game;
+        const game = this.player.position as MunchkinGame;
         const target_pl = game.players.find(el => el.player.name)
         if (!card || !game || !target_pl) {
             this.player.socket.emit('error', 'Ошибка использования карты')
@@ -225,7 +232,7 @@ export class PlayerGame {
         const lvls = Math.floor(this.coins / 1000);
         this.changeLvl(lvls);
         this.coins -= lvls * 1000;
-        this.game.Player.logging(this.player.name + " продаёт " + card.abstractData.name + " за " + card.abstractData.cost + " монет" +(lvls ? " и получает " + lvls + " уровней" : ""))
+        this.game.Player.logging(this.player.name + " продаёт " + card.abstractData.name + " за " + card.abstractData.cost + " монет" + (lvls ? " и получает " + lvls + " уровней" : ""))
         this.game.Player.allPlayersRefresh();
     }
 }

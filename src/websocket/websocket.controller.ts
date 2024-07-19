@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { DataService } from './data/data.service';
 import { LobbyService } from './lobby/lobby.service';
 import { Lobby, PlayerGlobal } from '../data/main';
-import { Game } from 'src/data/munchkin/mucnhkinGame';
+import { MunchkinGame } from 'src/data/munchkin/mucnhkinGame';
 import { MunchkinService } from './munchkin/munchkin.service';
 import { cardMestoEvent } from 'src/data/munchkin/player';
 import { PlayerGame } from 'src/data/munchkin/player';
@@ -194,7 +194,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClient(client).position;
-    client.emit("refreshGame", game instanceof Game ? game.Player.getMainForPlayer(game.getPlayer(client)) : false)
+    client.emit("refreshGame", game instanceof MunchkinGame ? game.Player.getMainForPlayer(game.getPlayer(client)) : false)
   }
 
   @SubscribeMessage('allLog')
@@ -202,7 +202,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const pl = this.data.getClient(client);
-    if (pl.position instanceof Game)
+    if (pl.position instanceof MunchkinGame)
       pl.position.Player.sendAllLog(pl.socket)
     else
       client.emit("refreshGame", false)
@@ -214,7 +214,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
-    if (game instanceof Game) {
+    if (game instanceof MunchkinGame) {
       player = game.getPlayer(client);
       game.Action.endHod(player)
     }
@@ -226,7 +226,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
-    if (game instanceof Game) {
+    if (game instanceof MunchkinGame) {
       player = game.getPlayer(client);
       player.useCard(id_card);
     }
@@ -238,7 +238,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
     const game = player.position;
-    if (game instanceof Game) {
+    if (game instanceof MunchkinGame) {
       player = game.getPlayer(client);
       player.useCardMesto(body);
       // player.useCard(body.id_card);
@@ -249,7 +249,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClient(client).position;
-    if (game instanceof Game)
+    if (game instanceof MunchkinGame)
       game.Action.getDoorCardByPlayer(client);
   }
   @SubscribeMessage('pas')
@@ -257,7 +257,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClient(client).position;
-    if (game instanceof Game) {
+    if (game instanceof MunchkinGame) {
       game.Fight.yaPas(client);
     }
   }
@@ -266,7 +266,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const game = this.data.getClient(client).position;
-    if (game instanceof Game) {
+    if (game instanceof MunchkinGame) {
       game.Fight.kidokSmivka(client);
     }
   }
@@ -276,7 +276,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() d: { to: string, gold: number }
   ) {
     const game = this.data.getClient(client).position;
-    if (game instanceof Game)
+    if (game instanceof MunchkinGame)
       game.Event.helpAsk(client, d);
   }
   @SubscribeMessage('helpAnswer')
@@ -285,7 +285,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() d: boolean
   ) {
     const game = this.data.getClient(client).position;
-    if (game instanceof Game) {
+    if (game instanceof MunchkinGame) {
       game.Event.helpAnswer(client, d);
     }
   }
@@ -295,7 +295,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() d: number
   ) {
     const pl = this.data.getClient(client);
-    if (pl.position instanceof Game)
+    if (pl.position instanceof MunchkinGame)
       pl.position.getPlayer(client).sbrosCard(d);
   }
   @SubscribeMessage('sbrosEquip')
@@ -304,7 +304,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() d: number
   ) {
     const pl = this.data.getClient(client);
-    if (pl.position instanceof Game)
+    if (pl.position instanceof MunchkinGame)
       pl.position.getPlayer(client).sbrosEquip(d);
   }
   @SubscribeMessage('sellCard')
@@ -313,8 +313,24 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() d: number
   ) {
     const pl = this.data.getClient(client);
-    if (pl.position instanceof Game)
+    if (pl.position instanceof MunchkinGame)
       pl.position.getPlayer(client).sellCard(d);
+  }
+  @SubscribeMessage('toHome')
+  toHome(
+    @ConnectedSocket() client: Socket
+  ) {
+    const pl = this.data.getClient(client);
+    const game = pl.position 
+    if (game instanceof MunchkinGame) {
+      pl.socket.emit("goTo", "home")
+      try {
+        game.players.filter(el => el != game.getPlayer(client));
+        game.Player.logging(pl.name +  " вышел")
+        this.games.deleteGame(game);
+      }
+      catch { console.log("lol")}
+    }
   }
 }
 

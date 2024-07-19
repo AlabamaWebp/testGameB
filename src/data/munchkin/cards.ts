@@ -1,6 +1,6 @@
 import { PlayerGlobal } from "../main";
 import { AbstractData, DoorsDefs, MonsterData, TreasureData, TreasureDefs, fieldDoorCards, fieldTreasureCards } from "./interfaces";
-import { Game } from "./mucnhkinGame";
+import { MunchkinGame } from "./mucnhkinGame";
 
 // refreshGame plusLog allLog
 

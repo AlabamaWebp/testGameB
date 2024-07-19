@@ -1,4 +1,4 @@
-import { Game } from "./mucnhkinGame";
+import { MunchkinGame } from "./mucnhkinGame";
 import { DoorsCard, TreasureCard } from "./cards";
 import { PlayerGame } from "./player";
 
@@ -131,7 +131,7 @@ function findInMassAndDelete(id: number, f: DoorsCard[][] | TreasureCard[][]) {
 }
 export interface defsData {
     player?: PlayerGame
-    game?: Game
+    game?: MunchkinGame
 }
 interface PlayerFight {
     player: PlayerGame

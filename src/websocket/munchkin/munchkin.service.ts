@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { DataService } from '../data/data.service';
-import { Game } from 'src/data/munchkin/mucnhkinGame';
+import { MunchkinGame } from 'src/data/munchkin/mucnhkinGame';
 
 @Injectable()
 export class MunchkinService {
-    constructor(private data: DataService,) {}
-    private games: Map<string, Game> = new Map();
-    createGame(game: Game) {
-        if (!this.games.has(game.name)) {
-            this.games.set(game.name, game);
+    constructor(private data: DataService,) { }
+    private games: WeakSet<MunchkinGame> = new Set();
+    get _games() { return this.games }
+    createGame(game: MunchkinGame) {
+        if (!this.games.has(game)) {
+            this.games.add(game);
             game.players.forEach(el => {
                 el.player.position = game;
             })
@@ -16,5 +17,9 @@ export class MunchkinService {
         else {
             throw "Ошибка создания комнаты"
         }
+    }
+    deleteGame(game: MunchkinGame) {
+        // if (!game.players.length) 
+            this.games.delete(game)
     }
 }

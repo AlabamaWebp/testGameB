@@ -1,11 +1,11 @@
 import { Socket } from "socket.io";
-import { Game } from "../mucnhkinGame";
+import { MunchkinGame } from "../mucnhkinGame";
 
 export class HelpFightMunchkin {
-    constructor(game: Game) {
+    constructor(game: MunchkinGame) {
         this.game = game;
     }
-    game: Game;
+    game: MunchkinGame;
 
     help = new Map()
     helpAsk(pl: Socket, t: { to: string, gold: number }) {

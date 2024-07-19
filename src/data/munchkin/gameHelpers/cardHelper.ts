@@ -1,13 +1,13 @@
 import { shuffle } from "../functions";
-import { Game } from "../mucnhkinGame";
+import { MunchkinGame } from "../mucnhkinGame";
 import { DoorsCard, TreasureCard } from "../cards";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
 export class CardHelper {
-    constructor(game: Game) {
+    constructor(game: MunchkinGame) {
         this.game = game;
     }
-    game: Game;
+    game: MunchkinGame;
 
     openCardField(card: TreasureCard | DoorsCard) {
         if (this.game.field.fight) this.game.field.fight = undefined;
@@ -45,7 +45,6 @@ export class CardHelper {
         this.game.Player.onePlayerRefresh(pl);
     }
     playerGetClosedTreasure(pl: PlayerGame, colvo: number) {
-        // const pl = this.getPlBySocket(player);
         for (let i = 0; i < colvo; i++) {
             const card = this.getTreasure
             pl.cards.push(card);

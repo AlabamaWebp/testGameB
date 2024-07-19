@@ -1,12 +1,12 @@
 import { Socket } from "socket.io";
-import { Game } from "../mucnhkinGame";
+import { MunchkinGame } from "../mucnhkinGame";
 import { PlayerGame } from "../player";
 
 export class PlayerHelper {
-    constructor(game: Game) {
+    constructor(game: MunchkinGame) {
         this.game = game;
     }
-    game: Game;
+    game: MunchkinGame;
     private log: string[] = [];
     private number_log: number = 1;
 
@@ -42,7 +42,8 @@ export class PlayerHelper {
             rasses_mesto: player.field_cards.doors.rasses.bonus && player.field_cards.doors.rasses.first,
             classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first,
             help_ask: this.game.Event.help.get(player) ? {pl: player.data, gold: this.game.Event.help.get(player) } : undefined,
-            is_help: you_first_fight && !field.fight.players.second // Можно ли позвать на помощь
+            is_help: you_first_fight && !field.fight.players.second, // Можно ли позвать на помощь
+            end: this.game.endgame
         }
     }
     logging(l: string) {

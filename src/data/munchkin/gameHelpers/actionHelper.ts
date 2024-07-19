@@ -1,12 +1,12 @@
-import { Game } from "../mucnhkinGame";
+import { MunchkinGame } from "../mucnhkinGame";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
 
 export class ActionHelper {
-    constructor(game: Game) {
+    constructor(game: MunchkinGame) {
         this.game = game;
     }
-    game: Game;
+    game: MunchkinGame;
     getDoorCardByPlayer(player: Socket) {
         const pl = this.game.getPlayer(player);
         if (pl != this.game.players[this.game.queue]) return;

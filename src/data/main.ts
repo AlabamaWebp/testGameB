@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { Game } from './munchkin/mucnhkinGame';
+import { MunchkinGame } from './munchkin/mucnhkinGame';
 import { shuffle } from './munchkin/functions';
 import { PlayerGame } from './munchkin/player';
 
@@ -85,7 +85,7 @@ export class Lobby {
         const pls = shuffle(this.players).map((el, i) => {
             return new PlayerGame(el.player, el.sex, i+1);
         })
-        return new Game(this.name, pls);
+        return new MunchkinGame(this.name, pls);
     }
 }
 
@@ -98,7 +98,7 @@ export class PlayerGlobal {
     }
     socket: Socket | null;
     readonly name: string;
-    position: "home" | Game | Lobby //  "nickname" |
+    position: "home" | MunchkinGame | Lobby //  "nickname" |
     // setName(newNick: string) {
     //     if (this.position != "nickname" && this.position != "home") {
     //         return "Сейчас невозможно сменить ник"
@@ -114,7 +114,7 @@ export class PlayerGlobal {
             this.position.out(this);
             this.position = "home";
         }
-        else if (this.position instanceof Game) {
+        else if (this.position instanceof MunchkinGame) {
             this.socket = undefined
             return true;
         }
