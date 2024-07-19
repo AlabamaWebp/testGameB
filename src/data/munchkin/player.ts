@@ -12,7 +12,7 @@ export class PlayerGame {
     }
     readonly queue: number;
 
-    private lvl: number = 9;
+    private lvl: number = 1;
     // t_field_cards = new fieldTreasureCards(); // Шмотки
     // d_field_cards = new fieldDoorCards(); // Классы Рассы
     field_cards = {
@@ -87,6 +87,7 @@ export class PlayerGame {
     private cardById(id: number): TreasureCard | DoorsCard { return this.cards.find(el => el.id == id) }
     private delCard(card: TreasureCard | DoorsCard) { this.cards = this.cards.filter(el => el != card) }
     private get game(): MunchkinGame | undefined { return this.player.position instanceof MunchkinGame ? this.player.position : undefined }
+    get defsForCard() { return new defsData(this, this.game)}
 
     useCard(id: number) {
         const card = this.cardById(id);
@@ -110,11 +111,12 @@ export class PlayerGame {
         // other
 
         if (card instanceof TreasureCard) {
-            const defs = { player: this, game: game }
+            const defs = this.defsForCard
             if (card.defs?.condition && !card.defs?.condition(defs))
                 return // Если не выполнено условие то габелла
             ////////////// 
             if (card.data.treasureType == 'Надеваемая') {
+                if (game.is_fight) return
                 const template_eng = help[card.data.template];
                 if (template_eng == "other")
                     this.field_cards.treasures[template_eng].push(card);
@@ -136,30 +138,41 @@ export class PlayerGame {
             }
             if (card.data.treasureType == 'Используемая') {
                 card.defs?.action(defs);
-                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`)
                 game.Card.toSbros(card);
             }
             if (card.data.treasureType == 'Боевая') {
+                if (!game.is_fight) return
                 // ????????????????
-                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} ${card.defs.log_txt ?? ''}`)
+                card.defs.action(defs);
+                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`);
                 game.Card.toSbros(card);
             }
         }
         else {
-            if (card.is_super) {
-                if (card.abstractData.cardType == "Класс")
-                    this.field_cards.doors.classes.bonus = card;
-                else if (card.abstractData.cardType == "Раса")
-                    this.field_cards.doors.rasses.bonus = card;
-                game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
+            if (card.abstractData.cardType == ("Класс" || "Раса")) {
+                if (game.is_fight) return
+                if (card.is_super) {
+                    if (card.abstractData.cardType == "Класс")
+                        this.field_cards.doors.classes.bonus = card;
+                    else if (card.abstractData.cardType == "Раса")
+                        this.field_cards.doors.rasses.bonus = card;
+                    game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
+                }
+                else {
+                    if (card.abstractData.cardType == "Класс")
+                        this.field_cards.doors.classes.first = card;
+                    else if (card.abstractData.cardType == "Раса")
+                        this.field_cards.doors.rasses.first = card;
+                    game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
+                }
             }
-            else {
-                if (card.abstractData.cardType == "Класс")
-                    this.field_cards.doors.classes.first = card;
-                else if (card.abstractData.cardType == "Раса")
-                    this.field_cards.doors.rasses.first = card;
-                game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
+            else if (card.abstractData.cardType == "Монстр") {
+                if (game.step != 1) return // только для чистки нычек
+                game.step++;
+                game.Fight.startFight(this, card)
             }
+            // else if (card.abstractData.cardType == "Проклятие") { }
         }
         this.delCard(card); // Удаление карты из руки
         game.Player.allPlayersRefresh();
@@ -198,7 +211,7 @@ export class PlayerGame {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
         };
-        const params: defsData = { player: target_pl, game: game }
+        const params = target_pl.defsForCard;
         card.defs.action(params);
         game.Player.logging(this.player.name + " использует " + card.abstractData.name + " на " + target_pl.player.name);
     }

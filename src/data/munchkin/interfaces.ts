@@ -129,7 +129,11 @@ function findInMassAndDelete(id: number, f: DoorsCard[][] | TreasureCard[][]) {
     tmp.splice(tmp.indexOf(ret), 1)
     return ret
 }
-export interface defsData {
+export class defsData {
+    constructor(player?: PlayerGame, game?: MunchkinGame) {
+        this.player = player;
+        this.game = game;
+    }
     player?: PlayerGame
     game?: MunchkinGame
 }
