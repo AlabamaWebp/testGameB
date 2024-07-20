@@ -1,6 +1,6 @@
 import { MunchkinGame } from "./mucnhkinGame";
-import { DoorCard, TreasureCard } from "./cards";
-import { PlayerGame } from "./player";
+import { DoorCard, IDoor, ITreasure, TreasureCard } from "./cards";
+import { MunckinPlayerStats, PlayerGame } from "./player";
 
 export interface DoorsDefs {
     punishment?: (defs: defsData) => void, // видимо непотребство
@@ -59,48 +59,45 @@ export class fieldTreasureCards {
         return findInMassAndDelete(id, f) as TreasureCard
     }
 }
-interface _fieldDoorCards {
-    first: DoorCard | undefined,
-    second: DoorCard | undefined,
-    bonus: DoorCard | undefined,
+export interface _fieldDoorCards {
+    first?: DoorCard,
+    second?: DoorCard,
+    bonus?: DoorCard,
+}
+export interface IfieldDoorCards {
+    first?: IDoor,
+    second?: IDoor,
+    bonus?: IDoor,
 }
 export class fieldDoorCards {
-    rasses: _fieldDoorCards = {
-        first: undefined,
-        second: undefined,
-        bonus: undefined,
-    }
-    classes: _fieldDoorCards = {
-        first: undefined,
-        second: undefined,
-        bonus: undefined,
-    }
+    rasses: _fieldDoorCards = {}
+    classes: _fieldDoorCards = {}
     getClasses() {
-        const tmp: any = {}
-        if (this.classes.first) tmp.first = (this.classes.first)
-        if (this.classes.second) tmp.second = (this.classes.second)
-        if (this.classes.bonus) tmp.bonus = (this.classes.bonus)
+        const tmp: IfieldDoorCards = {}
+        if (this.classes.first) tmp.first = (this.classes.first?.getData())
+        if (this.classes.second) tmp.second = (this.classes.second?.getData())
+        if (this.classes.bonus) tmp.bonus = (this.classes.bonus?.getData())
         return tmp;
     }
     getRasses() {
-        const tmp: any = {}
-        if (this.rasses.first) tmp.first = (this.rasses.first)
-        if (this.rasses.second) tmp.second = (this.rasses.second)
-        if (this.rasses.bonus) tmp.bonus = (this.rasses.bonus)
+        const tmp: IfieldDoorCards = {}
+        if (this.rasses.first) tmp.first = (this.rasses.first?.getData())
+        if (this.rasses.second) tmp.second = (this.rasses.second?.getData())
+        if (this.rasses.bonus) tmp.bonus = (this.rasses.bonus?.getData())
         return tmp;
     }
     getRasesMass() {
-        const tmp: DoorCard[] = []
-        if (this.rasses.first) tmp.push(this.rasses.first)
-        if (this.rasses.second) tmp.push(this.rasses.second)
-        if (this.rasses.bonus) tmp.push(this.rasses.bonus)
+        const tmp: IDoor[] = []
+        if (this.rasses.first) tmp.push(this.rasses.first?.getData())
+        if (this.rasses.second) tmp.push(this.rasses.second?.getData())
+        if (this.rasses.bonus) tmp.push(this.rasses.bonus?.getData())
         return tmp;
     }
     getClassesMass() {
-        const tmp: DoorCard[] = []
-        if (this.classes.first) tmp.push(this.classes.first)
-        if (this.classes.second) tmp.push(this.classes.second)
-        if (this.classes.bonus) tmp.push(this.classes.bonus)
+        const tmp: IDoor[] = []
+        if (this.classes.first) tmp.push(this.classes.first?.getData())
+        if (this.classes.second) tmp.push(this.classes.second?.getData())
+        if (this.classes.bonus) tmp.push(this.classes.bonus?.getData())
         return tmp;
     }
     findAndDel(id: number): DoorCard | undefined {
@@ -185,7 +182,7 @@ export class GameField {
     fight?: Fight
     openCards?: (TreasureCard | DoorCard)[] = []
 
-    get getField() {
+    get getField(): IField {
         const pl_power = this.fight?.players_power;
         let m_power = this.fight?.monsters_power;
         let m_lvls = this.fight?.lvls;
@@ -194,16 +191,16 @@ export class GameField {
         // this.fight?.monsters.forEach(el => m_power += el.data.strongest ?? 0);
         // this.fight?.monsters.forEach(el => m_power += el.data.get_lvls ?? 0);
         return {
-            is_fight: this.fight ? true : false,
+            is_fight: !!this.fight,
             fight: this.fight ? {
                 players: {
                     main: {
-                        player: this.fight?.players?.first?.player.data,
+                        player: this.fight?.players?.first?.player.stats(),
                         gold: this.fight?.players?.first?.gold,
                         smivka: this.fight?.players?.first?.smivka
                     },
                     secondary: {
-                        player: this.fight?.players?.second?.player?.data,
+                        player: this.fight?.players?.second?.player?.stats(),
                         gold: this.fight?.players?.second?.gold,
                         smivka: this.fight?.players?.second?.smivka
                     },
@@ -221,4 +218,31 @@ export class GameField {
             openCards: this.openCards?.map(el => el.getData())
         }
     }
+}
+export interface IField {
+    is_fight: boolean;
+    fight: {
+        players: {
+            main: {
+                player: MunckinPlayerStats;
+                gold: number;
+                smivka: boolean;
+            };
+            secondary: {
+                player: MunckinPlayerStats;
+                gold: number;
+                smivka: boolean;
+            };
+            strongest: number;
+        };
+        cards: {
+            players: (IDoor | ITreasure)[];
+            monsters: (IDoor | ITreasure)[];
+        };
+        monsters: IDoor[];
+        monsterStrongest: number;
+        gold: number;
+        lvls: number;
+    };
+    openCards: (IDoor | ITreasure)[];
 }

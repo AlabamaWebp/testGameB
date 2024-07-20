@@ -22,7 +22,7 @@ export class FightHelper {
                 for (let i = 0; i < players.length; i++) {
                     const pl = players[i];
                     if (pl.player.cubik > pl.player.smivka_power) {
-                        this.game.Player.logging(pl.player.data.name + " успешно сбегает!");
+                        this.game.Player.logging(pl.player.stats().name + " успешно сбегает!");
                         players.splice(i, 1);
                     }
                 }
@@ -41,7 +41,7 @@ export class FightHelper {
                             if (m.defs.punishment)
                                 m.defs.punishment({ player: p.player, game: this.game });
                             else console.log("Нет наказания");
-                            tmp += p.player.data.name + " наказан " + m.abstractData.name + "\n"
+                            tmp += p.player.stats().name + " наказан " + m.abstractData.name + "\n"
                         })
                     })
                     this.game.Player.logging(tmp);
@@ -66,7 +66,7 @@ export class FightHelper {
             f.players[templ].smivka = true;
             pl.cubik = randomInteger(1, 6);
             f["smivka_" + templ] = true;
-            this.game.Player.logging(pl.data.name + " выбрасывает " + pl.cubik + " на кубике")
+            this.game.Player.logging(pl.stats().name + " выбрасывает " + pl.cubik + " на кубике")
             this.game.Player.onePlayerRefresh(pl);
             // this.game.Player.allPlayersRefresh();
         }

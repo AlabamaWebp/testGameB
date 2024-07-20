@@ -1,5 +1,4 @@
-import { PlayerGlobal } from "../main";
-import { AbstractData, DoorsDefs, MonsterData, TreasureData, TreasureDefs, fieldDoorCards, fieldTreasureCards } from "./interfaces";
+import { AbstractData, DoorsDefs, MonsterData, TreasureData, TreasureDefs } from "./interfaces";
 import { MunchkinGame } from "./mucnhkinGame";
 
 // refreshGame plusLog allLog
@@ -28,26 +27,32 @@ export class TreasureCard extends AbstractCard {
     }
     strong?: number;
     data: TreasureData;
-    defs?: TreasureDefs
-    getData() {
+    defs?: TreasureDefs;
+    game?: MunchkinGame;
+    use() {
+        if (!this.game || this.game.endgame) return
+        const type = this.data.treasureType;
+        if (type == "Надеваемая") return !this.game.is_fight;
+        else if (type == "Боевая") return this.game.is_fight;
+        else return true
+    }
+    getData(): ITreasure {
         return {
             abstractData: this.abstractData,
             strongest: this.strong,
             data: this.data,
-            id: this.id
-            // name: this.abstractData.name,
-            // desciption: this.abstractData.description,
-            // cardType: this.abstractData.cardType,
-            // strongest: this.strong,
-            // treasureType: this.data.treasureType,
-            // template: this.data.template,
-            // cost: this.data.cost,
-            // big: this.data.big,
-            // img: this.abstractData.img
+            id: this.id,
+            use: this.use()
         }
     }
 }
-
+export interface ITreasure {
+    abstractData: AbstractData;
+    strongest: number;
+    data: TreasureData;
+    id: number;
+    use: boolean;
+}
 export class DoorCard extends AbstractCard {
     constructor(
         name: string,
@@ -76,22 +81,22 @@ export class DoorCard extends AbstractCard {
     }
     data?: MonsterData;
     defs: DoorsDefs;
-    is_super: boolean
-    getData = () => {
+    is_super: boolean;
+    game?: MunchkinGame
+    get use() {
+        if (!this.game || this.game.endgame) return
+        const type = this.abstractData.cardType;
+        if (type == ("Класс" || "Раса")) return !this.game.is_fight;
+        else if (type == "Монстр") return this.game.step == 1;
+        else return true
+    }
+    getData = (): IDoor => {
         return {
             abstractData: this.abstractData,
             data: this.data,
             id: this.id,
-            is_super: this.is_super
-            // name: this.abstractData.name,
-            // desciption: this.abstractData.description,
-            // cardType: this.abstractData.cardType,
-            // strongest: this.strong,
-            // treasureType: this.data.treasureType,
-            // template: this.data.template,
-            // cost: this.data.cost,
-            // big: this.data.big,
-            // img: this.abstractData.img
+            is_super: this.is_super,
+            use: this.use
         }
     }
     clone = (d: DoorCard) => {
@@ -111,4 +116,11 @@ export class DoorCard extends AbstractCard {
             this.abstractData.img,
         )
     }
+}
+export interface IDoor {
+    abstractData: AbstractData;
+    data: MonsterData;
+    id: number;
+    is_super: boolean;
+    use: boolean;
 }

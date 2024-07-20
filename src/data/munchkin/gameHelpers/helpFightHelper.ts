@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import { MunchkinGame } from "../mucnhkinGame";
+import { PlayerGame } from "../player";
 
 export class HelpFightMunchkin {
     constructor(game: MunchkinGame) {
@@ -7,7 +8,7 @@ export class HelpFightMunchkin {
     }
     game: MunchkinGame;
 
-    help = new Map()
+    help: Map<PlayerGame, number> = new Map()
     helpAsk(pl: Socket, t: { to: string, gold: number }) {
         if (this.game.field.fight.players.first.player.player.socket != pl) return
         const target = this.game.players.find(el => el.player.name == t.to);
@@ -20,8 +21,8 @@ export class HelpFightMunchkin {
         const pl = this.game.getPlayer(socket);
         const d = this.help.get(pl);
         if (ans) {
-            this.game.Fight.addToFight(pl, d.gold);
-            this.game.Player.logging(pl.player.name + " помогает в бою за " + d.gold + " сокровищ");
+            this.game.Fight.addToFight(pl, d);
+            this.game.Player.logging(pl.player.name + " помогает в бою за " + d + " сокровищ");
         }
         else this.game.field.fight?.players.first.player.player.socket.emit("notice", "отказ в помощи от " + pl.player.name);
         this.help.delete(pl);

@@ -1,6 +1,8 @@
 import { Socket } from "socket.io";
 import { MunchkinGame } from "../mucnhkinGame";
-import { PlayerGame } from "../player";
+import { MunckinPlayerStats, PlayerGame } from "../player";
+import { IField } from "../interfaces";
+import { IDoor, ITreasure } from "../cards";
 
 export class PlayerHelper {
     constructor(game: MunchkinGame) {
@@ -10,17 +12,17 @@ export class PlayerHelper {
     private log: string[] = [];
     private number_log: number = 1;
 
-    getMainForPlayer(player: PlayerGame) {
+    getMainForPlayer(player: PlayerGame): MunchkinOutput {
         let smivka = false;
         const field = this.game.field;
-        const you_first_fight = field.fight?.players.first.player == player
+        const you_first_fight = field.fight?.players.first.player == player;
         if (you_first_fight && !field.fight.players.first.smivka) smivka = true;
         if (field.fight?.players.second?.player == player && !field.fight.players.second.smivka) smivka = true;
-        const you = this.game.players.find(el => el == player).data;
+        const you = this.game.players.find(el => el == player).stats(true);
         const pls = this.game.players
             .filter(el => el != player)
-            .map((el: PlayerGame) => el.data)
-        return {
+            .map((el: PlayerGame) => el.stats())
+        const tmp = {
             queue: this.game.players[this.game.queue].player.name,
             step: this.game.step,
             field: field.getField,
@@ -37,14 +39,15 @@ export class PlayerHelper {
             players: pls,
             you: you,
             you_hodish: this.game.players[this.game.queue] == player,
-            pas: field.fight?.pas?.has(player.data.name) == false ? true : false,
+            pas: field.fight?.pas?.has(player.stats().name) == false,
             smivka: smivka,
-            rasses_mesto: player.field_cards.doors.rasses.bonus && player.field_cards.doors.rasses.first,
-            classes_mesto: player.field_cards.doors.classes.bonus && player.field_cards.doors.classes.first,
-            help_ask: this.game.Event.help.get(player) ? {pl: player.data, gold: this.game.Event.help.get(player) } : undefined,
+            rasses_mesto: (!!player.field_cards.doors.rasses.bonus && !!player.field_cards.doors.rasses.first),
+            classes_mesto: (!!player.field_cards.doors.classes.bonus && !!player.field_cards.doors.classes.first),
+            help_ask: this.game.Event.help.get(player) ? { pl: player.stats(), gold: this.game.Event.help.get(player) } : undefined,
             is_help: you_first_fight && !field.fight.players.second, // Можно ли позвать на помощь
             end: this.game.endgame
         }
+        return tmp
     }
     logging(l: string) {
         l = l.toString();
@@ -59,4 +62,31 @@ export class PlayerHelper {
     plusLog(d: string) { this.broadcast("plusLog", d) }
     sendAllLog(player: Socket) { player.emit("allLog", this.log); }
     sendError(pl: Socket, message: string) { pl.send("error", message) }
+}
+export interface MunchkinOutput {
+    queue: string;
+    step: 0 | 1 | 2 | 3;
+    field: IField;
+    is_fight: boolean;
+    sbros: {
+        doors: IDoor;
+        treasures: ITreasure;
+    };
+    cards: {
+        doors: number;
+        treasures: number;
+    };
+    players: MunckinPlayerStats[];
+    you: MunckinPlayerStats;
+    you_hodish: boolean;
+    pas: boolean;
+    smivka: boolean;
+    rasses_mesto: boolean;
+    classes_mesto: boolean;
+    help_ask: {
+        pl: MunckinPlayerStats;
+        gold: number;
+    }
+    is_help: boolean;
+    end: boolean;
 }

@@ -1,8 +1,29 @@
 import { PlayerGlobal } from "../main";
-import { TreasureCard, DoorCard } from "./cards";
-import { fieldTreasureCards, fieldDoorCards, defsData } from "./interfaces";
+import { TreasureCard, DoorCard, ITreasure, IDoor } from "./cards";
+import { fieldTreasureCards, fieldDoorCards, defsData, _fieldDoorCards, IfieldDoorCards } from "./interfaces";
 import { MunchkinGame } from "./mucnhkinGame";
 
+export interface MunckinPlayerStats {
+    name: string;
+    lvl: number;
+    sex: "Мужчина" | "Женщина";
+    t_field: {
+        helmet: ITreasure[];
+        body: ITreasure[];
+        legs: ITreasure[];
+        arm: ITreasure[];
+        other: ITreasure[];
+    };
+    d_field: {
+        rasses: IfieldDoorCards, // ?.map(el => el.getData())
+        classes: IfieldDoorCards, // ?.map(el => el.getData())
+    },
+    cards?: (ITreasure | IDoor)[]
+    queue: number,
+    max_cards: number,
+    power: number,
+    coins: number;
+}
 export class PlayerGame {
     constructor(player: PlayerGlobal, sex: "Мужчина" | "Женщина", queue: number) {
         this.player = player;
@@ -13,8 +34,6 @@ export class PlayerGame {
     readonly queue: number;
 
     private lvl: number = 1;
-    // t_field_cards = new fieldTreasureCards(); // Шмотки
-    // d_field_cards = new fieldDoorCards(); // Классы Рассы
     field_cards = {
         doors: new fieldDoorCards(),
         treasures: new fieldTreasureCards()
@@ -42,12 +61,12 @@ export class PlayerGame {
         return tmp;
     }
 
-    get data() {
-        return {
+    stats(show_cards = false) {
+        const tmp: MunckinPlayerStats = {
             name: this.player.name,
             lvl: this.lvl,
             sex: this.sex,
-            cards: this.cards.map(el => el?.getData()).reverse(),
+            // cards: this.cards.map(el => el?.getData()).reverse(),
             t_field: {
                 helmet: this.field_cards.treasures?.helmet?.map(el => el.getData()),
                 body: this.field_cards.treasures?.body?.map(el => el.getData()),
@@ -63,6 +82,8 @@ export class PlayerGame {
             power: this.power,
             coins: this.coins
         }
+        if (show_cards) tmp.cards = this.cards.map(el => el?.getData()).reverse()
+        return tmp
     }
 
     changeLvl(count: number, canWin = false) {
@@ -87,7 +108,7 @@ export class PlayerGame {
     private cardById(id: number): TreasureCard | DoorCard { return this.cards.find(el => el.id == id) }
     private delCard(card: TreasureCard | DoorCard) { this.cards = this.cards.filter(el => el != card) }
     private get game(): MunchkinGame | undefined { return this.player.position instanceof MunchkinGame ? this.player.position : undefined }
-    get defsForCard() { return new defsData(this, this.game)}
+    get defsForCard() { return new defsData(this, this.game) }
 
     useCard(id: number) {
         const card = this.cardById(id);
@@ -150,22 +171,21 @@ export class PlayerGame {
             }
         }
         else {
-            if (card.abstractData.cardType == ("Класс" || "Раса")) {
+            if (card.abstractData.cardType == "Класс" || card.abstractData.cardType == "Раса") {
                 if (game.is_fight) return
                 if (card.is_super) {
                     if (card.abstractData.cardType == "Класс")
                         this.field_cards.doors.classes.bonus = card;
                     else if (card.abstractData.cardType == "Раса")
                         this.field_cards.doors.rasses.bonus = card;
-                    game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
                 }
                 else {
                     if (card.abstractData.cardType == "Класс")
                         this.field_cards.doors.classes.first = card;
                     else if (card.abstractData.cardType == "Раса")
                         this.field_cards.doors.rasses.first = card;
-                    game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
                 }
+                game.Player.logging(this.player.name + " теперь " + card.abstractData.name)
             }
             else if (card.abstractData.cardType == "Монстр") {
                 if (game.step != 1) return // только для чистки нычек
@@ -189,7 +209,7 @@ export class PlayerGame {
             return
         };
         if (card instanceof DoorCard) {
-            let tmp: { first: any; second: any; bonus: any; };
+            let tmp: _fieldDoorCards | undefined;
             if (card.abstractData.cardType == "Класс") tmp = this.field_cards.doors.classes;
             else if (card.abstractData.cardType == "Раса") tmp = this.field_cards.doors.rasses;
             if (!tmp) {

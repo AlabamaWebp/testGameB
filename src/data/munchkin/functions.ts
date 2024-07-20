@@ -1,7 +1,7 @@
 import { fieldDoorCards, fieldTreasureCards } from "./interfaces";
 
 
-export const shuffle = (array) => {
+export const shuffle = (array): any[] => {
     let m = array.length, t, i;
     // Пока есть элементы для перемешивания
     while (m) {

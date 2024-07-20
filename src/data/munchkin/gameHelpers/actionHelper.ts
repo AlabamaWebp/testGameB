@@ -47,19 +47,19 @@ export class ActionHelper {
     }
     setStep3() {
         this.game.step = 3;
-        this.game.Player.logging("Игрок может завершить ход если у него не больше " + this.game.current_player.data.max_cards + " карт")
+        this.game.Player.logging("Игрок может завершить ход если у него не больше " + this.game.current_player.stats().max_cards + " карт")
     }
     endHod(pl: PlayerGame) {
         if (pl == this.game.current_player) {
-            if (pl.data.max_cards < pl.cards.length) return;
-            this.game.Player.logging(this.game.current_player.data.name + " закончил свой ход")
+            if (pl.stats().max_cards < pl.cards.length) return;
+            this.game.Player.logging(this.game.current_player.stats().name + " закончил свой ход")
             this.game.current_player.coins = 0;
             this.game.queue++;
             if (this.game.queue >= this.game.plcount)
                 this.game.queue = 0
             this.game.current_player = this.game.players[this.game.queue]
             this.game.step = 0;
-            this.game.Player.logging("Ход игрока " + this.game.current_player.data.name)
+            this.game.Player.logging("Ход игрока " + this.game.current_player.stats().name)
             this.game.Player.allPlayersRefresh();
         }
     }

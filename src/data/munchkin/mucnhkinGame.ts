@@ -25,8 +25,8 @@ export class MunchkinGame {
         this.plcount = players.length;
         this.Player.logging("Игра началась!");
         this.cards = {
-            doors: shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES)),
-            treasures: shuffle(EQUIPMENT.concat(USED).concat(COMBAT))
+            doors: (shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES))).map(e => { e.game = this; return e }),
+            treasures: (shuffle(EQUIPMENT.concat(USED).concat(COMBAT))).map(e => { e.game = this; return e })
         }
         fillId.call(this);
         playersGetCard.call(this);
@@ -50,7 +50,7 @@ export class MunchkinGame {
     Fight: FightHelper = new FightHelper(this);
     Action: ActionHelper = new ActionHelper(this);
     Event: HelpFightMunchkin = new HelpFightMunchkin(this)
-    
+
     get is_fight() { return !!this.field.fight }
 
     getPlayer(player: Socket) {
