@@ -9,7 +9,7 @@ import { RASES } from "src/cards/Munchkin/doors/Rases";
 import { EQUIPMENT } from "src/cards/Munchkin/treasures/equipment";
 import { USED } from "src/cards/Munchkin/treasures/used";
 import { COMBAT } from "src/cards/Munchkin/treasures/combat";
-import { DoorsCard, TreasureCard } from "./cards";
+import { DoorCard, TreasureCard } from "./cards";
 import { CardHelper } from "./gameHelpers/cardHelper";
 import { PlayerHelper } from "./gameHelpers/playerHelper";
 import { ActionHelper } from "./gameHelpers/actionHelper";
@@ -38,8 +38,8 @@ export class MunchkinGame {
     players: PlayerGame[];
     current_player: PlayerGame;
 
-    cards: { doors: DoorsCard[], treasures: TreasureCard[] };
-    sbros: { doors: DoorsCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };
+    cards: { doors: DoorCard[], treasures: TreasureCard[] };
+    sbros: { doors: DoorCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };
     step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
     queue: number = 0;
     cubik: number = 1;

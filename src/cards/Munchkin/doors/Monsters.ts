@@ -1,8 +1,8 @@
-import { DoorsCard } from "src/data/munchkin/cards";
+import { DoorCard } from "src/data/munchkin/cards";
 
 const type = "Монстр"
-export const MONSTERS: DoorsCard[] = [
-    new DoorsCard(
+export const MONSTERS: DoorCard[] = [
+    new DoorCard(
         "Огоршённая трава",
         "Победви траву, элфы тянут дополнительное сокровище",
         type,
@@ -14,7 +14,7 @@ export const MONSTERS: DoorsCard[] = [
         },
         {}, // Если эльф + сокровище
     ),
-    new DoorsCard(
+    new DoorCard(
         "Огоршённая трава",
         "Победви траву, элфы тянут дополнительное сокровище",
         type,
@@ -26,7 +26,7 @@ export const MONSTERS: DoorsCard[] = [
         },
         {}, // Если эльф + сокровище
     ),
-    new DoorsCard(
+    new DoorCard(
         "Огоршённая трава",
         "Победви траву, элфы тянут дополнительное сокровище",
         type,
@@ -38,7 +38,7 @@ export const MONSTERS: DoorsCard[] = [
         },
         {}, // Если эльф + сокровище
     ),
-    new DoorsCard(
+    new DoorCard(
         "3872 орка", // name
         "+6 против дварфов (старые счёты)", // description
         type,
@@ -50,7 +50,7 @@ export const MONSTERS: DoorsCard[] = [
         },
         {}, // кубик, 2 и меньше смерть иначе потеря уровней сколько выпало
     ),
-    new DoorsCard(
+    new DoorCard(
         "Костян", // name
         "Если пришлось смыватся - теряешь уровень", // description
         type,

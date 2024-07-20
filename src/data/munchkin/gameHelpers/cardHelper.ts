@@ -1,6 +1,6 @@
 import { shuffle } from "../functions";
 import { MunchkinGame } from "../mucnhkinGame";
-import { DoorsCard, TreasureCard } from "../cards";
+import { DoorCard, TreasureCard } from "../cards";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
 export class CardHelper {
@@ -9,22 +9,22 @@ export class CardHelper {
     }
     game: MunchkinGame;
 
-    openCardField(card: TreasureCard | DoorsCard) {
+    openCardField(card: TreasureCard | DoorCard) {
         if (this.game.field.fight) this.game.field.fight = undefined;
         if (!this.game.field.openCards) this.game.field.openCards = [card];
         else this.game.field.openCards.push(card)
     }
-    popPlayerCard(pl: PlayerGame, card: DoorsCard | TreasureCard): DoorsCard | TreasureCard {
+    popPlayerCard(pl: PlayerGame, card: DoorCard | TreasureCard): DoorCard | TreasureCard {
         pl.cards = pl.cards.filter(el => el != card);
         return card;
     }
-    cardPlayerById(id: number): DoorsCard | TreasureCard {
+    cardPlayerById(id: number): DoorCard | TreasureCard {
         const pl = this.game.players[this.game.queue];
         return this.popPlayerCard(pl, pl.cards.find(el => el.id == id));
     }
-    get getDoor(): DoorsCard | undefined {
+    get getDoor(): DoorCard | undefined {
         this.checkSbros();
-        const tmp: DoorsCard | undefined = this.game.cards.doors.pop();
+        const tmp: DoorCard | undefined = this.game.cards.doors.pop();
         if (!tmp) this.game.Player.logging("Карты дверей - всё")
         return tmp;
     }
@@ -60,10 +60,10 @@ export class CardHelper {
         this.game.Player.onePlayerRefresh(pl);
         this.openCardField(card);
     }
-    toSbros(card: TreasureCard | DoorsCard) {
+    toSbros(card: TreasureCard | DoorCard) {
         if (card instanceof TreasureCard)
             this.game.sbros.treasures.push(card)
-        else if (card instanceof DoorsCard)
+        else if (card instanceof DoorCard)
             this.game.sbros.doors.push(card)
         else return
         this.checkSbros();

@@ -1,4 +1,4 @@
-import { DoorsCard } from "src/data/munchkin/cards";
+import { DoorCard } from "src/data/munchkin/cards";
 
 function createClass(
     name: string,
@@ -6,7 +6,7 @@ function createClass(
     // cost?: number,
     super1: boolean = false,
 ) {
-    return new DoorsCard(
+    return new DoorCard(
         name,
         desc,
         "Раса",
@@ -16,7 +16,7 @@ function createClass(
         // cost
     )
 }
-export const RASES: DoorsCard[] = [
+export const RASES: DoorCard[] = [
     createClass(
         "Эльф",
         "У тебя +1 на смывку, получай уровень за помощь в убийстве монстра",

@@ -1,7 +1,7 @@
 import { randomInteger } from "../functions";
 import { Fight } from "../interfaces";
 import { MunchkinGame } from "../mucnhkinGame";
-import { DoorsCard, TreasureCard } from "../cards";
+import { DoorCard, TreasureCard } from "../cards";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
 
@@ -11,7 +11,7 @@ export class FightHelper {
     }
     game: MunchkinGame;
 
-    startFight(player: PlayerGame, monster: DoorsCard) { if (!this.game.field.fight) this.game.field.fight = new Fight(player, monster); this.game.field.openCards = [] }
+    startFight(player: PlayerGame, monster: DoorCard) { if (!this.game.field.fight) this.game.field.fight = new Fight(player, monster); this.game.field.openCards = [] }
     endFight() {
         if (this.game.field.fight?.pas.size == this.game.plcount) { // все пасанули
             const monsters = this.game.field.fight.monsters;

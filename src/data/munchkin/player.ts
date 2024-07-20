@@ -1,5 +1,5 @@
 import { PlayerGlobal } from "../main";
-import { TreasureCard, DoorsCard } from "./cards";
+import { TreasureCard, DoorCard } from "./cards";
 import { fieldTreasureCards, fieldDoorCards, defsData } from "./interfaces";
 import { MunchkinGame } from "./mucnhkinGame";
 
@@ -19,7 +19,7 @@ export class PlayerGame {
         doors: new fieldDoorCards(),
         treasures: new fieldTreasureCards()
     }
-    cards: (TreasureCard | DoorsCard)[] = [];
+    cards: (TreasureCard | DoorCard)[] = [];
     private max_cards: number = 5;
     alive: boolean;
     smivka_power: number = 4; // x > 4
@@ -84,8 +84,8 @@ export class PlayerGame {
         // game.playersGameRefresh();
     }
 
-    private cardById(id: number): TreasureCard | DoorsCard { return this.cards.find(el => el.id == id) }
-    private delCard(card: TreasureCard | DoorsCard) { this.cards = this.cards.filter(el => el != card) }
+    private cardById(id: number): TreasureCard | DoorCard { return this.cards.find(el => el.id == id) }
+    private delCard(card: TreasureCard | DoorCard) { this.cards = this.cards.filter(el => el != card) }
     private get game(): MunchkinGame | undefined { return this.player.position instanceof MunchkinGame ? this.player.position : undefined }
     get defsForCard() { return new defsData(this, this.game)}
 
@@ -188,7 +188,7 @@ export class PlayerGame {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
         };
-        if (card instanceof DoorsCard) {
+        if (card instanceof DoorCard) {
             let tmp: { first: any; second: any; bonus: any; };
             if (card.abstractData.cardType == "Класс") tmp = this.field_cards.doors.classes;
             else if (card.abstractData.cardType == "Раса") tmp = this.field_cards.doors.rasses;
@@ -226,7 +226,7 @@ export class PlayerGame {
         game.Player.onePlayerRefresh(this);
     }
     sbrosEquip(id: number) {
-        let card: TreasureCard | DoorsCard = this.field_cards.treasures.findAndDel(id);
+        let card: TreasureCard | DoorCard = this.field_cards.treasures.findAndDel(id);
         if (!card) card = this.field_cards.doors.findAndDel(id);
         const game = this.game;
         if (!card || !game

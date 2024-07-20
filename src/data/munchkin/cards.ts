@@ -48,7 +48,7 @@ export class TreasureCard extends AbstractCard {
     }
 }
 
-export class DoorsCard extends AbstractCard {
+export class DoorCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
@@ -94,8 +94,8 @@ export class DoorsCard extends AbstractCard {
             // img: this.abstractData.img
         }
     }
-    clone = (d: DoorsCard) => {
-        return new DoorsCard(
+    clone = (d: DoorCard) => {
+        return new DoorCard(
             this.abstractData.name,
             this.abstractData.description,
             this.abstractData.cardType as "Класс" | "Раса" | "Проклятие" | "Монстр",

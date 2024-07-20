@@ -1,5 +1,5 @@
 import { MunchkinGame } from "./mucnhkinGame";
-import { DoorsCard, TreasureCard } from "./cards";
+import { DoorCard, TreasureCard } from "./cards";
 import { PlayerGame } from "./player";
 
 export interface DoorsDefs {
@@ -60,9 +60,9 @@ export class fieldTreasureCards {
     }
 }
 interface _fieldDoorCards {
-    first: DoorsCard | undefined,
-    second: DoorsCard | undefined,
-    bonus: DoorsCard | undefined,
+    first: DoorCard | undefined,
+    second: DoorCard | undefined,
+    bonus: DoorCard | undefined,
 }
 export class fieldDoorCards {
     rasses: _fieldDoorCards = {
@@ -90,20 +90,20 @@ export class fieldDoorCards {
         return tmp;
     }
     getRasesMass() {
-        const tmp: DoorsCard[] = []
+        const tmp: DoorCard[] = []
         if (this.rasses.first) tmp.push(this.rasses.first)
         if (this.rasses.second) tmp.push(this.rasses.second)
         if (this.rasses.bonus) tmp.push(this.rasses.bonus)
         return tmp;
     }
     getClassesMass() {
-        const tmp: DoorsCard[] = []
+        const tmp: DoorCard[] = []
         if (this.classes.first) tmp.push(this.classes.first)
         if (this.classes.second) tmp.push(this.classes.second)
         if (this.classes.bonus) tmp.push(this.classes.bonus)
         return tmp;
     }
-    findAndDel(id: number): DoorsCard | undefined {
+    findAndDel(id: number): DoorCard | undefined {
         const t = ['first', 'second', 'bonus',]
         for (const i of t) {
             const r = this.rasses[i]
@@ -121,7 +121,7 @@ export class fieldDoorCards {
         } /// это надо переписать
     }
 }
-function findInMassAndDelete(id: number, f: DoorsCard[][] | TreasureCard[][]) {
+function findInMassAndDelete(id: number, f: DoorCard[][] | TreasureCard[][]) {
     const tmp = f.find(el => el.find(e => e.id == id));
     if (!tmp) return
     const ret = tmp.find(e => e.id == id);
@@ -143,7 +143,7 @@ interface PlayerFight {
     smivka: boolean
 }
 export class Fight {
-    constructor(pl: PlayerGame, monster: DoorsCard) {
+    constructor(pl: PlayerGame, monster: DoorCard) {
         const m_ = monster.clone(monster)
 
         this.pas = new Set<string>();
@@ -167,12 +167,12 @@ export class Fight {
         second?: PlayerFight
     }
     cards?: {
-        players?: (TreasureCard | DoorsCard)[],
-        monsters?: (TreasureCard | DoorsCard)[]
+        players?: (TreasureCard | DoorCard)[],
+        monsters?: (TreasureCard | DoorCard)[]
     }
     pas: Set<string>;
-    monsters: DoorsCard[]
-    monstersProto: DoorsCard[]
+    monsters: DoorCard[]
+    monstersProto: DoorCard[]
     gold: number;
     lvls: number;
 
@@ -183,7 +183,7 @@ export class Fight {
 }
 export class GameField {
     fight?: Fight
-    openCards?: (TreasureCard | DoorsCard)[] = []
+    openCards?: (TreasureCard | DoorCard)[] = []
 
     get getField() {
         const pl_power = this.fight?.players_power;
