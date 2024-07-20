@@ -1,5 +1,6 @@
 import { AbstractData, DoorsDefs, MonsterData, TreasureData, TreasureDefs } from "./interfaces";
 import { MunchkinGame } from "./mucnhkinGame";
+import { PlayerGame } from "./player";
 
 // refreshGame plusLog allLog
 
@@ -29,20 +30,21 @@ export class TreasureCard extends AbstractCard {
     data: TreasureData;
     defs?: TreasureDefs;
     game?: MunchkinGame;
-    get can_use() {
+    can_use(pl?: PlayerGame) {
         if (!this.game || this.game.endgame) return
         const type = this.data.treasureType;
-        if (type == "Надеваемая") return !this.game.is_fight;
+        const cur = this.game.current_player === pl;
+        if (type == "Надеваемая") return !this.game.is_fight && cur;
         else if (type == "Боевая") return this.game.is_fight;
         else return true
     }
-    getData(): ITreasure {
+    getData(pl?: PlayerGame): ITreasure {
         return {
             abstractData: this.abstractData,
             strongest: this.strong,
             data: this.data,
             id: this.id,
-            use: this.can_use
+            use: this.can_use(pl)
         }
     }
 }
@@ -83,20 +85,21 @@ export class DoorCard extends AbstractCard {
     defs: DoorsDefs | undefined;
     is_super: boolean | undefined;
     game?: MunchkinGame
-    get can_use() {
+    can_use(pl?: PlayerGame) {
         if (!this.game || this.game.endgame) return
         const type = this.abstractData.cardType;
-        if (type == ("Класс" || "Раса")) return !this.game.is_fight;
-        else if (type == "Монстр") return this.game.step == 1;
+        const cur = this.game.current_player === pl;
+        if (type == "Класс" || type =="Раса") return !this.game.is_fight && cur;
+        else if (type == "Монстр") return this.game.step == 1 && cur;
         else return true
     }
-    getData = (): IDoor => {
+    getData(pl?: PlayerGame): IDoor {
         return {
             abstractData: this.abstractData,
             data: this.data,
             id: this.id,
             is_super: this.is_super,
-            use: this.can_use
+            use: this.can_use(pl)
         }
     }
     clone = (d: DoorCard) => {

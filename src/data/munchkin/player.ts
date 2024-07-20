@@ -81,7 +81,7 @@ export class PlayerGame {
             power: this.power,
             coins: this.coins
         }
-        if (show_cards) tmp.cards = this.cards.map(el => el?.getData()).reverse()
+        if (show_cards) tmp.cards = this.cards.map(el => el?.getData(this)).reverse()
         return tmp
     }
 
@@ -112,7 +112,7 @@ export class PlayerGame {
     useCard(id: number) {
         const card = this.cardById(id);
         const game = this.game;
-        if (!card || !game || !card.can_use) {
+        if (!card || !game || !card.can_use(this)) {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
         };
