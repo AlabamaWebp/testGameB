@@ -29,7 +29,7 @@ export class TreasureCard extends AbstractCard {
     data: TreasureData;
     defs?: TreasureDefs;
     game?: MunchkinGame;
-    use() {
+    get can_use() {
         if (!this.game || this.game.endgame) return
         const type = this.data.treasureType;
         if (type == "Надеваемая") return !this.game.is_fight;
@@ -42,7 +42,7 @@ export class TreasureCard extends AbstractCard {
             strongest: this.strong,
             data: this.data,
             id: this.id,
-            use: this.use()
+            use: this.can_use
         }
     }
 }
@@ -79,11 +79,11 @@ export class DoorCard extends AbstractCard {
         this.defs = defs;
         this.is_super = is_super
     }
-    data?: MonsterData;
-    defs: DoorsDefs;
-    is_super: boolean;
+    data?: MonsterData | undefined;
+    defs: DoorsDefs | undefined;
+    is_super: boolean | undefined;
     game?: MunchkinGame
-    get use() {
+    get can_use() {
         if (!this.game || this.game.endgame) return
         const type = this.abstractData.cardType;
         if (type == ("Класс" || "Раса")) return !this.game.is_fight;
@@ -96,7 +96,7 @@ export class DoorCard extends AbstractCard {
             data: this.data,
             id: this.id,
             is_super: this.is_super,
-            use: this.use
+            use: this.can_use
         }
     }
     clone = (d: DoorCard) => {

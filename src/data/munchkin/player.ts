@@ -15,8 +15,8 @@ export interface MunckinPlayerStats {
         other: ITreasure[];
     };
     d_field: {
-        rasses: IfieldDoorCards, // ?.map(el => el.getData())
-        classes: IfieldDoorCards, // ?.map(el => el.getData())
+        rasses: IfieldDoorCards,
+        classes: IfieldDoorCards,
     },
     cards?: (ITreasure | IDoor)[]
     queue: number,
@@ -66,7 +66,6 @@ export class PlayerGame {
             name: this.player.name,
             lvl: this.lvl,
             sex: this.sex,
-            // cards: this.cards.map(el => el?.getData()).reverse(),
             t_field: {
                 helmet: this.field_cards.treasures?.helmet?.map(el => el.getData()),
                 body: this.field_cards.treasures?.body?.map(el => el.getData()),
@@ -74,8 +73,8 @@ export class PlayerGame {
                 arm: this.field_cards.treasures?.arm?.map(el => el.getData()),
                 other: this.field_cards.treasures?.other?.map(el => el.getData()),
             }, d_field: {
-                rasses: this.field_cards.doors?.getRasses(), // ?.map(el => el.getData())
-                classes: this.field_cards.doors?.getClasses(), // ?.map(el => el.getData())
+                rasses: this.field_cards.doors?.getRasses(),
+                classes: this.field_cards.doors?.getClasses(),
             },
             queue: this.queue,
             max_cards: this.max_cards,
@@ -113,7 +112,7 @@ export class PlayerGame {
     useCard(id: number) {
         const card = this.cardById(id);
         const game = this.game;
-        if (!card || !game) {
+        if (!card || !game || !card.can_use) {
             this.player.socket.emit('error', 'Ошибка использования карты')
             return
         };

@@ -170,9 +170,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() d: boolean,
     @ConnectedSocket() client: Socket,
   ) {
-    if (typeof d != 'boolean') {
+    if (typeof d != 'boolean')
       return false
-    }
     const player = this.data.getClient(client);
     if (player.getPositionStr() == "lobby") {
       const tmp = player.position as Lobby;
@@ -183,9 +182,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.lobbys.lobbyGameStart(lname);
         this.refreshHomeFromAll()
       }
-      else {
-        this.lobbys.refreshOneLobby(tmp.name);
-      }
+      else this.lobbys.refreshOneLobby(tmp.name);
     }
   }
   // refreshGame plusLog allLog
@@ -321,15 +318,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket
   ) {
     const pl = this.data.getClient(client);
-    const game = pl.position 
+    const game = pl.position
     if (game instanceof MunchkinGame) {
       pl.socket.emit("goTo", "home")
       try {
         game.players.filter(el => el != game.getPlayer(client));
-        game.Player.logging(pl.name +  " вышел")
+        game.Player.logging(pl.name + " вышел")
         this.games.deleteGame(game);
       }
-      catch { console.log("lol")}
+      catch { console.log("lol") }
     }
   }
 }

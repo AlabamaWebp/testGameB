@@ -5,7 +5,7 @@ import { DataService } from '../data/data.service';
 @Injectable()
 export class LobbyService {
     // events: refreshLobby,  МОИ ИВЕНТЫ
-    constructor(private data: DataService,) {}
+    constructor(private data: DataService,) { }
     private lobbys: Map<any, Lobby> = new Map();
     getLobbys(player: PlayerGlobal) {
         let tmp: any[] = [];
@@ -21,8 +21,7 @@ export class LobbyService {
 
     createLobby(name: string, max: number, socket: Socket, nickname: string) {
         if (this.lobbys.get(name)) {
-            // throw "Уже есть такая комната";
-            // return "Уже есть такая комната";
+            console.log("Комната созданная вами уже есть");
             return "Комната созданная вами уже есть";
         }
         this.lobbys.set(name, new Lobby(name, max, socket, nickname));
@@ -51,12 +50,10 @@ export class LobbyService {
             el?.emit("statusLobby", lobby.lobbyGetRoom(this.data.getClient(el)))
         })
     }
-    
+
     lobbyGameStart(roomName: string,) {
         const lobby = this.getOneLobby(roomName);
-        lobby?.getLobbySocket().forEach(el => {
-            el?.emit("allReady")
-        })
+        lobby?.getLobbySocket().forEach(el => el?.emit("allReady"))
         this.lobbys.delete(roomName);
     }
 
