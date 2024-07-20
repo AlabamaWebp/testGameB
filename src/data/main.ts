@@ -14,7 +14,7 @@ export class Lobby {
         };
     }
     readonly name: string
-    readonly creator: {name : string, socket: Socket | undefined}
+    readonly creator: { name: string, socket: Socket | undefined }
     private players: PlayerLobby[]
     private maxPlayers: number
 
@@ -71,25 +71,24 @@ export class Lobby {
     getLobbySocket() { // список сокетов игроков
         return this.players.map(el => el.player.socket)
     }
-    setReady(player: Socket,d: boolean) {
+    setReady(player: Socket, d: boolean): MunchkinGame | undefined {
         this.players.find(el => el.player.socket.id == player.id).ready = d;
-        if (this.players.every(el => el.ready) && this.players.length == this.maxPlayers) {
+        if (this.players.every(el => el.ready) && this.players.length == this.maxPlayers)
             return this.createGame()
-        } 
-        else return;
+        return
     }
     setSex(player: Socket, d: "Мужчина" | "Женщина") {
         this.players.find(el => el.player.socket.id == player.id).sex = d;
     }
     createGame() {
         const pls = shuffle(this.players).map((el, i) => {
-            return new PlayerGame(el.player, el.sex, i+1);
+            return new PlayerGame(el.player, el.sex, i + 1);
         })
         return new MunchkinGame(this.name, pls);
     }
 }
 
-export class PlayerGlobal { 
+export class PlayerGlobal {
     constructor(socket: Socket, name: string = "") {
         this.socket = socket;
         // name = new TextDecoder().decode(new Uint8Array(name.split(",").map(el => Number(el))))
@@ -120,7 +119,7 @@ export class PlayerGlobal {
         }
     }
     getPositionStr(): "home" | "game" | "lobby" {
-        if (this.position == "home") 
+        if (this.position == "home")
             return "home"
         else if (this.position instanceof Lobby)
             return "lobby"
