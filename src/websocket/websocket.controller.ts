@@ -320,6 +320,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const pl = this.data.getClient(client);
     const game = pl.position
     if (game instanceof MunchkinGame) {
+      pl.position = "home"
       pl.socket.emit("goTo", "home")
       try {
         game.players.filter(el => el != game.getPlayer(client));
