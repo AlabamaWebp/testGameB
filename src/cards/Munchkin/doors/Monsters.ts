@@ -1,65 +1,67 @@
+import { MonsterData } from './../../../data/munchkin/interfaces';
 import { DoorCard } from "src/data/munchkin/cards";
 
+function createMonster(
+    name: string, desc: string,
+    monsterData: MonsterData
+) {
+    return new DoorCard(
+        name,
+        desc,
+        type,
+        { monster: monsterData }
+    )
+}
 const type = "Монстр"
 export const MONSTERS: DoorCard[] = [
-    new DoorCard(
+    createMonster(
         "Огоршённая трава",
         "Победви траву, элфы тянут дополнительное сокровище",
-        type,
         {
             strongest: 1,
-            lvl: 1,
+            get_lvls: 1,
             gold: 1,
             undead: false,
         },
-        {}, // Если эльф + сокровище
     ),
-    new DoorCard(
+    createMonster(
         "Огоршённая трава",
         "Победви траву, элфы тянут дополнительное сокровище",
-        type,
         {
             strongest: 1,
-            lvl: 1,
+            get_lvls: 1,
             gold: 1,
             undead: false,
         },
-        {}, // Если эльф + сокровище
     ),
-    new DoorCard(
+    createMonster(
         "Огоршённая трава",
         "Победви траву, элфы тянут дополнительное сокровище",
-        type,
         {
             strongest: 1,
-            lvl: 1,
+            get_lvls: 1,
             gold: 1,
             undead: false,
         },
-        {}, // Если эльф + сокровище
     ),
-    new DoorCard(
+    createMonster(
         "3872 орка", // name
         "+6 против дварфов (старые счёты)", // description
-        type,
         {
             strongest: 10,
-            lvl: 2,
+            get_lvls: 2,
             gold: 3,
             undead: false,
         },
-        {}, // кубик, 2 и меньше смерть иначе потеря уровней сколько выпало
     ),
-    new DoorCard(
+    createMonster(
         "Костян", // name
         "Если пришлось смыватся - теряешь уровень", // description
-        type,
         {
             strongest: 2,
-            lvl: 1,
-            gold:1,
+            get_lvls: 1,
+            gold: 1,
             undead: true,
         },
-        {}, // -2 lvl
     ),
 ]

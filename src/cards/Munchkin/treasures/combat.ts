@@ -4,6 +4,7 @@ import { TreasureCard } from "src/data/munchkin/cards";
 function createCombat(
     name: string,
     desc: string,
+    strong?: number,
     defs?: TreasureDefs,
     cost?: number
 ) {
@@ -11,13 +12,24 @@ function createCombat(
         name,
         desc,
         defs,
-        {treasureType: "Боевая"},
-        undefined,
+        { treasureType: "Боевая" },
+        strong,
         cost
     )
 }
 export const COMBAT: TreasureCard[] = [
-    createCombat("Спячечное зелье", "Играть в бой, +2 любой стороне.",
-        {},
-        200),
+    createCombat(
+        "Спячечное зелье",
+        "Играть в бой, +2 любой стороне.",
+        2,
+        undefined,
+        200,
+    ),
+    createCombat(
+        "Зелье говна",
+        "Играть в бой, +4 любой стороне.",
+        4,
+        undefined,
+        200,
+    ),
 ]

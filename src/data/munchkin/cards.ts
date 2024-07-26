@@ -55,48 +55,47 @@ export interface ITreasure {
     id: number;
     use: boolean;
 }
+export type DoorTypes = "Класс" | "Раса" | "Проклятие" | "Монстр" | "МонстрБаф"
+export interface IMonsterBuff {
+    strong: number
+    gold: number
+}
 export class DoorCard extends AbstractCard {
     constructor(
         name: string,
         description: string,
-        type: "Класс" | "Раса" | "Проклятие" | "Монстр",
-        monster?: {
-            strongest: number, // Сила (включая усиления и уровень)
-            lvl: number, // Получаемый уровень
-            gold: number,
-            undead?: boolean,
-        },
-        defs?: DoorsDefs,
-        is_super?: boolean,
-        cost?: number,
-        img?: string
+        type: DoorTypes,
+        optional: {
+            monster?: MonsterData,
+            defs?: DoorsDefs,
+            is_super?: boolean,
+            cost?: number,
+            img?: string,
+            monsterBuff?: IMonsterBuff
+        }
     ) {
-        super({ name, description, cardType: type, img, cost });
-        monster ? this.data = {
-            get_lvls: monster.lvl,
-            strongest: monster.strongest,
-            gold: monster.gold,
-            undead: monster.undead ? true : false
-        } : 0;
-        this.defs = defs;
-        this.is_super = is_super
+        super({ name, description, cardType: type, img: optional.img, cost: optional.cost });
+        this.monster = optional.monster;
+        this.defs = optional.defs;
+        this.is_super = optional.is_super
     }
-    data?: MonsterData | undefined;
+    monster?: MonsterData | undefined;
     defs: DoorsDefs | undefined;
     is_super: boolean | undefined;
-    game?: MunchkinGame
+    game?: MunchkinGame;
+    monsterBuff?: IMonsterBuff // для бафа монстров
     can_use(pl?: PlayerGame) {
         if (!this.game || this.game.endgame) return
         const type = this.abstractData.cardType;
         const cur = this.game.current_player === pl;
-        if (type == "Класс" || type =="Раса") return !this.game.is_fight && cur;
+        if (type == "Класс" || type == "Раса") return !this.game.is_fight && cur;
         else if (type == "Монстр") return this.game.step == 1 && cur;
         else return true
     }
     getData(pl?: PlayerGame): IDoor {
         return {
             abstractData: this.abstractData,
-            data: this.data,
+            data: this.monster,
             id: this.id,
             is_super: this.is_super,
             use: this.can_use(pl)
@@ -108,15 +107,13 @@ export class DoorCard extends AbstractCard {
             this.abstractData.description,
             this.abstractData.cardType as "Класс" | "Раса" | "Проклятие" | "Монстр",
             {
-                strongest: this.data.strongest,
-                lvl: this.data.get_lvls,
-                gold: this.data.gold,
-                undead: this.data.undead,
-            },
-            this.defs,
-            this.is_super,
-            this.abstractData.cost,
-            this.abstractData.img,
+                monster: this.monster,
+                defs: this.defs,
+                is_super: this.is_super,
+                cost: this.abstractData.cost,
+                img: this.abstractData.img,
+                monsterBuff: this.monsterBuff
+            }
         )
     }
 }

@@ -10,12 +10,12 @@ export class FightHelper {
         this.game = game;
     }
     game: MunchkinGame;
-
-    startFight(player: PlayerGame, monster: DoorCard) { if (!this.game.field.fight) this.game.field.fight = new Fight(player, monster); this.game.field.openCards = [] }
+    get fight() { return this.game.field.fight }
+    startFight(player: PlayerGame, monster: DoorCard) { if (!this.fight) this.game.field.fight = new Fight(player, monster); this.game.field.openCards = [] }
     endFight() {
-        if (this.game.field.fight?.pas.size == this.game.plcount) { // все пасанули
-            const monsters = this.game.field.fight.monsters;
-            const f = this.game.field.fight;
+        if (this.fight?.pas.size == this.game.plcount) { // все пасанули
+            const monsters = this.fight.monsters;
+            const f = this.fight;
             const players = [f.players.first]
             if (f.players.second) players.push(f.players.second);
             if (f.smivka) {
@@ -47,7 +47,7 @@ export class FightHelper {
                     this.game.Player.logging(tmp);
                 }
             }
-            this.game.field.fight.monsters.forEach(el => this.game.Card.toSbros(el));
+            this.fight.monsters.forEach(el => this.game.Card.toSbros(el));
             delete this.game.field.fight;
             this.game.Action.setStep3();
             // НАдо подумать над применяемыми картами во время боя
@@ -73,17 +73,40 @@ export class FightHelper {
     }
     yaPas(player: Socket) {
         const name = this.game.getPlayer(player).player.name;
-        this.game.field.fight.pas.add(name);
-        if (this.game.field.fight.pas.size == this.game.plcount)
+        this.fight.pas.add(name);
+        if (this.fight.pas.size == this.game.plcount)
             this.endFight();
         this.game.Player.allPlayersRefresh();
     }
     addToFight(pl: PlayerGame, gold: number) {
-        if (this.game.field.fight.players.second) return;
-        this.game.field.fight.players.second = {
+        if (this.fight.players.second) return;
+        this.fight.players.second = {
             player: pl,
             gold: gold,
             smivka: false
         }
+        this.refreshFight()
+    }
+    refreshFight() {
+        let gold = 0;
+        let power = 0;
+        this.fight.monsters.forEach(e => {
+            power += e.monster.strongest;
+            gold += e.monster.gold;
+        });
+        this.fight.cards.monsters.forEach(el => {
+            if (el instanceof TreasureCard && el.data.treasureType == "Боевая")
+                power += el.strong;
+        })
+        this.fight.monsters_power = power;
+        this.fight.gold = gold;
+
+        power = this.fight.players.first.player.power;
+        power += this.fight.players.second?.player.power ?? 0;
+        this.fight.cards.players.forEach(el => {
+            if (el instanceof TreasureCard && el.data.treasureType == "Боевая")
+                power += el.strong;
+        })
+        this.fight.players_power = power;
     }
 }

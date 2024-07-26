@@ -10,9 +10,7 @@ function createClass(
         name,
         desc,
         "Класс",
-        undefined,
-        undefined,
-        super1
+        { is_super: super1 }
     )
 }
 export const CLASSES: DoorCard[] = [

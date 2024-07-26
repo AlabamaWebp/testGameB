@@ -1,5 +1,5 @@
 import { MunchkinGame } from "./mucnhkinGame";
-import { DoorCard, IDoor, ITreasure, TreasureCard } from "./cards";
+import { DoorCard, DoorTypes, IDoor, ITreasure, TreasureCard } from "./cards";
 import { MunckinPlayerStats, PlayerGame } from "./player";
 
 export interface DoorsDefs {
@@ -10,7 +10,7 @@ export interface DoorsDefs {
     action?: (defs: defsData) => void,
     // https://metanit.com/web/javascript/4.8.php .call() для функции
 }
-export class MonsterData {
+export interface MonsterData {
     get_lvls: number; // 
     strongest: number;
     gold: number;
@@ -34,7 +34,7 @@ export interface TreasureDefs {
 export interface AbstractData {
     name: string;
     description: string;
-    cardType: "Класс" | "Раса" | "Проклятие" | "Монстр" | "Сокровище"
+    cardType: DoorTypes | "Сокровище"
     img?: string;
     cost?: number
 }
@@ -144,17 +144,17 @@ export class Fight {
         const m_ = monster.clone(monster)
 
         this.pas = new Set<string>();
-        this.monsters = [m_];
-        this.lvls = m_.data.get_lvls;
-        this.monsters_power = m_.data.strongest;
+        this.lvls = m_.monster.get_lvls;
+        this.monsters_power = m_.monster.strongest;
         this.monstersProto = [monster];
-        this.gold = monster.data.gold;
+        this.monsters = [m_];
+        this.gold = monster.monster.gold;
         this.players_power = pl.power;
         this.smivka = false;
         this.players = {
             first: {
                 player: pl,
-                gold: monster.data.gold,
+                gold: monster.monster.gold,
                 smivka: false
             }
         }
@@ -168,8 +168,8 @@ export class Fight {
         monsters?: (TreasureCard | DoorCard)[]
     }
     pas: Set<string>;
-    monsters: DoorCard[]
-    monstersProto: DoorCard[]
+    monsters: DoorCard[] // Мутируемые монстры
+    monstersProto: DoorCard[] // Не трогать, класс в игре используется
     gold: number;
     lvls: number;
 

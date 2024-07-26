@@ -10,9 +10,7 @@ function createClass(
         name,
         desc,
         "Раса",
-        undefined,
-        undefined,
-        super1,
+        { is_super: super1 }
         // cost
     )
 }
