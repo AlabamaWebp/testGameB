@@ -55,8 +55,17 @@ export class fieldTreasureCards {
         const f = [this.helmet,
         this.body,
         this.legs,
-        this.arm,]
+        this.arm,
+        this.other]
         return findInMassAndDelete(id, f) as TreasureCard
+    }
+    get getAllCard() {
+        const f = [this.helmet,
+        this.body,
+        this.legs,
+        this.arm,
+        this.other]
+        return f.flat()
     }
 }
 export interface _fieldDoorCards {
@@ -163,10 +172,13 @@ export class Fight {
         first: PlayerFight,
         second?: PlayerFight
     }
-    cards?: {
+    cards: {
         players?: (TreasureCard | DoorCard)[],
         monsters?: (TreasureCard | DoorCard)[]
-    }
+    } = {
+            players: [],
+            monsters: []
+        }
     pas: Set<string>;
     monsters: DoorCard[] // Мутируемые монстры
     monstersProto: DoorCard[] // Не трогать, класс в игре используется

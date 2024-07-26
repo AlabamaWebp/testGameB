@@ -43,7 +43,8 @@ export class PlayerHelper {
             smivka: smivka,
             rasses_mesto: (!!player.field_cards.doors.rasses.bonus && !!player.field_cards.doors.rasses.first),
             classes_mesto: (!!player.field_cards.doors.classes.bonus && !!player.field_cards.doors.classes.first),
-            help_ask: this.game.Event.help.get(player) ? { pl: player.stats(), gold: this.game.Event.help.get(player) } : undefined,
+            help_ask: this.game.Event.help.get(player) || this.game.Event.help.get(player) == 0
+                ? { pl: player.stats(), gold: this.game.Event.help.get(player) } : undefined,
             is_help: you_first_fight && !field.fight.players.second, // Можно ли позвать на помощь
             end: this.game.endgame
         }
@@ -58,7 +59,7 @@ export class PlayerHelper {
     }
     private broadcast(e: string, d: any) { this.game.players.forEach((el: PlayerGame) => { el.player.socket.emit(e, d) }) }
     allPlayersRefresh() { this.game.players.forEach((el: PlayerGame) => { el.player.socket.emit("refreshGame", this.getMainForPlayer(el)) }) }
-    onePlayerRefresh(player: PlayerGame) { player.player.socket.emit("refreshGame", this.getMainForPlayer(player)); }
+    onePlayerRefresh(player: PlayerGame) { player?.player?.socket?.emit("refreshGame", this.getMainForPlayer(player)); }
     plusLog(d: string) { this.broadcast("plusLog", d) }
     sendAllLog(player: Socket) { player.emit("allLog", this.log); }
     sendError(pl: Socket, message: string) { pl.send("error", message) }

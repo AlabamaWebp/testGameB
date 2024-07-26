@@ -1,6 +1,6 @@
 import { PlayerGlobal } from "../main";
 import { TreasureCard, DoorCard, ITreasure, IDoor } from "./cards";
-import { fieldTreasureCards, fieldDoorCards, defsData, _fieldDoorCards, IfieldDoorCards } from "./interfaces";
+import { fieldTreasureCards, fieldDoorCards, defsData, _fieldDoorCards, IfieldDoorCards, Fight } from "./interfaces";
 import { MunchkinGame } from "./mucnhkinGame";
 
 export interface MunckinPlayerStats {
@@ -50,17 +50,18 @@ export class PlayerGame {
 
     get power() {
         let tmp = this.lvl;
-        const cards = Object.keys(this.field_cards.treasures);
-        cards.forEach((el: string) => {
-            if (this.field_cards.treasures[el] && el != 'count') {
-                this.field_cards.treasures[el].forEach(card1 => {
-                    tmp += card1.strong
-                });
-            }
-        })
+        // const cards = Object.keys(this.field_cards.treasures);
+        // cards.forEach((el: string) => {
+        //     if (this.field_cards.treasures[el] && el != 'count') {
+        //         this.field_cards.treasures[el].forEach(card1 => {
+        //             tmp += card1.strong
+        //         });
+        //     }
+        // })
+        this.field_cards.treasures.getAllCard.forEach(el => tmp += el.strong ?? 0)
         return tmp;
     }
-
+    
     stats(show_cards = false) {
         const tmp: MunckinPlayerStats = {
             name: this.player.name,
@@ -164,8 +165,10 @@ export class PlayerGame {
             if (card.data.treasureType == 'Боевая') {
                 if (!game.is_fight) return
                 // ????????????????
-                card.defs.action(defs);
+                // card.defs.action(defs);
                 game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`);
+                game.field.fight.cards.players.push(card); // Выбор стороны
+                this.game.Fight.refreshFight();
                 game.Card.toSbros(card);
             }
         }
@@ -252,7 +255,7 @@ export class PlayerGame {
             || !game.is_fight
         ) return;
         game.Card.toSbros(card);
-        game.Player.logging(this.player.name + " снимает " + card.abstractData.name);
+        game.Player.logging(this.player.name + " сбрасывает " + card.abstractData.name);
         game.Player.onePlayerRefresh(this);
     }
     sellCard(id: number) {
