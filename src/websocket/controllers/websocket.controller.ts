@@ -1,11 +1,11 @@
 import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { DataService } from './data/data.service';
-import { LobbyService } from './lobby/lobby.service';
-import { Lobby, PlayerGlobal } from '../data/main';
+import { DataService } from '../data/data.service';
+import { LobbyService } from '../lobby/lobby.service';
+import { Lobby, PlayerGlobal } from '../../data/main';
 import { MunchkinGame } from 'src/data/munchkin/mucnhkinGame';
-import { MunchkinService } from './munchkin/munchkin.service';
-import { cardMestoEvent } from 'src/data/munchkin/player';
+import { MunchkinService } from '../munchkin/munchkin.service';
+import { cardMestoEvent, cardSideEvent } from 'src/data/munchkin/player';
 import { PlayerGame } from 'src/data/munchkin/player';
 
 @WebSocketGateway(3001, {
@@ -20,7 +20,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // refreshRooms 
   handleConnection(client: Socket) {
-
     this.data.connectClient(client);
   }
   handleDisconnect(client: Socket) {
@@ -228,6 +227,18 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player.useCard(id_card);
     }
   }
+  @SubscribeMessage('useCardSide')
+  useCardSide(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: cardSideEvent,
+  ) {
+    let player: PlayerGlobal | PlayerGame = this.data.getClient(client);
+    const game = player.position;
+    if (game instanceof MunchkinGame) {
+      player = game.getPlayer(client);
+      player.useCardSide(body);
+    }
+  }
   @SubscribeMessage('useCardMesto')
   useCardMesto(
     @ConnectedSocket() client: Socket,
@@ -238,7 +249,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (game instanceof MunchkinGame) {
       player = game.getPlayer(client);
       player.useCardMesto(body);
-      // player.useCard(body.id_card);
     }
   }
   @SubscribeMessage('getDoorCardByPlayer')

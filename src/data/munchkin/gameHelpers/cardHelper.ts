@@ -35,8 +35,14 @@ export class CardHelper {
         return tmp;
     }
     checkSbros() {
-        if (this.game.cards.treasures.length == 0) { this.game.cards.treasures = shuffle(this.game.sbros.treasures.slice()); this.game.sbros.treasures = []; }
-        if (this.game.cards.doors.length == 0) { this.game.cards.doors = shuffle(this.game.sbros.doors.slice()); this.game.sbros.doors = []; }
+        if (this.game.cards.treasures.length == 0) {
+            this.game.cards.treasures = shuffle(this.game.sbros.treasures.slice());
+            this.game.sbros.treasures = [];
+        }
+        if (this.game.cards.doors.length == 0) {
+            this.game.cards.doors = shuffle(this.game.sbros.doors.slice());
+            this.game.sbros.doors = [];
+        }
     }
     playerGetClosedDoor(pl: PlayerGame) {
         const card = this.getDoor
@@ -48,9 +54,9 @@ export class CardHelper {
         for (let i = 0; i < colvo; i++) {
             const card = this.getTreasure
             pl.cards.push(card);
+            this.game.Player.logging(pl.player.name + " берёт в закрытую сокровищ в количестве " + colvo + "шт.");
+            this.game.Player.onePlayerRefresh(pl);
         }
-        this.game.Player.logging(pl.player.name + " берёт в закрытую сокровищ в количестве " + colvo + "шт.");
-        this.game.Player.onePlayerRefresh(pl);
     }
     playerGetOpenTreasure(player: Socket) {
         const pl = this.game.getPlayer(player);

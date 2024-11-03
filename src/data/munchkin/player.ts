@@ -128,12 +128,9 @@ export class PlayerGame {
             'Класс': 'classes',
             'Раса': 'rasses'
         }
-        //  "Рядом" 
-        // other
-
         if (card instanceof TreasureCard) {
             const defs = this.defsForCard
-            if (card.defs?.condition && !card.defs?.condition(defs))
+            if (!(card.defs?.condition?.(defs) ?? true))
                 return // Если не выполнено условие то габелла
             ////////////// 
             if (card.data.treasureType == 'Надеваемая') {
@@ -160,15 +157,6 @@ export class PlayerGame {
             if (card.data.treasureType == 'Используемая') {
                 card.defs?.action(defs);
                 game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`)
-                game.Card.toSbros(card);
-            }
-            if (card.data.treasureType == 'Боевая') {
-                if (!game.is_fight) return
-                // ????????????????
-                // card.defs.action(defs);
-                game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`);
-                game.field.fight.cards.players.push(card); // Выбор стороны
-                this.game.Fight.refreshFight();
                 game.Card.toSbros(card);
             }
         }
@@ -199,7 +187,15 @@ export class PlayerGame {
         this.delCard(card); // Удаление карты из руки
         game.Player.allPlayersRefresh();
     }
-
+    useCardSide(body: cardSideEvent) { 
+        const card = this.cardById(body.id_card)
+        if (!(card instanceof TreasureCard) || card.data.treasureType !== 'Боевая' || !this.game.is_fight) return
+        if (!body.side) this.game.field.fight.cards.monsters.push(card);  
+        else this.game.field.fight.cards.players.push(card); // Выбор стороны
+        this.game.Fight.refreshFight();
+        this.game.Card.toSbros(card);
+        this.game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`);
+    }
     useCardMesto(body: cardMestoEvent) {
         const durak = ["first", "second",]; // "bonus"
         if (!durak.includes(body.mesto)) return;
@@ -274,4 +270,8 @@ export class PlayerGame {
 export interface cardMestoEvent {
     id_card: number,
     mesto: "first" | "second" | "bonus"
+}
+export interface cardSideEvent {
+    id_card: number,
+    side: boolean // true - Человек, false - Монстр
 }

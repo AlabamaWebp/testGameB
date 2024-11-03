@@ -22,7 +22,7 @@ export class PlayerHelper {
         const pls = this.game.players
             .filter(el => el != player)
             .map((el: PlayerGame) => el.stats())
-        const tmp = {
+        const tmp: MunchkinOutput = {
             queue: this.game.players[this.game.queue].player.name,
             step: this.game.step,
             field: field.getField,

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MyGateway  } from './websocket/websocket.controller';
+import { MyGateway  } from './websocket/controllers/websocket.controller';
 // import { AppService } from './websocket/home.service';
 
 describe('AppController', () => {
