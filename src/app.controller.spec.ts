@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MyGateway  } from './websocket/controllers/websocket.controller';
+import { HomeLobbyGateway  } from './websocket/controllers/homeLobby.controller';
 // import { AppService } from './websocket/home.service';
 
 describe('AppController', () => {
-  let appController: MyGateway ;
+  let appController: HomeLobbyGateway ;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [MyGateway ],
+      controllers: [HomeLobbyGateway ],
       // providers: [AppService],
     }).compile();
 
-    appController = app.get<MyGateway >(MyGateway );
+    appController = app.get<HomeLobbyGateway >(HomeLobbyGateway );
   });
 
   describe('root', () => {

@@ -194,7 +194,8 @@ export class PlayerGame {
         else this.game.field.fight.cards.players.push(card); // Выбор стороны
         this.game.Fight.refreshFight();
         this.game.Card.toSbros(card);
-        this.game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`);
+        this.game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs?.log_txt ?? ''}) на стороне ${body.side ? "ИГРОКОВ" : "МОНСТРОВ"}`);
+        this.game.Player.allPlayersRefresh();
     }
     useCardMesto(body: cardMestoEvent) {
         const durak = ["first", "second",]; // "bonus"

@@ -38,7 +38,7 @@ export class FightHelper {
                     let tmp = ""
                     monsters.forEach(m => {
                         players.forEach(p => {
-                            if (m.defs.punishment)
+                            if (m.defs?.punishment)
                                 m.defs.punishment({ player: p.player, game: this.game });
                             else console.log("Нет наказания");
                             tmp += p.player.stats().name + " наказан " + m.abstractData.name + "\n"
