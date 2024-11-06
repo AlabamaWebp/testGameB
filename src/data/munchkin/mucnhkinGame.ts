@@ -28,6 +28,10 @@ export class MunchkinGame {
             doors: (shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES))).map(e => { e.game = this; return e }),
             treasures: (shuffle(EQUIPMENT.concat(USED).concat(COMBAT))).map(e => { e.game = this; return e })
         }
+        // this.cards_copy = {
+        //     doors: this.cards.doors.slice(),
+        //     treasures: this.cards.treasures.slice()
+        // }
         fillId.call(this);
         playersGetCard.call(this);
     }
@@ -38,6 +42,7 @@ export class MunchkinGame {
     players: PlayerGame[];
     current_player: PlayerGame;
 
+    // cards_copy: { doors: DoorCard[], treasures: TreasureCard[] };
     cards: { doors: DoorCard[], treasures: TreasureCard[] };
     sbros: { doors: DoorCard[], treasures: TreasureCard[] } = { doors: [], treasures: [] };
     step: 0 | 1 | 2 | 3 = 0; // перед боем | чистка нычек | бой | после боя
