@@ -26,7 +26,7 @@ export class PlayerHelper {
             queue: this.game.players[this.game.queue].player.name,
             step: this.game.step,
             field: field.getField,
-            is_fight: this.game.is_fight,
+            // is_fight: this.game.is_fight,
             sbros:
             {
                 doors: this.game.sbros.doors[this.game.sbros.doors.length]?.getData(),
@@ -68,7 +68,7 @@ export interface MunchkinOutput {
     queue: string;
     step: 0 | 1 | 2 | 3;
     field: IField;
-    is_fight: boolean;
+    // is_fight: boolean;
     sbros: {
         doors: IDoor;
         treasures: ITreasure;
