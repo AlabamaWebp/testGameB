@@ -1,48 +1,38 @@
 import { DoorCard, IMonsterBuff } from "src/data/munchkin/cards";
 
-function createBuff(name: string, desc: string, mb: IMonsterBuff) {
-    return new DoorCard(
-        name,
-        desc,
-        type,
-        {
-            monsterBuff: mb
+export const MONSTERS: DoorCard[] = []
+function createBuff(name: string, mb: IMonsterBuff | number = 1, count: number = 1, desc: string = "") {
+    if (typeof mb === "number") {
+        mb = {
+            strong: mb * 5,
+            gold: mb
         }
-    )
+        desc = `${mb.strong} к силе монстра, ${mb.gold} к сокровищам`
+    }
+    for (let i = 0; i < count; i++) {
+        MONSTERS.push(new DoorCard(
+            name,
+            desc,
+            type,
+            { monsterBuff: mb }
+        ))
+    }
 }
 const type = "МонстрБаф"
-export const MONSTERS: DoorCard[] = [
-    createBuff(
-        "Умудрённый",
-        "+10 к силе монстра, +2 к сокровищам",
-        {
-            strong: 10,
-            gold: 2
-        }
-    ),
-    createBuff(
-        "Эээ чуть лучше чем вчера",
-        "+5 к силе монстра, +1 к сокровищам",
-        {
-            strong: 5,
-            gold: 1
-        }
-    ),
-    createBuff(
-        "Утуплённый",
-        "-10 к силе монстра, -2 к сокровищам",
-        {
-            strong: -10,
-            gold: -2
-        }
-    ),
-    createBuff(
-        "Младенец",
-        "-5 к силе монстра, -1 к сокровищам",
-        {
-            strong: -10,
-            gold: -2
-        }
-    ),
-    
-]
+createBuff(
+    "Умудрённый",
+    2
+)
+createBuff(
+    "Эээ чуть лучше чем вчера",
+    1
+)
+createBuff(
+    "Утуплённый",
+    -1
+)
+createBuff(
+    "Младенец",
+    -2
+)
+export default MONSTERS;

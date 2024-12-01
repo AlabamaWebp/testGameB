@@ -65,14 +65,7 @@ export class DoorCard extends AbstractCard {
         name: string,
         description: string,
         type: DoorTypes,
-        optional: {
-            monster?: MonsterData,
-            defs?: DoorsDefs,
-            is_super?: boolean,
-            cost?: number,
-            img?: string,
-            monsterBuff?: IMonsterBuff
-        }
+        optional: optionalDoors
     ) {
         super({ name, description, cardType: type, img: optional.img, cost: optional.cost });
         this.monster = optional.monster;
@@ -101,7 +94,7 @@ export class DoorCard extends AbstractCard {
             use: this.can_use(pl)
         }
     }
-    clone = (d: DoorCard) => {
+    clone = () => {
         return new DoorCard(
             this.abstractData.name,
             this.abstractData.description,
@@ -123,4 +116,13 @@ export interface IDoor {
     id: number;
     is_super: boolean;
     use: boolean;
+}
+
+export interface optionalDoors {
+    monster?: MonsterData,
+    defs?: DoorsDefs,
+    is_super?: boolean,
+    cost?: number,
+    img?: string,
+    monsterBuff?: IMonsterBuff
 }

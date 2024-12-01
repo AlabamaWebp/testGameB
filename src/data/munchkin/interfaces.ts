@@ -7,7 +7,8 @@ export interface DoorsDefs {
     startActions?: (defs: defsData) => void, // 
     winActions?: (defs: defsData) => void,
     beforeSmivka?: (defs: defsData) => void,
-    action?: (defs: defsData) => void,
+    action?: (defs: defsData) => void, // в момент 
+    effect?: (defs: defsData) => void, // дать приемущество класса или расы
     // https://metanit.com/web/javascript/4.8.php .call() для функции
 }
 export interface MonsterData {
@@ -150,7 +151,7 @@ interface PlayerFight {
 }
 export class Fight {
     constructor(pl: PlayerGame, monster: DoorCard) {
-        const m_ = monster.clone(monster)
+        const m_ = monster.clone()
 
         this.pas = new Set<string>();
         this.lvls = m_.monster.get_lvls;

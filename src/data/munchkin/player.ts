@@ -158,6 +158,7 @@ export class PlayerGame {
                 card.defs?.action(defs);
                 game.Player.logging(`${this.player.name} использует ${card.abstractData.name} (${card.defs.log_txt ?? ''})`)
                 game.Card.toSbros(card);
+                if (game.is_fight) game.Fight.refreshFight();
             }
         }
         else {
@@ -186,6 +187,7 @@ export class PlayerGame {
         }
         this.delCard(card); // Удаление карты из руки
         game.Player.allPlayersRefresh();
+        if (game.is_fight) game.Fight.refreshFight(); // сомнительно
     }
     useCardSide(body: cardSideEvent) { 
         const card = this.cardById(body.id_card)
