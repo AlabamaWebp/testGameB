@@ -144,15 +144,15 @@ export class MunchkinGateway // implements OnGatewayConnection, OnGatewayDisconn
     if (pl.position instanceof MunchkinGame)
       pl.position.getPlayer(client).sbrosCard(d);
   }
-  @SubscribeMessage('sbrosEquip')
-  sbrosEquip(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() d: number
-  ) {
-    const pl = this.data.getClient(client);
-    if (pl.position instanceof MunchkinGame)
-      pl.position.getPlayer(client).sbrosEquip(d);
-  }
+  // @SubscribeMessage('sbrosEquip')
+  // sbrosEquip(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() d: number
+  // ) {
+  //   const pl = this.data.getClient(client);
+  //   if (pl.position instanceof MunchkinGame)
+  //     pl.position.getPlayer(client).sbrosEquip(d);
+  // }
   @SubscribeMessage('sellCard')
   sellCard(
     @ConnectedSocket() client: Socket,

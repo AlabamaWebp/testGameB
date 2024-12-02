@@ -61,7 +61,7 @@ export class PlayerGame {
         this.field_cards.treasures.getAllCard.forEach(el => tmp += el.strong ?? 0)
         return tmp;
     }
-    
+
     stats(show_cards = false) {
         const tmp: MunckinPlayerStats = {
             name: this.player.name,
@@ -189,10 +189,10 @@ export class PlayerGame {
         game.Player.allPlayersRefresh();
         if (game.is_fight) game.Fight.refreshFight(); // сомнительно
     }
-    useCardSide(body: cardSideEvent) { 
+    useCardSide(body: cardSideEvent) {
         const card = this.cardById(body.id_card)
         if (!(card instanceof TreasureCard) || card.data.treasureType !== 'Боевая' || !this.game.is_fight) return
-        if (!body.side) this.game.field.fight.cards.monsters.push(card);  
+        if (!body.side) this.game.field.fight.cards.monsters.push(card);
         else this.game.field.fight.cards.players.push(card); // Выбор стороны
         this.game.Fight.refreshFight();
         this.game.Card.toSbros(card);
@@ -237,30 +237,51 @@ export class PlayerGame {
         game.Player.logging(this.player.name + " использует " + card.abstractData.name + " на " + target_pl.player.name);
     }
     sbrosCard(id: number) {
-        const card = this.cardById(id);
+        let card = this.cardById(id);
         const game = this.game;
-        if (!card || !game
-            || game.step != 3
-        ) return;
-        this.cards.splice(this.cards.indexOf(card), 1);
+        let in_hand = true;
+        if (!card) {
+            card = this.field_cards.treasures.findAndDel(id);
+            if (!card) {
+                card = this.field_cards.doors.findAndDel(id);
+                if (card.is_super) {
+                    let tmp = card.abstractData.cardType == "Класс" ? this.field_cards.doors.classes : this.field_cards.doors.rasses;
+                    if (tmp.first && tmp.second) {
+                        game.Card.toSbros(tmp.second);
+                        tmp.second = undefined;
+                    }
+                }
+            }
+            in_hand = false;
+        }
+        if (!card || !game || game.is_fight) return;
+        let text = " сбрасывает ";
+        if (in_hand)
+            this.cards.splice(this.cards.indexOf(card), 1);
+        else text = " деэкиперует "
+        game.Player.logging(this.player.name + text + card.abstractData.name);
         game.Card.toSbros(card); // самому мелкому уровню потом
         game.Player.onePlayerRefresh(this);
     }
-    sbrosEquip(id: number) {
-        let card: TreasureCard | DoorCard = this.field_cards.treasures.findAndDel(id);
-        if (!card) card = this.field_cards.doors.findAndDel(id);
-        const game = this.game;
-        if (!card || !game
-            || !game.is_fight
-        ) return;
-        game.Card.toSbros(card);
-        game.Player.logging(this.player.name + " сбрасывает " + card.abstractData.name);
-        game.Player.onePlayerRefresh(this);
-    }
+    // sbrosEquip(id: number) {
+    //     let card: TreasureCard | DoorCard = this.field_cards.treasures.findAndDel(id);
+    //     if (!card) card = this.field_cards.doors.findAndDel(id);
+    //     const game = this.game;
+    //     if (!card || !game
+    //         || !game.is_fight
+    //     ) return;
+    //     game.Card.toSbros(card);
+    //     game.Player.logging(this.player.name + " сбрасывает " + card.abstractData.name);
+    //     game.Player.onePlayerRefresh(this);
+    // }
     sellCard(id: number) {
-        const card = this.cardById(id);
+        let card = this.cardById(id);
+        if (!card) {
+            card = this.field_cards.treasures.findAndDel(id);
+            if (!card) card = this.field_cards.doors.findAndDel(id);
+        }
+        else this.delCard(card);
         if (!card || !card.abstractData.cost) return;
-        this.delCard(card);
         this.game.Card.toSbros(card);
         this.coins += card.abstractData.cost;
         const lvls = Math.floor(this.coins / 1000);
