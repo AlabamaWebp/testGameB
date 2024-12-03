@@ -73,8 +73,8 @@ export class DoorCard extends AbstractCard {
         this.is_super = optional.is_super
     }
     monster?: MonsterData | undefined;
-    defs: DoorsDefs | undefined;
-    is_super: boolean | undefined;
+    defs?: DoorsDefs;
+    is_super?: boolean;
     game?: MunchkinGame;
     monsterBuff?: IMonsterBuff // для бафа монстров
     can_use(pl?: PlayerGame) {

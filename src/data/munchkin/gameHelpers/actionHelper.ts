@@ -33,7 +33,6 @@ export class ActionHelper {
             this.game.Player.allPlayersRefresh();
         }
         else {
-            console.log("Нет карты");
             this.game.Player.logging("Нет карт в колоде");
         }
     }
