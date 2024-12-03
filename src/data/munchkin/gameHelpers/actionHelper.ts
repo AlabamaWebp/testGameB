@@ -25,9 +25,8 @@ export class ActionHelper {
             else {
                 if (card.abstractData.cardType !== "Проклятие")
                     pl.cards.push(card);
-                else {
-                    this.game.Player.logging("Проклятуние")
-                } // Проклятуние
+                else
+                    card.defs.action(pl.defsForCard);
                 this.game.step = 1;
                 this.game.Card.openCardField(card);
             }
