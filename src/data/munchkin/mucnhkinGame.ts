@@ -31,7 +31,7 @@ export class MunchkinGame {
         fillId.call(this);
         playersGetCard.call(this);
     }
-    endgame = false
+    endgame = false;
 
     plcount: number;
     name: string;

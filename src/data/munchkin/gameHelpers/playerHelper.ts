@@ -29,8 +29,8 @@ export class PlayerHelper {
             is_fight: this.game.is_fight,
             sbros:
             {
-                doors: this.game.sbros.doors[this.game.sbros.doors.length]?.getData(),
-                treasures: this.game.sbros.treasures[this.game.sbros.treasures.length]?.getData(),
+                doors: this.game.sbros.doors.at(-1)?.getData(),
+                treasures: this.game.sbros.treasures.at(-1)?.getData(),
             },
             cards: {
                 doors: this.game.cards.doors.length,
