@@ -1,5 +1,4 @@
-import { MonsterData } from 'src/data/munchkin/interfaces';
-import { DoorCard } from "src/data/munchkin/cards";
+import { MonsterData, DoorCard } from "src/data/munchkin/classes/DoorCard";
 
 function createMonster(
     name: string,

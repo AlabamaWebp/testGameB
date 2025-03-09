@@ -1,5 +1,4 @@
-import { TreasureCard } from "src/data/munchkin/cards";
-import { TreasureData, TreasureDefs } from "src/data/munchkin/interfaces";
+import { TreasureCard, TreasureData, TreasureDefs } from "src/data/munchkin/classes/TreasureCard";
 import { MunchkinGame } from "src/data/munchkin/mucnhkinGame";
 
 function createShmot(

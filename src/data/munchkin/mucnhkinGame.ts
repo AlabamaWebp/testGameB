@@ -1,6 +1,5 @@
 
 import { fillId, playersGetCard, shuffle } from "./functions";
-import { GameField } from "./interfaces";
 import { Socket } from "socket.io";
 import { CLASSES } from "src/cards/Munchkin/doors/Classes";
 import { COURSES } from "src/cards/Munchkin/doors/Courses";
@@ -9,13 +8,15 @@ import { RASES } from "src/cards/Munchkin/doors/Rases";
 import { EQUIPMENT } from "src/cards/Munchkin/treasures/Equipment";
 import { USED } from "src/cards/Munchkin/treasures/Used";
 import { COMBAT } from "src/cards/Munchkin/treasures/Combat";
-import { DoorCard, TreasureCard } from "./cards";
 import { CardHelper } from "./gameHelpers/cardHelper";
 import { PlayerHelper } from "./gameHelpers/playerHelper";
 import { ActionHelper } from "./gameHelpers/actionHelper";
 import { FightHelper } from "./gameHelpers/fightHelper";
 import { PlayerGame } from "./player";
 import { HelpFightMunchkin } from "./gameHelpers/helpFightHelper";
+import { DoorCard } from "./classes/DoorCard";
+import { GameField } from "./classes/GameField";
+import { TreasureCard } from "./classes/TreasureCard";
 
 export class MunchkinGame {
     constructor(name: string, players: PlayerGame[]) {

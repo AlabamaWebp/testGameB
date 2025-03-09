@@ -1,6 +1,7 @@
 import { PlayerGlobal } from "../main";
-import { TreasureCard, DoorCard, ITreasure, IDoor } from "./cards";
-import { fieldTreasureCards, fieldDoorCards, defsData, _fieldDoorCards, IfieldDoorCards, Fight } from "./interfaces";
+import { IDoor, DoorCard } from "./classes/DoorCard";
+import { ITreasure, TreasureCard } from "./classes/TreasureCard";
+import { IfieldDoorCards, fieldDoorCards, fieldTreasureCards, defsData, _fieldDoorCards } from "./interfaces";
 import { MunchkinGame } from "./mucnhkinGame";
 
 export interface MunckinPlayerStats {

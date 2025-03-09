@@ -1,4 +1,5 @@
-import { DoorCard } from "src/data/munchkin/cards";
+import { DoorCard } from "src/data/munchkin/classes/DoorCard"
+
 const RASES: DoorCard[] = []
 function createClass(
     name: string,

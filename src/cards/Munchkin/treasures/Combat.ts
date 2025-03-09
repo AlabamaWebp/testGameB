@@ -1,5 +1,4 @@
-import { TreasureDefs, TreasureData } from "src/data/munchkin/interfaces";
-import { TreasureCard } from "src/data/munchkin/cards";
+import { TreasureCard, TreasureDefs } from "src/data/munchkin/classes/TreasureCard"
 
 function createCombat(
     name: string,

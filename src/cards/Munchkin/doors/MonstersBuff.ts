@@ -1,4 +1,4 @@
-import { DoorCard, IMonsterBuff } from "src/data/munchkin/cards";
+import { DoorCard, IMonsterBuff } from "src/data/munchkin/classes/DoorCard"
 
 export const MONSTERS: DoorCard[] = []
 function createBuff(name: string, mb: IMonsterBuff | number = 1, count: number = 1, desc: string = "") {

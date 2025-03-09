@@ -1,9 +1,10 @@
 import { randomInteger } from "../functions";
-import { Fight } from "../interfaces";
 import { MunchkinGame } from "../mucnhkinGame";
-import { DoorCard, TreasureCard } from "../cards";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
+import { DoorCard } from "../classes/DoorCard";
+import { Fight } from "../classes/Fight";
+import { TreasureCard } from "../classes/TreasureCard";
 
 export class FightHelper {
     constructor(game: MunchkinGame) {

@@ -1,65 +1,8 @@
-import { AbstractData, DoorsDefs, MonsterData, TreasureData, TreasureDefs } from "./interfaces";
-import { MunchkinGame } from "./mucnhkinGame";
-import { PlayerGame } from "./player";
+import { defsData } from "../interfaces";
+import { MunchkinGame } from "../mucnhkinGame";
+import { PlayerGame } from "../player";
+import { AbstractCard, AbstractData } from "./AbstractCard";
 
-// refreshGame plusLog allLog
-
-class AbstractCard {
-    constructor(data: AbstractData) { this.abstractData = data }
-    abstractData: AbstractData;
-    id: number;
-}
-
-// Bonus Ability Fight
-export class TreasureCard extends AbstractCard {
-    constructor(
-        name: string,
-        description: string,
-        defs?: TreasureDefs,
-        data?: TreasureData,
-        strongest?: number,
-        cost?: number,
-        img?: string
-    ) {
-        super({ name, description, cardType: "Сокровище", cost, img });
-        this.data = data;
-        this.strong = strongest;
-        this.defs = defs;
-    }
-    strong?: number;
-    data: TreasureData;
-    defs?: TreasureDefs;
-    game?: MunchkinGame;
-    can_use(pl?: PlayerGame) {
-        if (!this.game || this.game.endgame) return
-        const type = this.data.treasureType;
-        const cur = this.game.current_player === pl;
-        if (type == "Надеваемая") return !this.game.is_fight && cur;
-        else if (type == "Боевая") return this.game.is_fight;
-        else return true
-    }
-    getData(pl?: PlayerGame): ITreasure {
-        return {
-            abstractData: this.abstractData,
-            strongest: this.strong,
-            data: this.data,
-            id: this.id,
-            use: this.can_use(pl)
-        }
-    }
-}
-export interface ITreasure {
-    abstractData: AbstractData;
-    strongest: number;
-    data: TreasureData;
-    id: number;
-    use: boolean;
-}
-export type DoorTypes = "Класс" | "Раса" | "Проклятие" | "Монстр" | "МонстрБаф"
-export interface IMonsterBuff {
-    strong: number
-    gold: number
-}
 export class DoorCard extends AbstractCard {
     constructor(
         name: string,
@@ -126,3 +69,23 @@ export interface optionalDoors {
     img?: string,
     monsterBuff?: IMonsterBuff
 }
+export interface IMonsterBuff {
+    strong: number
+    gold: number
+}
+export interface DoorsDefs {
+    punishment?: (defs: defsData) => void, // видимо непотребство
+    startActions?: (defs: defsData) => void, // 
+    winActions?: (defs: defsData) => void,
+    beforeSmivka?: (defs: defsData) => void,
+    action?: (defs: defsData) => void, // в момент 
+    effect?: (defs: defsData) => void, // дать приемущество класса или расы
+    // https://metanit.com/web/javascript/4.8.php .call() для функции
+}
+export interface MonsterData {
+    get_lvls: number; // 
+    strongest: number;
+    gold: number;
+    undead: boolean;
+}
+export type DoorTypes = "Класс" | "Раса" | "Проклятие" | "Монстр" | "МонстрБаф"

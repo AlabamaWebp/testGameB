@@ -1,5 +1,4 @@
-import { TreasureCard } from "src/data/munchkin/cards";
-import { TreasureData, TreasureDefs } from "src/data/munchkin/interfaces";
+import { TreasureDefs, TreasureCard } from "src/data/munchkin/classes/TreasureCard"
 
 function createUsed(
     name: string,

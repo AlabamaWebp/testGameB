@@ -1,5 +1,6 @@
-import { DoorCard } from "src/data/munchkin/cards";
-import { defsData, DoorsDefs } from "src/data/munchkin/interfaces";
+import { DoorCard, DoorsDefs } from "src/data/munchkin/classes/DoorCard";
+import { defsData } from "src/data/munchkin/interfaces";
+
 const COURSES: DoorCard[] = [];
 const type = "Проклятие"
 function createCourse(

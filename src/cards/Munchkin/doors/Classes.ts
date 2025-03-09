@@ -1,5 +1,4 @@
-import { DoorCard, optionalDoors } from "src/data/munchkin/cards"
-
+import { DoorCard, optionalDoors } from "src/data/munchkin/classes/DoorCard";
 
 const CLASSES: DoorCard[] = [];
 

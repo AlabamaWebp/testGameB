@@ -1,8 +1,9 @@
 import { shuffle } from "../functions";
 import { MunchkinGame } from "../mucnhkinGame";
-import { DoorCard, TreasureCard } from "../cards";
 import { Socket } from "socket.io";
 import { PlayerGame } from "../player";
+import { DoorCard } from "../classes/DoorCard";
+import { TreasureCard } from "../classes/TreasureCard";
 export class CardHelper {
     constructor(game: MunchkinGame) {
         this.game = game;
