@@ -1,21 +1,16 @@
 
 import { fillId, playersGetCard, shuffle } from "./functions";
-import { GameField } from "./interfaces";
 import { Socket } from "socket.io";
-import { CLASSES } from "src/cards/Munchkin/doors/Classes";
-import { COURSES } from "src/cards/Munchkin/doors/Courses";
-import { MONSTERS } from "src/cards/Munchkin/doors/Monsters";
-import { RASES } from "src/cards/Munchkin/doors/Rases";
-import { EQUIPMENT } from "src/cards/Munchkin/treasures/Equipment";
-import { USED } from "src/cards/Munchkin/treasures/Used";
-import { COMBAT } from "src/cards/Munchkin/treasures/Combat";
-import { DoorCard, TreasureCard } from "./cards";
 import { CardHelper } from "./gameHelpers/cardHelper";
 import { PlayerHelper } from "./gameHelpers/playerHelper";
 import { ActionHelper } from "./gameHelpers/actionHelper";
 import { FightHelper } from "./gameHelpers/fightHelper";
 import { PlayerGame } from "./player";
 import { HelpFightMunchkin } from "./gameHelpers/helpFightHelper";
+import { DoorCard } from "./interfaces/DoorCard";
+import { GameField } from "./interfaces/Game";
+import { TreasureCard } from "./interfaces/TreasureCard";
+import { CARDS } from "src/cards/Munchkin/json/cards";
 
 export class MunchkinGame {
     constructor(name: string, players: PlayerGame[]) {
@@ -25,8 +20,8 @@ export class MunchkinGame {
         this.plcount = players.length;
         this.Player.logging("Игра началась!");
         this.cards = {
-            doors: (shuffle(CLASSES.concat(COURSES).concat(MONSTERS).concat(RASES))).map(e => { e.game = this; return e }),
-            treasures: (shuffle(EQUIPMENT.concat(USED).concat(COMBAT))).map(e => { e.game = this; return e })
+            doors: (shuffle(CARDS.Doors)).map(e => { e.game = this; return e }),
+            treasures: (shuffle(CARDS.Golds)).map(e => { e.game = this; return e })
         }
         fillId.call(this);
         playersGetCard.call(this);

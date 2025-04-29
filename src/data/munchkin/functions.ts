@@ -1,4 +1,4 @@
-import { fieldDoorCards, fieldTreasureCards } from "./interfaces";
+import { fieldDoorCards, fieldTreasureCards } from "./interfaces/Field";
 
 
 export const shuffle = (array): any[] => {

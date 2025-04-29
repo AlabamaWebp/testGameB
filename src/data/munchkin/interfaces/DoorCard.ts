@@ -1,60 +1,24 @@
-import { AbstractData, DoorsDefs, MonsterData, TreasureData, TreasureDefs } from "./interfaces";
-import { MunchkinGame } from "./mucnhkinGame";
-import { PlayerGame } from "./player";
+import { MunchkinGame } from "../mucnhkinGame";
+import { PlayerGame } from "../player";
+import { AbstractCard } from "./AbstractCard";
+import { action_func } from "./Common";
+import { IDoor } from "./Game";
 
-// refreshGame plusLog allLog
-
-class AbstractCard {
-    constructor(data: AbstractData) { this.abstractData = data }
-    abstractData: AbstractData;
-    id: number;
+export interface DoorsDefs {
+    punishment?: action_func, // видимо непотребство
+    startActions?: action_func, // 
+    winActions?: action_func,
+    beforeSmivka?: action_func,
+    action?: action_func,
+    // https://metanit.com/web/javascript/4.8.php .call() для функции
 }
-
-// Bonus Ability Fight
-export class TreasureCard extends AbstractCard {
-    constructor(
-        name: string,
-        description: string,
-        defs?: TreasureDefs,
-        data?: TreasureData,
-        strongest?: number,
-        cost?: number,
-        img?: string
-    ) {
-        super({ name, description, cardType: "Сокровище", cost, img });
-        this.data = data;
-        this.strong = strongest;
-        this.defs = defs;
-    }
-    strong?: number;
-    data: TreasureData;
-    defs?: TreasureDefs;
-    game?: MunchkinGame;
-    can_use(pl?: PlayerGame) {
-        if (!this.game || this.game.endgame) return
-        const type = this.data.treasureType;
-        const cur = this.game.current_player === pl;
-        if (type == "Надеваемая") return !this.game.is_fight && cur;
-        else if (type == "Боевая") return this.game.is_fight;
-        else return true
-    }
-    getData(pl?: PlayerGame): ITreasure {
-        return {
-            abstractData: this.abstractData,
-            strongest: this.strong,
-            data: this.data,
-            id: this.id,
-            use: this.can_use(pl)
-        }
-    }
-}
-export interface ITreasure {
-    abstractData: AbstractData;
+export interface MonsterData {
+    get_lvls: number; // 
     strongest: number;
-    data: TreasureData;
-    id: number;
-    use: boolean;
+    gold: number;
+    undead: boolean;
 }
+// Bonus Ability Fight
 export type DoorTypes = "Класс" | "Раса" | "Проклятие" | "Монстр" | "МонстрБаф"
 export interface IMonsterBuff {
     strong: number
@@ -116,11 +80,4 @@ export class DoorCard extends AbstractCard {
             }
         )
     }
-}
-export interface IDoor {
-    abstractData: AbstractData;
-    data: MonsterData;
-    id: number;
-    is_super: boolean;
-    use: boolean;
 }
