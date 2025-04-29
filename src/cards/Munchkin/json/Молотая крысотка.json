@@ -1,0 +1,16 @@
+{
+    "abstractData": {
+        "name": "Молотая крысотка",
+        "description": "+3 против клириков",
+        "cardType": "Монстр",
+        "img": "",
+        "cost": 0
+    },
+    "monster": {
+        "get_lvls": "1",
+        "strongest": "1",
+        "gold": "1",
+        "undead": false,
+        "punishment": "-уровнь"
+    }
+}

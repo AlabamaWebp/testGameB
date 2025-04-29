@@ -1,0 +1,16 @@
+{
+    "abstractData": {
+        "name": "Плутонниевый дракон",
+        "description": "Не преследует манчкинов 5-го уровня и ниже",
+        "cardType": "Монстр",
+        "img": "",
+        "cost": 0
+    },
+    "monster": {
+        "get_lvls": "2",
+        "strongest": "20",
+        "gold": "5",
+        "undead": false,
+        "punishment": "Смерть"
+    }
+}
