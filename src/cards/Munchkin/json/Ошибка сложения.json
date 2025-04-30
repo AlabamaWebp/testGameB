@@ -1,0 +1,14 @@
+{
+    "abstractData": {
+        "name": "Ошибка сложения",
+        "description": "Получи уровень",
+        "cardType": "Сокровище",
+        "img": "",
+        "cost": 0
+    },
+    "data": {
+        "treasureType": "Используемая",
+        "template": "Рядом",
+        "big": false
+    }
+}

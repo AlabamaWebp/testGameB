@@ -19,6 +19,7 @@ const imges: { [i: string]: card } = {
     'Воин': { images: "" },
     'Молотая крысотка': { images: "" },
     'Плутонниевый дракон': { images: "" },
+    'Ошибка сложения': { images: '' }
 }
 
 type to_return = { Doors: DoorCard[], Golds: TreasureCard[] }
@@ -31,13 +32,34 @@ function getCardsFromFolder(): to_return {
     let f = fs.readdirSync(path);
     f.filter(e => e.includes(".json"))
         .forEach(name => {
-            const card = JSON.parse(fs.readFileSync(path + name).toString()) as Card;
-            if (card.abstractData.cardType == "Сокровище")
+            let card = JSON.parse(fs.readFileSync(path + name).toString()) as any;
+            if (card.abstractData.cardType == "Сокровище") {
+                card = new TreasureCard(
+                    card.abstractData.name,
+                    card.abstractData.description,
+                    undefined,
+                    card.data,
+                    card.strongest,
+                    card.abstractData.cost,
+                )
                 tmp.Golds.push(card as TreasureCard);
-            else
-                tmp.Doors.push(card as DoorCard);
+            }
+            else {
+                card = new DoorCard(
+                    card.abstractData.name,
+                    card.abstractData.description,
+                    card.abstractData.cardType as "Класс" | "Раса" | "Проклятие" | "Монстр",
+                    {
+                        monster: card.monster,
+                        // defs: this.defs,
+                        is_super: card.is_super,
+                        cost: card.abstractData.cost,
+                        // img: this.abstractData.img,
+                        // monsterBuff: card.monsterBuff
+                    })
+                tmp.Doors.push(card);
+            }
         })
-    // console.log(tmp.map(e => e.abstractData.name));
     return tmp;
 }
 
@@ -50,12 +72,10 @@ function newcards() {
     const cond = Object.keys(imges)
     f.filter(e => e.includes(".json"))
         .forEach(name => {
-            let f = fs.readdirSync(path);
             const a = JSON.parse(fs.readFileSync(path + name).toString());
-            // console.log(a);
             const n = a.abstractData.name;
             if (!cond.includes(n))
-                tmp[n.abstractData.name] = { images: "" }
+                tmp[a.abstractData.name] = { images: "" }
         })
     console.log(Object.keys(tmp).length ? tmp : "Новых карт не обнаружено");
 }
