@@ -62,7 +62,7 @@ function getCardsFromFolder(): to_return {
         })
     return tmp;
 }
-
+ 
 export const CARDS = getCardsFromFolder();
 
 function newcards() {
